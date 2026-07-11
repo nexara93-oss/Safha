@@ -1,0 +1,43 @@
+import { NextRequest } from "next/server";
+import { prisma, hashPassword } from "@/lib/db";
+import { getAuthFromRequest } from "@/lib/auth";
+import { ok, err } from "@/lib/api";
+import crypto from "crypto";
+
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+  const auth = await getAuthFromRequest(req);
+  if (!auth) return err("Forbidden", 403);
+  if (auth.user.role !== "DIRECTOR" && auth.user.role !== "TEACHER") return err("Forbidden", 403);
+
+  const student = await prisma.student.findUnique({ where: { id: params.id } });
+  if (!student) return err("Student not found", 404);
+  if (student.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
+
+  await prisma.user.delete({ where: { id: student.userId } });
+  return ok({ success: true });
+}
+
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+  const auth = await getAuthFromRequest(req);
+  if (!auth) return err("Forbidden", 403);
+  if (auth.user.role !== "DIRECTOR" && auth.user.role !== "TEACHER") return err("Forbidden", 403);
+
+  const student = await prisma.student.findUnique({ where: { id: params.id } });
+  if (!student) return err("Student not found", 404);
+  if (student.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
+
+  const body = await req.json().catch(() => ({}));
+
+  if (body.action === "resetPassword") {
+    const user = await prisma.user.findUnique({ where: { id: student.userId } });
+    if (!user) return err("User not found", 404);
+
+    const name = user.fullName.split(" ")[0].toLowerCase();
+    const newPwd = `${name}${crypto.randomInt(1000, 10000)}`;
+    const passwordHash = await hashPassword(newPwd);
+    await prisma.user.update({ where: { id: student.userId }, data: { passwordHash } });
+    return ok({ email: user.email, password: newPwd });
+  }
+
+  return err("Unknown action", 400);
+}

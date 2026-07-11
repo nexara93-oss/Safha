@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  .dark {
+    color-scheme: dark;
+  }
+}
+
+:root {
+  --brand-orange: #2A4DFF;
+  --brand-navy: #0A0A0A;
+  --brand-cream: #FAFAFA;
+  --brand-tan: #2A4DFF;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  background-color: #FAFAFA;
+  color: #0A0A0A;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark body {
+  background-color: #0A0A0A;
+  color: #FAFAFA;
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] .ltr-only {
+  display: none;
+}
+
+[dir="ltr"] .rtl-only {
+  display: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #FD6400;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d95400;
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-orange px-6 py-3 font-semibold text-white shadow-lg shadow-brand-orange/20 transition-all duration-200 hover:bg-brand-orange/90 hover:shadow-xl hover:shadow-brand-orange/30 hover:-translate-y-0.5 active:translate-y-0 active:shadow-md focus:outline-none focus:ring-4 focus:ring-brand-orange/30;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-tan px-6 py-3 font-semibold text-white shadow-lg shadow-brand-tan/20 transition-all duration-200 hover:bg-brand-tan/90 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border-2 border-brand-navy/15 px-6 py-3 font-semibold text-brand-navy transition-all duration-200 hover:border-brand-navy/30 hover:bg-brand-navy/5 active:scale-[0.98] dark:border-white/15 dark:text-white dark:hover:bg-white/5;
+  }
+  .input-field {
+    @apply w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-brand-navy placeholder-gray-400 transition-all duration-200 focus:border-brand-orange focus:outline-none focus:ring-4 focus:ring-brand-orange/10 dark:border-white/15 dark:bg-white/[0.07] dark:text-white dark:placeholder-white/40 dark:focus:border-brand-orange dark:focus:ring-brand-orange/20;
+  }
+
+  /* Select & option styling for dark mode (browser default is inconsistent) */
+  select.input-field,
+  select.input-field option {
+    color-scheme: light;
+  }
+  .dark select.input-field,
+  .dark select.input-field option {
+    color-scheme: dark;
+  }
+  .dark select.input-field {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23ffffff'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.06l3.71-3.83a.75.75 0 1 1 1.08 1.04l-4.25 4.39a.75.75 0 0 1-1.08 0L5.21 8.27a.75.75 0 0 1 .02-1.06z' clip-rule='evenodd'/%3E%3C/svg%3E");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1.25rem;
+    padding-right: 2.5rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  .dark select.input-field option {
+    background-color: #0A0A0A;
+    color: #FAFAFA;
+  }
+  .card {
+    @apply rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md dark:border-white/5 dark:bg-white/5;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold;
+  }
+}
+
+/* Wave animation */
+.wave-path {
+  animation: wave-slide 12s linear infinite;
+}
+@keyframes wave-slide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Focus visible for accessibility */
+*:focus-visible {
+  outline: 2px solid #FD6400;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
