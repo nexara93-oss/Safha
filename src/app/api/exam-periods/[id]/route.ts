@@ -6,6 +6,7 @@ import { ok, err } from "@/lib/api";
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   const auth = await getAuthFromRequest(req);
   if (!auth) return err("Forbidden", 403);
+  if (auth.user.role !== "DIRECTOR") return err("Forbidden", 403);
 
   const period = await prisma.examPeriod.findUnique({ where: { id: params.id } });
   if (!period) return err("Not found", 404);

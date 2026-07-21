@@ -60,7 +60,8 @@ export async function POST(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     const auth = await getAuthFromRequest(req);
-    if (!auth) return err("Forbidden", 403);
+    if (!auth || !auth.user.schoolId) return err("Forbidden", 403);
+    if (auth.user.role !== "DIRECTOR") return err("Forbidden", 403);
 
     const body = await req.json().catch(() => ({}));
     const parsed = updateSchema.safeParse(body);

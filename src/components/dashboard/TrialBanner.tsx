@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { api } from "@/lib/api-client";
 import { Sparkles, X } from "lucide-react";
 import Link from "next/link";
@@ -10,6 +11,7 @@ type Sub = { plan: string; endDate: string } | null;
 
 export function TrialBanner() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [daysLeft, setDaysLeft] = useState<number | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
@@ -46,8 +48,8 @@ export function TrialBanner() {
         <Sparkles className="h-4 w-4 shrink-0" />
         <span className="truncate">
           {daysLeft === 0
-            ? "Your free trial has ended. Upgrade to keep using EduWave."
-            : `${daysLeft} day${daysLeft === 1 ? "" : "s"} left in your free trial`}
+            ? t("trial.upgradeCta")
+            : t("trial.daysLeft", { count: daysLeft })}
         </span>
       </div>
       <div className="flex items-center gap-2">
@@ -55,7 +57,7 @@ export function TrialBanner() {
           href="/dashboard/director/payment"
           className="rounded-lg bg-white/20 px-3 py-1 text-xs font-bold text-white backdrop-blur transition-colors hover:bg-white/30"
         >
-          Upgrade
+          {t("trial.upgrade")}
         </Link>
         <button
           onClick={() => setDismissed(true)}

@@ -7,6 +7,10 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const auth = await getAuthFromRequest(req);
   if (!auth) return err("Forbidden", 403);
 
+  const message = await prisma.message.findUnique({ where: { id: params.id } });
+  if (!message) return err("Not found", 404);
+  if (message.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
+
   await prisma.message.update({
     where: { id: params.id },
     data: { read: true }

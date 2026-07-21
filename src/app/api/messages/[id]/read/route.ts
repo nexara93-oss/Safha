@@ -9,6 +9,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
   const message = await prisma.message.findUnique({ where: { id: params.id } });
   if (!message) return err("Not found", 404);
+  if (message.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
   if (message.recipientId && message.recipientId !== auth.user.id) return err("Forbidden", 403);
 
   const updated = await prisma.message.update({

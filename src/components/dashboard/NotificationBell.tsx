@@ -34,8 +34,8 @@ export function NotificationBell() {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  const fetchNotifications = () => {
-    api<{ notifications: Notification[] }>("/api/notifications?limit=5")
+  const fetchNotifications = (signal?: AbortSignal) => {
+    api<{ notifications: Notification[] }>("/api/notifications?limit=5", { signal })
       .then((d) => setNotifications(d.notifications))
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -43,9 +43,13 @@ export function NotificationBell() {
 
   useEffect(() => {
     if (!user) return;
-    fetchNotifications();
-    const interval = setInterval(fetchNotifications, 30000);
-    return () => clearInterval(interval);
+    const controller = new AbortController();
+    fetchNotifications(controller.signal);
+    const interval = setInterval(() => fetchNotifications(controller.signal), 30000);
+    return () => {
+      controller.abort();
+      clearInterval(interval);
+    };
   }, [user]);
 
   const markAsRead = async (id: string) => {
@@ -93,7 +97,7 @@ export function NotificationBell() {
             {unreadCount > 0 && (
               <button onClick={markAllRead} className="flex items-center gap-1 text-xs font-semibold text-brand-orange hover:text-brand-orange/80">
                 <CheckCheck className="h-3 w-3" />
-                Mark all read
+                {t("notifications.markAllRead")}
               </button>
             )}
           </div>
@@ -136,7 +140,7 @@ export function NotificationBell() {
             onClick={() => setOpen(false)}
             className="flex items-center justify-center gap-1 border-t border-gray-100 px-4 py-3 text-sm font-semibold text-brand-orange transition-colors hover:bg-gray-50 dark:border-white/5 dark:hover:bg-white/5"
           >
-            View all
+            {t("notifications.viewAll")}
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

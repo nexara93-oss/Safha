@@ -47,7 +47,7 @@ export function Topbar() {
               {user?.school?.name ? user.school.name : "EduWave"}
             </h1>
             <p className="text-xs text-brand-ink/60 dark:text-brand-paper/60">
-              {user?.role === "DIRECTOR" ? t("auth.welcomeDirector") : user?.role === "TEACHER" ? t("auth.welcomeTeacher") : t("auth.welcomeStudent")}
+              {user?.role === "DIRECTOR" ? t("auth.welcomeDirector") : user?.role === "TEACHER" ? t("auth.welcomeTeacher") : user?.role === "ADMIN" ? t("auth.welcomeAdmin") : user?.role === "PARENT" ? t("auth.welcomeParent") : t("auth.welcomeStudent")}
             </p>
           </div>
         </div>

@@ -36,7 +36,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       data: {
         score: parsed.data.score,
         feedback: parsed.data.feedback ?? null,
-        maxScore: parsed.data.maxScore,
+        maxScore: parsed.data.maxScore ?? submission.maxScore,
         gradedAt: new Date()
       },
       include: {

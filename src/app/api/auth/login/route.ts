@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import { prisma, verifyPassword, describePrismaError } from "@/lib/db";
+import { Prisma } from "@prisma/client";
 import { signToken, setAuthCookie, type AuthClaims } from "@/lib/auth";
 import { ok, err, parseJson, zodToErrorResponse } from "@/lib/api";
 import { checkRateLimit, getClientIP, isAccountLocked, recordFailedAttempt, clearFailedAttempts } from "@/lib/rate-limit";
@@ -72,7 +73,7 @@ export async function POST(req: NextRequest) {
       }
     });
   } catch (e) {
-    if (e instanceof Error && !e.name) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
       console.error("[login] prisma error:", e);
       return err(describePrismaError(e), 500);
     }

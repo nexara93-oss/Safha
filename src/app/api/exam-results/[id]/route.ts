@@ -23,6 +23,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     const result = await prisma.finalExamResult.findUnique({ where: { id: params.id } });
     if (!result) return err("Not found", 404);
 
+    const exam = await prisma.finalExam.findUnique({ where: { id: result.examId } });
+    if (!exam || exam.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
+
     const updated = await prisma.finalExamResult.update({
       where: { id: params.id },
       data: {

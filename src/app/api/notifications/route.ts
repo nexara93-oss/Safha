@@ -38,10 +38,14 @@ export async function POST(req: NextRequest) {
   try {
     const auth = await getAuthFromRequest(req);
     if (!auth) return err("Forbidden", 403);
+    if (auth.user.role !== "DIRECTOR" && auth.user.role !== "TEACHER" && auth.user.role !== "ADMIN") return err("Forbidden", 403);
 
     const body = await req.json().catch(() => ({}));
     const parsed = createSchema.safeParse(body);
     if (!parsed.success) return err("Validation failed", 422, { fieldErrors: parsed.error.flatten().fieldErrors });
+
+    const targetUser = await prisma.user.findUnique({ where: { id: parsed.data.userId } });
+    if (!targetUser || targetUser.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
 
     const notification = await prisma.notification.create({
       data: {

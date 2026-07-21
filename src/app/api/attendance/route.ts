@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
     return ok({ attendance: recs });
   }
 
-  return ok({ attendance: [] });
+  return err("Forbidden", 403);
 }
 
 export async function POST(req: NextRequest) {

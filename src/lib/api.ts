@@ -10,7 +10,7 @@ export function err(message: string, status = 400, extra?: Record<string, unknow
 }
 
 export async function parseJson<T>(req: Request, schema: ZodSchema<T>): Promise<T> {
-  const body = await req.json().catch(() => ({}));
+  const body = await req.json().catch(() => { throw new Error("Invalid JSON body"); });
   const result = schema.safeParse(body);
   if (!result.success) {
     const flat = result.error.flatten();

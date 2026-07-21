@@ -30,6 +30,7 @@ export async function api<T = unknown>(
     const msg = (data && typeof data === "object" && "error" in data ? (data as { error?: string }).error : null) || `Request failed (${res.status})`;
     throw new Error(msg);
   }
+  if (data === null) throw new Error("Invalid server response");
   return data as T;
 }
 

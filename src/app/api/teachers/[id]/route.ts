@@ -37,5 +37,11 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   if (!teacher) return err("Teacher not found", 404);
   if (teacher.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
 
+  if (auth.user.role === "STUDENT") return err("Forbidden", 403);
+  if (auth.user.role === "TEACHER") {
+    const self = await prisma.teacher.findUnique({ where: { userId: auth.user.id } });
+    if (!self || self.id !== params.id) return err("Forbidden", 403);
+  }
+
   return ok({ teacher });
 }

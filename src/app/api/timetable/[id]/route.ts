@@ -26,6 +26,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
   });
   if (!slot) return err("Not found", 404);
+  if (slot.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
   return ok({ slot });
 }
 

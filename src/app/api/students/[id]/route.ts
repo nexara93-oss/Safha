@@ -12,6 +12,10 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
   const student = await prisma.student.findUnique({ where: { id: params.id } });
   if (!student) return err("Student not found", 404);
   if (student.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
+  if (auth.user.role === "TEACHER") {
+    const teacher = await prisma.teacher.findUnique({ where: { userId: auth.user.id } });
+    if (!teacher || student.teacherId !== teacher.id) return err("Forbidden", 403);
+  }
 
   await prisma.user.delete({ where: { id: student.userId } });
   return ok({ success: true });

@@ -35,19 +35,24 @@ export async function POST(req: NextRequest) {
       return err(`Account temporarily locked. Try again in ${lock.retryAfter} seconds.`, 429);
     }
 
-    // Find student by email or by name (case-insensitive)
+    const includeSchool = { school: { select: { id: true, name: true, logoUrl: true } } };
     let user;
     if (isEmailInput) {
       user = await prisma.user.findFirst({
         where: { email: identifier, role: "STUDENT", status: "ACTIVE" },
-        include: { school: { select: { id: true, name: true, logoUrl: true } } }
+        include: includeSchool
       });
     } else {
-      const students = await prisma.user.findMany({
-        where: { role: "STUDENT", status: "ACTIVE" },
-        include: { school: { select: { id: true, name: true, logoUrl: true } } }
+      user = await prisma.user.findFirst({
+        where: { fullName: identifier, role: "STUDENT", status: "ACTIVE" },
+        include: includeSchool
       });
-      user = students.find((s) => s.fullName.trim().toLowerCase() === identifier.toLowerCase());
+      if (!user) {
+        user = await prisma.user.findFirst({
+          where: { email: identifier, role: "STUDENT", status: "ACTIVE" },
+          include: includeSchool
+        });
+      }
     }
     if (!user) {
       recordFailedAttempt(`student:${lockKey}`);

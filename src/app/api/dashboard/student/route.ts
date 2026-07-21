@@ -32,7 +32,14 @@ export async function GET(req: NextRequest) {
     }),
     prisma.examPeriod.findMany({ where: { schoolId: student.schoolId }, orderBy: { startDate: "asc" } }),
     prisma.message.findMany({
-      where: { schoolId: student.schoolId },
+      where: {
+        schoolId: student.schoolId,
+        OR: [
+          { senderId: student.userId },
+          { recipientId: student.userId },
+          { recipientType: "ALL_STUDENTS" }
+        ]
+      },
       include: { sender: { select: { fullName: true, role: true } } },
       orderBy: { createdAt: "desc" },
       take: 20

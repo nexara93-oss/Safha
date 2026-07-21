@@ -42,7 +42,9 @@ export async function GET(req: NextRequest) {
     if (teacher) where.teacherId = teacher.id;
   }
 
-  if (sectionId) where.sectionId = sectionId;
+  if (sectionId && (auth.user.role === "DIRECTOR" || auth.user.role === "TEACHER")) {
+    where.sectionId = sectionId;
+  }
 
   const lessons = await prisma.lesson.findMany({
     where,

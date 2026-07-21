@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const isDev = process.env.NODE_ENV !== "production";
-
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|.*\\.html).*)"],
 };

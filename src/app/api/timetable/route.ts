@@ -54,8 +54,8 @@ export async function GET(req: NextRequest) {
     if (teacher) where.teacherId = teacher.id;
   }
 
-  if (teacherId) where.teacherId = teacherId;
-  if (sectionId) where.sectionId = sectionId;
+  if (teacherId && auth.user.role === "DIRECTOR") where.teacherId = teacherId;
+  if (sectionId && auth.user.role === "DIRECTOR") where.sectionId = sectionId;
 
   const slots = await prisma.timetableSlot.findMany({
     where,

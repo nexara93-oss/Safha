@@ -133,7 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
     } catch {
-      // Cookie cleared even if this fails — server handles it
+      window.location.href = "/api/auth/logout";
     }
   }, []);
 

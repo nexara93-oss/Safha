@@ -22,7 +22,7 @@ export function describePrismaError(e: unknown): string {
     if (msg.includes("Can't reach database server")) {
       return "Cannot reach the database. Check that Postgres is running and DATABASE_URL is correct.";
     }
-    if (msg.includes("does not exist") || msg.includes("relation") && msg.includes("does not exist")) {
+    if (msg.includes("does not exist")) {
       return "Database tables are missing. Run: npx prisma migrate dev";
     }
     if (msg.includes("Authentication failed")) {

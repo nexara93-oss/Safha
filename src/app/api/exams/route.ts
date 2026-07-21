@@ -41,7 +41,9 @@ export async function GET(req: NextRequest) {
     where.sectionId = { in: students.map((s) => s.sectionId).filter(Boolean) };
   }
 
-  if (sectionId) where.sectionId = sectionId;
+  if (sectionId && (auth.user.role === "DIRECTOR" || auth.user.role === "TEACHER")) {
+    where.sectionId = sectionId;
+  }
 
   const exams = await prisma.finalExam.findMany({
     where,

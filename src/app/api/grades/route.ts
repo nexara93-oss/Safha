@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
     return ok({ grades });
   }
 
-  return ok({ grades: [] });
+  return err("Forbidden", 403);
 }
 
 export async function POST(req: NextRequest) {

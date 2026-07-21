@@ -14,20 +14,25 @@ export async function GET(req: NextRequest) {
   const auth = await getAuthFromRequest(req);
   if (!auth || !auth.user.schoolId) return err("Forbidden", 403);
 
-  // Fetch all messages sent to or from current user in their school
+  const orConditions: any[] = [
+    { senderId: auth.user.id },
+    { recipientId: auth.user.id }
+  ];
+
+  if (auth.user.role === "TEACHER" || auth.user.role === "DIRECTOR") {
+    orConditions.push({ recipientType: "ALL_TEACHERS" });
+  }
+  if (auth.user.role === "STUDENT" || auth.user.role === "DIRECTOR") {
+    orConditions.push({ recipientType: "ALL_STUDENTS" });
+  }
+  if (auth.user.role === "DIRECTOR") {
+    orConditions.push({ recipientType: "DIRECTOR" });
+  }
+
   const whereCondition: any = {
     schoolId: auth.user.schoolId,
-    OR: [
-      { senderId: auth.user.id },
-      { recipientId: auth.user.id },
-      { recipientType: "ALL_TEACHERS" },
-      { recipientType: "ALL_STUDENTS" }
-    ]
+    OR: orConditions
   };
-
-  if (auth.user.role === "DIRECTOR") {
-    whereCondition.OR.push({ recipientType: "DIRECTOR" });
-  }
 
   const messages = await prisma.message.findMany({
     where: whereCondition,
@@ -68,11 +73,13 @@ export async function POST(req: NextRequest) {
     let resolvedRecipientId = parsed.data.recipientId || null;
     if (resolvedRecipientId) {
       if (parsed.data.recipientType === "TEACHER") {
-        const t = await prisma.teacher.findUnique({ where: { id: resolvedRecipientId }, select: { userId: true } });
-        resolvedRecipientId = t?.userId ?? null;
+        const t = await prisma.teacher.findUnique({ where: { id: resolvedRecipientId }, select: { userId: true, schoolId: true } });
+        if (!t || t.schoolId !== auth.user.schoolId) return err("Teacher not found in your school", 404);
+        resolvedRecipientId = t.userId;
       } else if (parsed.data.recipientType === "STUDENT") {
-        const s = await prisma.student.findUnique({ where: { id: resolvedRecipientId }, select: { userId: true } });
-        resolvedRecipientId = s?.userId ?? null;
+        const s = await prisma.student.findUnique({ where: { id: resolvedRecipientId }, select: { userId: true, schoolId: true } });
+        if (!s || s.schoolId !== auth.user.schoolId) return err("Student not found in your school", 404);
+        resolvedRecipientId = s.userId;
       }
     }
 
