@@ -33,6 +33,7 @@ export function Navbar() {
 
   return (
     <header
+      data-scrolled={scrolled}
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled
           ? "bg-white/85 shadow-sm backdrop-blur-md dark:bg-brand-navy/85"
@@ -51,25 +52,28 @@ export function Navbar() {
               <path d="M50.5 41.2 L51 46 M52 41.5 L52 46.5 M53.5 41.2 L53 46" stroke="#FFFFFF" strokeWidth="1.4" strokeLinecap="round" fill="none" />
             </svg>
           </div>
-          <span className="font-display text-xl font-extrabold tracking-tight text-brand-ink dark:text-brand-paper">
+          <span data-nav-over-hero className="font-display text-xl font-extrabold tracking-tight text-brand-ink transition-colors dark:text-brand-paper">
             EduWave
           </span>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
           <a
+            data-nav-over-hero
             href="#features"
             className="text-sm font-semibold text-brand-ink/80 transition-colors hover:text-brand-orange dark:text-white/80 dark:hover:text-brand-orange"
           >
             {t("nav.features")}
           </a>
           <a
+            data-nav-over-hero
             href="#pricing"
             className="text-sm font-semibold text-brand-ink/80 transition-colors hover:text-brand-orange dark:text-white/80 dark:hover:text-brand-orange"
           >
             {t("nav.pricing")}
           </a>
           <a
+            data-nav-over-hero
             href="#about"
             className="text-sm font-semibold text-brand-ink/80 transition-colors hover:text-brand-orange dark:text-white/80 dark:hover:text-brand-orange"
           >
@@ -81,6 +85,7 @@ export function Navbar() {
           <LanguageSwitcher />
           <ThemeToggle />
           <Link
+            data-nav-over-hero
             href={user ? dashboardLink : "/auth/login"}
             className="hidden rounded-xl px-4 py-2 text-sm font-semibold text-brand-ink transition-colors hover:text-brand-orange dark:text-white sm:inline-block"
           >
@@ -90,6 +95,7 @@ export function Navbar() {
             {t("nav.start")}
           </Link>
           <button
+            data-nav-over-hero
             onClick={() => setOpen((o) => !o)}
             className="rounded-xl p-2 text-brand-ink dark:text-brand-paper md:hidden"
             aria-label="Toggle menu"
