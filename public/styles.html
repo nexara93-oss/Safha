@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduWave — Choose Your Style</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800;900&family=Sora:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lexend:wght@300;400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f8f9fb;
+      color: #1a1a2e;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Top bar ────────────────────────── */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 32px;
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .topbar-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; color: #2A4DFF; text-decoration: none; }
+    .topbar-logo svg { width: 32px; height: 32px; }
+    .topbar-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 22px; border-radius: 12px;
+      background: #2A4DFF; color: #fff; font-weight: 600; font-size: 14px;
+      text-decoration: none; transition: .2s;
+    }
+    .topbar-link:hover { background: #1e3de0; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(42,77,255,.3); }
+
+    /* ── Hero ────────────────────────────── */
+    .hero { text-align: center; padding: 64px 24px 40px; }
+    .hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(32px, 5vw, 52px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.08; color: #0f172a; }
+    .hero h1 span { color: #2A4DFF; }
+    .hero p { margin-top: 16px; font-size: 17px; color: #64748b; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+
+    /* ── Grid ────────────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 28px;
+      max-width: 1200px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+
+    /* ── Card ────────────────────────────── */
+    .card {
+      border-radius: 20px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.04);
+      transition: transform .25s, box-shadow .25s;
+      display: flex; flex-direction: column;
+    }
+    .card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,.1); }
+
+    /* preview area */
+    .card-preview {
+      height: 220px;
+      position: relative;
+      overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 20px;
+    }
+
+    .card-body { padding: 20px 24px 24px; }
+    .card-body h3 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; }
+    .card-body p { margin-top: 6px; font-size: 13px; color: #64748b; line-height: 1.5; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .card-tags span {
+      font-size: 11px; font-weight: 600; padding: 4px 10px;
+      border-radius: 100px; background: #f1f5f9; color: #475569;
+    }
+    .card-action {
+      display: block; margin: 0 24px 24px; padding: 12px; text-align: center;
+      border-radius: 12px; font-weight: 600; font-size: 14px;
+      text-decoration: none; color: #2A4DFF; border: 2px solid #2A4DFF;
+      transition: .2s;
+    }
+    .card-action:hover { background: #2A4DFF; color: #fff; }
+
+    /* ════════════════════════════════════════
+       STYLE 1 — Modern SaaS
+       ════════════════════════════════════════ */
+    .s1 { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+    .s1 .mock-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .s1 .mock-nav .logo { width: 28px; height: 28px; border-radius: 8px; background: #2A4DFF; }
+    .s1 .mock-nav .links { display: flex; gap: 12px; }
+    .s1 .mock-nav .links span { width: 40px; height: 6px; border-radius: 3px; background: rgba(255,255,255,.2); }
+    .s1 .mock-title { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 800; color: #fff; line-height: 1.15; }
+    .s1 .mock-title em { font-style: normal; color: #2A4DFF; }
+    .s1 .mock-sub { margin-top: 8px; font-size: 11px; color: rgba(255,255,255,.5); }
+    .s1 .mock-btn { display: inline-block; margin-top: 14px; padding: 8px 20px; border-radius: 10px; background: #2A4DFF; color: #fff; font-size: 12px; font-weight: 600; }
+
+    /* ════════════════════════════════════════
+       STYLE 2 — Bold & Dark
+       ════════════════════════════════════════ */
+    .s2 { background: #09090b; position: relative; }
+    .s2::before { content: ''; position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(139,92,246,.4), transparent 70%); }
+    .s2::after { content: ''; position: absolute; bottom: -30px; left: -30px; width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle, rgba(34,211,238,.3), transparent 70%); }
+    .s2 .mock-badge { display: inline-block; padding: 4px 12px; border-radius: 100px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.05); color: rgba(255,255,255,.6); font-size: 10px; font-weight: 500; margin-bottom: 16px; }
+    .s2 .mock-title { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700; color: #fff; line-height: 1.2; }
+    .s2 .mock-title span { background: linear-gradient(135deg, #8b5cf6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .s2 .mock-sub { margin-top: 8px; font-size: 11px; color: rgba(255,255,255,.4); }
+    .s2 .mock-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 20px; }
+    .s2 .mock-card { height: 40px; border-radius: 8px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.06); }
+
+    /* ════════════════════════════════════════
+       STYLE 3 — Minimalist / Editorial
+       ════════════════════════════════════════ */
+    .s3 { background: #fff; border: 1px solid #f0f0f0; align-items: center; text-align: center; padding: 24px; }
+    .s3 .mock-line { width: 40px; height: 2px; background: #e5e5e5; margin-bottom: 20px; }
+    .s3 .mock-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #1a1a1a; line-height: 1.3; }
+    .s3 .mock-sub { margin-top: 10px; font-size: 11px; color: #999; font-family: 'Playfair Display', serif; font-style: italic; }
+    .s3 .mock-line2 { width: 100px; height: 1px; background: #e5e5e5; margin: 20px auto 0; }
+    .s3 .mock-features { display: flex; gap: 16px; margin-top: 20px; }
+    .s3 .mock-feat { flex: 1; }
+    .s3 .mock-feat .dot { width: 24px; height: 24px; border-radius: 50%; background: #f5f5f5; margin: 0 auto 8px; }
+    .s3 .mock-feat span { display: block; height: 4px; border-radius: 2px; background: #e5e5e5; }
+    .s3 .mock-feat span:last-child { width: 60%; margin: 4px auto 0; }
+
+    /* ════════════════════════════════════════
+       STYLE 4 — Gradient Pop
+       ════════════════════════════════════════ */
+    .s4 { background: linear-gradient(160deg, #667eea 0%, #764ba2 100%); position: relative; overflow: hidden; }
+    .s4 .mock-blob { position: absolute; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,.12); top: -30px; right: -20px; }
+    .s4 .mock-blob2 { position: absolute; width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,.08); bottom: 20px; left: -10px; }
+    .s4 .mock-title { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 800; color: #fff; line-height: 1.15; position: relative; z-index: 1; }
+    .s4 .mock-sub { margin-top: 8px; font-size: 11px; color: rgba(255,255,255,.7); position: relative; z-index: 1; }
+    .s4 .mock-btns { display: flex; gap: 8px; margin-top: 16px; position: relative; z-index: 1; }
+    .s4 .mock-btn1 { padding: 8px 18px; border-radius: 10px; background: #fff; color: #764ba2; font-size: 12px; font-weight: 700; }
+    .s4 .mock-btn2 { padding: 8px 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,.4); color: #fff; font-size: 12px; font-weight: 600; }
+
+    /* ════════════════════════════════════════
+       STYLE 5 — Corporate / Clean
+       ════════════════════════════════════════ */
+    .s5 { background: #f0f4ff; padding: 24px; }
+    .s5 .mock-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .s5 .mock-logo { display: flex; align-items: center; gap: 8px; }
+    .s5 .mock-logo .icon { width: 24px; height: 24px; border-radius: 6px; background: #2563eb; }
+    .s5 .mock-logo span { font-weight: 700; font-size: 14px; color: #1e3a5f; }
+    .s5 .mock-title { font-family: 'DM Sans', sans-serif; font-size: 20px; font-weight: 700; color: #1e3a5f; line-height: 1.2; }
+    .s5 .mock-sub { margin-top: 8px; font-size: 11px; color: #64748b; }
+    .s5 .mock-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 20px; }
+    .s5 .mock-c { height: 48px; border-radius: 10px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.06); display: flex; align-items: center; padding: 0 12px; gap: 8px; }
+    .s5 .mock-c .circle { width: 20px; height: 20px; border-radius: 50%; background: #e0e7ff; flex-shrink: 0; }
+    .s5 .mock-c .line { height: 4px; border-radius: 2px; background: #e2e8f0; flex: 1; }
+    .s5 .mock-c .line:last-child { width: 40%; flex: none; }
+
+    /* ════════════════════════════════════════
+       STYLE 6 — Education Warm
+       ════════════════════════════════════════ */
+    .s6 { background: linear-gradient(180deg, #fff7ed 0%, #fef3c7 100%); position: relative; }
+    .s6 .mock-emoji { position: absolute; top: 16px; right: 20px; font-size: 32px; }
+    .s6 .mock-title { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; color: #92400e; line-height: 1.2; }
+    .s6 .mock-sub { margin-top: 8px; font-size: 11px; color: #b45309; opacity: .7; }
+    .s6 .mock-pills { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+    .s6 .mock-pill { padding: 6px 14px; border-radius: 100px; background: rgba(251,191,36,.25); font-size: 11px; font-weight: 600; color: #92400e; }
+    .s6 .mock-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px; }
+    .s6 .mock-c { height: 48px; border-radius: 12px; background: #fff; box-shadow: 0 2px 8px rgba(146,64,14,.08); }
+
+    /* ════════════════════════════════════════
+       STYLE 7 — Glassmorphism
+       ════════════════════════════════════════ */
+    .s7 { background: linear-gradient(135deg, #667eea, #764ba2, #f093fb); position: relative; }
+    .s7 .mock-glass { background: rgba(255,255,255,.15); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.2); border-radius: 16px; padding: 16px; }
+    .s7 .mock-title { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 700; color: #fff; line-height: 1.2; }
+    .s7 .mock-sub { margin-top: 6px; font-size: 11px; color: rgba(255,255,255,.7); }
+    .s7 .mock-btn { display: inline-block; margin-top: 14px; padding: 8px 20px; border-radius: 10px; background: rgba(255,255,255,.25); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,.3); color: #fff; font-size: 12px; font-weight: 600; }
+    .s7 .mock-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px; }
+    .s7 .mock-stat { background: rgba(255,255,255,.1); border-radius: 10px; padding: 10px; text-align: center; }
+    .s7 .mock-stat .num { font-size: 16px; font-weight: 800; color: #fff; }
+    .s7 .mock-stat .label { font-size: 9px; color: rgba(255,255,255,.6); margin-top: 2px; }
+
+    /* ════════════════════════════════════════
+       STYLE 8 — Neubrutalism
+       ════════════════════════════════════════ */
+    .s8 { background: #fbbf24; border: 3px solid #1a1a2e; }
+    .s8 .mock-title { font-family: 'Lexend', sans-serif; font-size: 22px; font-weight: 800; color: #1a1a2e; line-height: 1.15; text-transform: uppercase; letter-spacing: -0.02em; }
+    .s8 .mock-sub { margin-top: 8px; font-size: 12px; color: #1a1a2e; opacity: .7; }
+    .s8 .mock-btn { display: inline-block; margin-top: 14px; padding: 10px 22px; border-radius: 0; background: #1a1a2e; color: #fbbf24; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border: 2px solid #1a1a2e; }
+    .s8 .mock-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 20px; }
+    .s8 .mock-c { height: 52px; border: 2px solid #1a1a2e; border-radius: 0; background: #fff; display: flex; align-items: center; justify-content: center; }
+    .s8 .mock-c .bar { width: 60%; height: 6px; border-radius: 0; background: #1a1a2e; opacity: .15; }
+
+    /* ════════════════════════════════════════
+       STYLE 9 — Clean & Focused
+       ════════════════════════════════════════ */
+    .s9 { background: #fff; padding: 24px; text-align: center; border: 1px solid #f0f0f0; }
+    .s9 .mock-title { font-family: 'DM Sans', sans-serif; font-size: 20px; font-weight: 700; color: #111; line-height: 1.25; }
+    .s9 .mock-sub { margin-top: 8px; font-size: 11px; color: #999; }
+    .s9 .mock-input { display: flex; gap: 8px; margin-top: 20px; justify-content: center; }
+    .s9 .mock-input .field { width: 140px; height: 36px; border-radius: 8px; border: 1px solid #e5e5e5; background: #fafafa; }
+    .s9 .mock-input .btn { padding: 0 18px; height: 36px; border-radius: 8px; background: #111; color: #fff; font-size: 12px; font-weight: 600; display: flex; align-items: center; }
+    .s9 .mock-features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 20px; }
+    .s9 .mock-feat { padding: 12px; border-radius: 10px; border: 1px solid #f0f0f0; text-align: left; }
+    .s9 .mock-feat .icon { width: 24px; height: 24px; border-radius: 6px; background: #f0f0f0; margin-bottom: 8px; }
+    .s9 .mock-feat span { display: block; height: 4px; border-radius: 2px; background: #e5e5e5; }
+    .s9 .mock-feat span:last-child { width: 70%; margin-top: 4px; }
+
+    /* ════════════════════════════════════════
+       STYLE 10 — Vibrant Energy
+       ════════════════════════════════════════ */
+    .s10 { background: linear-gradient(135deg, #ff6b6b, #ee5a24, #f0932b); position: relative; overflow: hidden; }
+    .s10 .mock-shape1 { position: absolute; width: 80px; height: 80px; border-radius: 20px; background: rgba(255,255,255,.15); transform: rotate(25deg); top: 10px; right: 15px; }
+    .s10 .mock-shape2 { position: absolute; width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,.1); bottom: 20px; left: 20px; }
+    .s10 .mock-title { font-family: 'Manrope', sans-serif; font-size: 22px; font-weight: 800; color: #fff; line-height: 1.15; position: relative; z-index: 1; }
+    .s10 .mock-sub { margin-top: 8px; font-size: 11px; color: rgba(255,255,255,.8); position: relative; z-index: 1; }
+    .s10 .mock-cta { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; padding: 10px 22px; border-radius: 100px; background: #fff; color: #ee5a24; font-size: 13px; font-weight: 700; position: relative; z-index: 1; }
+    .s10 .mock-arrow { font-size: 14px; }
+
+    /* ── Footer ──────────────────────────── */
+    .footer {
+      text-align: center; padding: 32px 24px;
+      font-size: 13px; color: #94a3b8;
+      border-top: 1px solid #e5e7eb;
+    }
+    .footer a { color: #2A4DFF; text-decoration: none; font-weight: 600; }
+    .footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 420px) {
+      .grid { grid-template-columns: 1fr; }
+      .topbar { padding: 12px 16px; }
+      .hero { padding: 40px 16px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <a href="/" class="topbar-logo">
+      <svg viewBox="0 0 64 64"><path d="M32 14 L8 24 L32 34 L56 24 Z" fill="#2A4DFF"/><path d="M18 27.5 L18 36 C18 38.5 24 41 32 41 C40 41 46 38.5 46 36 L46 27.5 L32 34 Z" fill="#2A4DFF"/></svg>
+      EduWave Styles
+    </a>
+    <a href="/" class="topbar-link">
+      ← Back to Site
+    </a>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Choose Your <span>Landing Page Style</span></h1>
+    <p>Pick a design direction you like, and we'll apply it to the EduWave website.</p>
+  </section>
+
+  <!-- Styles Grid -->
+  <section class="grid">
+
+    <!-- 1 ─ Modern SaaS -->
+    <article class="card">
+      <div class="card-preview s1">
+        <div class="mock-nav">
+          <div class="logo"></div>
+          <div class="links"><span></span><span></span><span></span></div>
+        </div>
+        <div class="mock-title">Replace paper —<br><em>Empower your school</em></div>
+        <div class="mock-sub">The all-in-one platform for Moroccan schools</div>
+        <div class="mock-btn">Start free trial →</div>
+      </div>
+      <div class="card-body">
+        <h3>1. Modern SaaS</h3>
+        <p>Dark hero with blue accents, clean layout. Professional and tech-forward.</p>
+        <div class="card-tags">
+          <span>Dark Hero</span><span>Blue Accent</span><span>Clean</span>
+        </div>
+      </div>
+      <a href="/" class="card-action">Preview Live →</a>
+    </article>
+
+    <!-- 2 ─ Bold & Dark -->
+    <article class="card">
+      <div class="card-preview s2">
+        <div class="mock-badge">✦ Made for Moroccan schools</div>
+        <div class="mock-title">Replace paper — <span>Empower your school</span></div>
+        <div class="mock-sub">All-in-one school management platform</div>
+        <div class="mock-grid">
+          <div class="mock-card"></div>
+          <div class="mock-card"></div>
+          <div class="mock-card"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3>2. Bold & Dark</h3>
+        <p>Full dark mode with gradient neon accents. Futuristic and striking.</p>
+        <div class="card-tags">
+          <span>Full Dark</span><span>Gradient Text</span><span>Neon</span>
+        </div>
+      </div>
+      <a href="/" class="card-action">Preview Live →</a>
+    </article>
+
+    <!-- 3 ─ Minimalist / Editorial -->
+    <article class="card">
+      <div class="card-preview s3">
+        <div class="mock-line"></div>
+        <div class="mock-title">Replace paper —<br>Empower your school</div>
+        <div class="mock-sub">A modern platform for modern schools</div>
+        <div class="mock-line2"></div>
+        <div class="mock-features">
+          <div class="mock-feat"><div class="dot"></div><span style="width:80%"></span><span></span></div>
+          <div class="mock-feat"><div class="dot"></div><span style="width:70%"></span><span></span></div>
+          <div class="mock-feat"><div class="dot"></div><span style="width:75%"></span><span></span></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3>3. Minimalist Editorial</h3>
+        <p>Serif typography, lots of whitespace. Elegant and understated.</p>
+        <div class="card-tags">
+          <span>Serif</span><span>Whitespace</span><span>Elegant</span>
+        </div>
+      </div>
+      <a href="/" class="card-action">Preview Live →</a>
+    </article>
+
+    <!-- 4 ─ Gradient Pop -->
+    <article class="card">
+      <div class="card-preview s4">
+        <div class="mock-blob"></div>
+        <div class="mock-blob2"></div>
+        <div class="mock-title">Replace paper —<br>Empower your school</div>
+        <div class="mock-sub">Morocco's leading school platform</div>
+        <div class="mock-btns">
+          <div class="mock-btn1">Start Free Trial</div>
+          <div class="mock-btn2">See how it works</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3>4. Gradient Pop</h3>
+        <p>Colorful purple-to-blue gradients, playful and energetic feel.</p>
+        <div class="card-tags">
+          <span>Gradient</span><span>Playful</span><span>Colorful</span>
+        </div>
+      </div>
+      <a href="/" class="card-action">Preview Live →</a>
+    </article>
+
+    <!-- 5 ─ Corporate Clean -->
+    <article class="card">
+      <div class="card-preview s5">
+        <div class="mock-top">
+          <div class="mock-logo"><div class="icon"></div><span>EduWave</span></div>
+        </div>
+        <div class="mock-title">Replace paper —<br>Empower your school</div>
+        <div class="mock-sub">Trusted by hundreds of schools across Morocco</div>
+        <div class="mock-cards">
+          <div class="mock-c"><div class="circle"></div><div class="line"></div><div class="line"></div></div>
+          <div class="mock-c"><div class="circle"></div><div class="line"></div><div class="line"></div></div>
+          <div class="mock-c"><div class="circle"></div><div class="line"></div><div class="line"></div></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3>5. Corporate Clean</h3>
+        <p>Light blue tones, structured layout. Professional and trustworthy.</p>
+        <div class="card-tags">
+          <span>Professional</span><span>Structured</span><span>Trust</span>
+        </div>
+      </div>
+      <a href="/" class="card-action">Preview Live →</a>
+    </article>
+
+    <!-- 6 ─ Education Warm -->
+    <article class="card">
+      <div class="card-preview s6">
+        <div class="mock-emoji">🎓</div>
+        <div class="mock-title">Replace paper —<br>Empower your school</div>
+        <div class="mock-sub">Built for teachers, directors & students</div>
+        <div class="mock-pills">
+          <div class="mock-pill">Attendance</div>
+          <div class="mock-pill">Grades</div>
+          <div class="mock-pill">Behavior</div>
+        </div>
+        <div class="mock-cards">
+          <div class="mock-c"></div>
+          <div class="mock-c"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3>6. Education Warm</h3>
+        <p>Warm amber tones, friendly and approachable. Perfect for education.</p>
+        <div class="card-tags">
+          <span>Warm</span><span>Friendly</span><span>Education</span>
+        </div>
+      </div>
+      <a href="/" class="card-action">Preview Live →</a>
+    </article>
+
+    <!-- 7 ─ Glassmorphism -->
+    <article class="card">
+      <div class="card-preview s7">
+        <div class="mock-glass">
+          <div class="mock-title">Replace paper —<br>Empower your school</div>
+          <div class="mock-sub">Next-gen school management</div>
+          <div class="mock-btn">Get Started →</div>
+        </div>
+        <div class="mock-stats">
+          <div class="mock-stat"><div class="num">500+</div><div class="label">Schools</div></div>
+          <div class="mock-stat"><div class="num">15K</div><div class="label">Students</div></div>
+          <div class="mock-stat"><div class="num">99%</div><div class="label">Satisfied</div></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3>7. Glassmorphism</h3>
+        <p>Frosted glass panels over colorful gradients. Modern and eye-catching.</p>
+        <div class="card-tags">
+          <span>Glass</span><span>Modern</span><span>Colorful</span>
+        </div>
+      </div>
+      <a href="/" class="card-action">Preview Live →</a>
+    </article>
+
+    <!-- 8 ─ Neubrutalism -->
+    <article class="card">
+      <div class="card-preview s8">
+        <div class="mock-title">Replace paper —<br>Empower your school</div>
+        <div class="mock-sub">Bold design for bold schools</div>
+        <div class="mock-btn">Start Free →</div>
+        <div class="mock-cards">
+          <div class="mock-c"><div class="bar"></div></div>
+          <div class="mock-c"><div class="bar"></div></div>
+          <div class="mock-c"><div class="bar"></div></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3>8. Neubrutalism</h3>
+        <p>Thick borders, raw colors, no shadows. Bold and unapologetic.</p>
+        <div class="card-tags">
+          <span>Raw</span><span>Bold Borders</span><span>Yellow</span>
+        </div>
+      </div>
+      <a href="/" class="card-action">Preview Live →</a>
+    </article>
+
+    <!-- 9 ─ Clean & Focused -->
+    <article class="card">
+      <div class="card-preview s9">
+        <div class="mock-title">Replace paper —<br>Empower your school</div>
+        <div class="mock-sub">Everything you need, nothing you don't</div>
+        <div class="mock-input">
+          <div class="field"></div>
+          <div class="btn">Start →</div>
+        </div>
+        <div class="mock-features">
+          <div class="mock-feat"><div class="icon"></div><span></span><span></span></div>
+          <div class="mock-feat"><div class="icon"></div><span></span><span></span></div>
+          <div class="mock-feat"><div class="icon"></div><span></span><span></span></div>
+          <div class="mock-feat"><div class="icon"></div><span></span><span></span></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3>9. Clean & Focused</h3>
+        <p>White background, focused content. CRO-optimized with email capture.</p>
+        <div class="card-tags">
+          <span>White</span><span>Focused</span><span>CRO</span>
+        </div>
+      </div>
+      <a href="/" class="card-action">Preview Live →</a>
+    </article>
+
+    <!-- 10 ─ Vibrant Energy -->
+    <article class="card">
+      <div class="card-preview s10">
+        <div class="mock-shape1"></div>
+        <div class="mock-shape2"></div>
+        <div class="mock-title">Replace paper —<br>Empower your school</div>
+        <div class="mock-sub">The future of school management starts here</div>
+        <div class="mock-cta">Start Free Trial <span class="mock-arrow">→</span></div>
+      </div>
+      <div class="card-body">
+        <h3>10. Vibrant Energy</h3>
+        <p>Warm orange-to-red gradients. Energetic, youthful, and inviting.</p>
+        <div class="card-tags">
+          <span>Warm Gradient</span><span>Energetic</span><span>Youthful</span>
+        </div>
+      </div>
+      <a href="/" class="card-action">Preview Live →</a>
+    </article>
+
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>EduWave © 2026 &mdash; <a href="/">Back to site</a></p>
+  </footer>
+
+</body>
+</html>
