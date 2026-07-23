@@ -11,17 +11,21 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          orange: "#2A4DFF",
-          navy: "#0A0A0A",
-          cream: "#FAFAFA",
-          tan: "#2A4DFF",
-          ink: "#0A0A0A",
-          paper: "#FAFAFA"
+          orange: "#8b5cf6",
+          navy: "#09090b",
+          cream: "#09090b",
+          tan: "#06b6d4",
+          ink: "#fafafa",
+          paper: "#fafafa",
+          accent: "#8b5cf6",
+          cyan: "#06b6d4",
+          surface: "#18181b",
+          muted: "#27272a"
         }
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        display: ["var(--font-space-grotesk)", "var(--font-inter)", "sans-serif"]
+        display: ["var(--font-sora)", "var(--font-inter)", "sans-serif"]
       },
       animation: {
         "fade-in": "fadeIn 0.6s ease-out forwards",
