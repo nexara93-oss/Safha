@@ -51,7 +51,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="EduWave" />
         <script nonce={nonce}
           dangerouslySetInnerHTML={{
-            __html: `try{var l=localStorage.getItem('locale');if(l&&['en','fr','ar'].indexOf(l)>-1){document.documentElement.setAttribute('lang',l);document.documentElement.setAttribute('dir',l==='ar'?'rtl':'ltr')}}catch(e){}`
+            __html: `try{var l=localStorage.getItem('locale');if(l&&['en','fr','ar'].indexOf(l)>-1){document.documentElement.setAttribute('lang',l);document.documentElement.setAttribute('dir',l==='ar'?'rtl':'ltr')}try{localStorage.removeItem('theme');document.documentElement.classList.remove('dark')}catch(e){}}catch(e){}`
           }}
         />
       </head>
