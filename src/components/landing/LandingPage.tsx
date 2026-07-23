@@ -105,18 +105,18 @@ export function LandingPage() {
 
         <div className="relative mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-32 lg:px-8">
           <Reveal>
-            <div className="mx-auto max-w-4xl text-center">
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-semibold text-white/80 backdrop-blur">
+            <div className="mx-auto max-w-3xl text-center">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-semibold text-white backdrop-blur">
                 <Sparkles className="h-3.5 w-3.5 text-brand-orange" />
                 {t("hero.badge")}
               </span>
-              <h1 className="mt-8 font-display text-[2.75rem] font-extrabold leading-[1.05] tracking-[-0.03em] text-white sm:text-6xl md:text-7xl lg:text-[5.25rem]">
+              <h1 className="mt-6 font-display text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
                 {t("hero.title")}
               </h1>
-              <p className="mx-auto mt-7 max-w-2xl text-base leading-relaxed text-white/60 sm:text-lg">
+              <p className="mx-auto mt-6 max-w-2xl text-base text-white/70 sm:text-lg">
                 {t("hero.subtitle")}
               </p>
-              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <Link href="/auth/register" className="btn-primary w-full text-base sm:w-auto">
                   {t("hero.cta")}
                 </Link>
@@ -127,7 +127,7 @@ export function LandingPage() {
                   {t("hero.secondary")}
                 </a>
               </div>
-              <p className="mt-5 text-xs text-white/40 sm:text-sm">{t("hero.note")}</p>
+              <p className="mt-4 text-xs text-white/50 sm:text-sm">{t("hero.note")}</p>
             </div>
           </Reveal>
 

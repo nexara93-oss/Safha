@@ -130,11 +130,3 @@ body {
   outline-offset: 2px;
   border-radius: 4px;
 }
-
-/* Navbar: white text over hero (when not scrolled), normal text when scrolled */
-header[data-scrolled="false"] [data-nav-over-hero] {
-  color: #ffffff !important;
-}
-header[data-scrolled="false"] [data-nav-over-hero]:hover {
-  color: #2A4DFF !important;
-}

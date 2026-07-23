@@ -21,7 +21,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        display: ["var(--font-space-grotesk)", "var(--font-inter)", "sans-serif"]
+        display: ["var(--font-plus-jakarta)", "var(--font-inter)", "sans-serif"]
       },
       animation: {
         "fade-in": "fadeIn 0.6s ease-out forwards",
