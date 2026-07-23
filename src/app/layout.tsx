@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Inter, Sora } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "@/components/providers/AppProviders";
 
@@ -12,9 +12,9 @@ const inter = Inter({
   display: "swap"
 });
 
-const sora = Sora({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-sora",
+  variable: "--font-space-grotesk",
   display: "swap"
 });
 
@@ -43,7 +43,7 @@ export default function RootLayout({
   const h = headers();
   const nonce = h.get("x-nonce") || "";
   return (
-    <html lang="fr" suppressHydrationWarning className={`${inter.variable} ${sora.variable}`}>
+    <html lang="fr" suppressHydrationWarning className={`${inter.variable} ${spaceGrotesk.variable}`}>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#1e293b" />

@@ -9,10 +9,10 @@
 }
 
 :root {
-  --brand-orange: #8b5cf6;
-  --brand-navy: #09090b;
-  --brand-cream: #09090b;
-  --brand-tan: #06b6d4;
+  --brand-orange: #2A4DFF;
+  --brand-navy: #0A0A0A;
+  --brand-cream: #FAFAFA;
+  --brand-tan: #2A4DFF;
 }
 
 * {
@@ -25,16 +25,16 @@ html {
 
 body {
   font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
-  background-color: #09090b;
-  color: #fafafa;
+  background-color: #FAFAFA;
+  color: #0A0A0A;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .dark body {
-  background-color: #09090b;
-  color: #fafafa;
+  background-color: #0A0A0A;
+  color: #FAFAFA;
 }
 
 /* RTL Support */
@@ -56,14 +56,14 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #09090b;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #8b5cf6;
+  background: #FD6400;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #7c3aed;
+  background: #d95400;
 }
 
 /* Hide scrollbar utility */
@@ -72,27 +72,22 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus:outline-none;
-    background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.35);
-  }
-  .btn-primary:hover {
-    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.5);
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-orange px-6 py-3 font-semibold text-white shadow-lg shadow-brand-orange/20 transition-all duration-200 hover:bg-brand-orange/90 hover:shadow-xl hover:shadow-brand-orange/30 hover:-translate-y-0.5 active:translate-y-0 active:shadow-md focus:outline-none focus:ring-4 focus:ring-brand-orange/30;
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3 font-semibold text-white backdrop-blur transition-all duration-200 hover:bg-white/10 hover:-translate-y-0.5 active:translate-y-0;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-tan px-6 py-3 font-semibold text-white shadow-lg shadow-brand-tan/20 transition-all duration-200 hover:bg-brand-tan/90 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0;
   }
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 px-6 py-3 font-semibold text-white transition-all duration-200 hover:border-white/30 hover:bg-white/5 active:scale-[0.98];
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border-2 border-brand-navy/15 px-6 py-3 font-semibold text-brand-navy transition-all duration-200 hover:border-brand-navy/30 hover:bg-brand-navy/5 active:scale-[0.98] dark:border-white/15 dark:text-white dark:hover:bg-white/5;
   }
   .input-field {
-    @apply w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/40 transition-all duration-200 focus:border-brand-orange focus:outline-none focus:ring-4 focus:ring-brand-orange/10;
+    @apply w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-brand-navy placeholder-gray-400 transition-all duration-200 focus:border-brand-orange focus:outline-none focus:ring-4 focus:ring-brand-orange/10 dark:border-white/15 dark:bg-white/[0.07] dark:text-white dark:placeholder-white/40 dark:focus:border-brand-orange dark:focus:ring-brand-orange/20;
   }
 
   /* Select & option styling for dark mode (browser default is inconsistent) */
   select.input-field,
   select.input-field option {
-    color-scheme: dark;
+    color-scheme: light;
   }
   .dark select.input-field,
   .dark select.input-field option {
@@ -109,11 +104,11 @@ body {
     appearance: none;
   }
   .dark select.input-field option {
-    background-color: #09090b;
-    color: #fafafa;
+    background-color: #0A0A0A;
+    color: #FAFAFA;
   }
   .card {
-    @apply rounded-2xl border border-white/5 bg-white/5 p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-white/10;
+    @apply rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md dark:border-white/5 dark:bg-white/5;
   }
   .badge {
     @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold;
@@ -131,7 +126,7 @@ body {
 
 /* Focus visible for accessibility */
 *:focus-visible {
-  outline: 2px solid #8b5cf6;
+  outline: 2px solid #FD6400;
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -141,13 +136,5 @@ header[data-scrolled="false"] [data-nav-over-hero] {
   color: #ffffff !important;
 }
 header[data-scrolled="false"] [data-nav-over-hero]:hover {
-  color: #8b5cf6 !important;
-}
-
-/* Gradient text utility */
-.gradient-text {
-  background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #2A4DFF !important;
 }
