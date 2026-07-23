@@ -76,7 +76,7 @@ export default function DirectorStudentsPage() {
             {t("dashboard.students")}
           </h1>
           <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">
-            All students across all teachers.
+            {t("director.students.subtitle")}
           </p>
         </div>
 
@@ -96,7 +96,7 @@ export default function DirectorStudentsPage() {
         ) : filtered.length === 0 ? (
           <div className="card flex flex-col items-center gap-2 py-12 text-center">
             <GraduationCap className="h-10 w-10 text-gray-300" />
-            <p className="text-sm text-gray-500">No students yet.</p>
+            <p className="text-sm text-gray-500">{t("director.students.noStudents")}</p>
           </div>
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -112,7 +112,7 @@ export default function DirectorStudentsPage() {
                       <div className="min-w-0">
                         <div className="truncate font-semibold text-brand-ink dark:text-brand-paper">{s.user.fullName}</div>
                         <div className="truncate text-xs text-gray-500">
-                          {s.teacher?.user.fullName || "Unassigned"} {s.section ? `• ${s.section.name}` : ""}
+                          {s.teacher?.user.fullName || t("director.students.unassigned")} {s.section ? `• ${s.section.name}` : ""}
                         </div>
                       </div>
                     </div>
@@ -124,22 +124,22 @@ export default function DirectorStudentsPage() {
                   </div>
                   <div className="mt-3 flex flex-wrap gap-2 text-xs text-gray-500">
                     <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 dark:bg-white/5">
-                      <BookOpen className="h-3 w-3" /> {s.grades.length} grades
+                      <BookOpen className="h-3 w-3" /> {s.grades.length} {t("director.students.grades")}
                     </span>
                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
-                      <CalendarCheck className="h-3 w-3" /> {presentCount(s)} present
+                      <CalendarCheck className="h-3 w-3" /> {presentCount(s)} {t("director.students.present")}
                     </span>
                     <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-red-700 dark:bg-red-500/10 dark:text-red-400">
-                      ✕ {absentCount(s)} absent
+                      ✕ {absentCount(s)} {t("director.students.absent")}
                     </span>
                     {s.behavior.length > 0 && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400">
-                        <Heart className="h-3 w-3" /> {s.behavior.length} notes
+                        <Heart className="h-3 w-3" /> {s.behavior.length} {t("director.students.notes")}
                       </span>
                     )}
                   </div>
                   <div className="mt-2 flex items-center gap-2 rounded-xl bg-gray-50 px-3 py-2 dark:bg-white/5">
-                    <span className="text-xs text-gray-500">Password:</span>
+                    <span className="text-xs text-gray-500">{t("director.students.password")}</span>
                     <code className="flex-1 font-mono text-xs text-brand-ink dark:text-brand-paper">
                       {visiblePasswords.has(s.id) ? getDefaultPassword(s) : "•".repeat(10)}
                     </code>
@@ -155,7 +155,7 @@ export default function DirectorStudentsPage() {
                     className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-gray-200 bg-white py-2 text-xs font-semibold text-brand-ink transition-colors hover:border-brand-orange hover:text-brand-orange dark:border-white/10 dark:bg-white/5 dark:text-white"
                   >
                     <Eye className="h-3.5 w-3.5" />
-                    View details
+                    {t("director.students.viewDetails")}
                   </button>
                 </div>
               );
@@ -164,16 +164,16 @@ export default function DirectorStudentsPage() {
         )}
       </div>
 
-      <Modal open={!!view} onClose={() => setView(null)} title={view?.user.fullName || "Student"} size="lg">
+      <Modal open={!!view} onClose={() => setView(null)} title={view?.user.fullName || t("director.students.student")} size="lg">
         {view && (
           <div className="space-y-5">
             <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
-              <Stat label="Avg" value={avg(view)?.toFixed(2) ?? "—"} />
-              <Stat label="Present" value={String(presentCount(view))} />
-              <Stat label="Absent" value={String(absentCount(view))} />
-              <Stat label="Notes" value={String(view.behavior.length)} />
+              <Stat label={t("director.students.avg")} value={avg(view)?.toFixed(2) ?? "—"} />
+              <Stat label={t("director.students.presentLabel")} value={String(presentCount(view))} />
+              <Stat label={t("director.students.absentLabel")} value={String(absentCount(view))} />
+              <Stat label={t("director.students.notesLabel")} value={String(view.behavior.length)} />
             </div>
-            <Section title="Grades">
+            <Section title={t("director.students.gradesTitle")}>
               {view.grades.length === 0 ? (
                 <Empty />
               ) : (
@@ -189,7 +189,7 @@ export default function DirectorStudentsPage() {
                 </ul>
               )}
             </Section>
-            <Section title="Behavior notes">
+            <Section title={t("director.students.behaviorTitle")}>
               {view.behavior.length === 0 ? (
                 <Empty />
               ) : (
@@ -232,5 +232,6 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 function Empty() {
-  return <p className="text-sm text-gray-500">Nothing here yet.</p>;
+  const { t } = useLanguage();
+  return <p className="text-sm text-gray-500">{t("director.students.nothingHere")}</p>;
 }

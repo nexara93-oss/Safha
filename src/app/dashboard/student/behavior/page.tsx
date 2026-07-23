@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { api } from "@/lib/api-client";
 import { Spinner } from "@/components/ui/Spinner";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Heart, Smile, Frown, Meh } from "lucide-react";
 
 type Note = {
@@ -15,6 +16,7 @@ type Note = {
 };
 
 export default function StudentBehaviorPage() {
+  const { t } = useLanguage();
   const [recs, setRecs] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +35,7 @@ export default function StudentBehaviorPage() {
           {error ? (
             <div className="text-center">
               <p className="mb-3 text-sm text-red-500">{error}</p>
-              <button onClick={() => window.location.reload()} className="btn-primary text-sm">Retry</button>
+              <button onClick={() => window.location.reload()} className="btn-primary text-sm">{t("student.behavior.retry")}</button>
             </div>
           ) : (
             <Spinner className="h-8 w-8 text-brand-orange" />
@@ -50,15 +52,15 @@ export default function StudentBehaviorPage() {
       <div className="space-y-6">
         <div>
           <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
-            Behavior notes
+            {t("student.behavior.title")}
           </h1>
-          <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">Notes from your teachers.</p>
+          <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("student.behavior.subtitle")}</p>
         </div>
 
         {recs.length === 0 ? (
           <div className="card flex flex-col items-center gap-2 py-12 text-center">
             <Heart className="h-10 w-10 text-gray-300" />
-            <p className="text-sm text-gray-500">No behavior notes yet. Keep up the good work!</p>
+            <p className="text-sm text-gray-500">{t("student.behavior.noNotes")}</p>
           </div>
         ) : (
           <div className="card space-y-2 p-3 sm:p-4">

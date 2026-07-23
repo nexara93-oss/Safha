@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { api } from "@/lib/api-client";
 import { Spinner } from "@/components/ui/Spinner";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { ChevronDown, ChevronUp, ExternalLink, BookOpen } from "lucide-react";
 
 type Lesson = {
@@ -19,6 +20,7 @@ type Lesson = {
 };
 
 export default function StudentLessonsPage() {
+  const { t } = useLanguage();
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +49,7 @@ export default function StudentLessonsPage() {
         <div className="flex h-64 items-center justify-center">
           <div className="text-center">
             <p className="mb-3 text-sm text-red-500">{error}</p>
-            <button onClick={() => window.location.reload()} className="btn-primary text-sm">Retry</button>
+              <button onClick={() => window.location.reload()} className="btn-primary text-sm">{t("student.lessons.retry")}</button>
           </div>
         </div>
       </DashboardShell>
@@ -59,15 +61,15 @@ export default function StudentLessonsPage() {
       <div className="space-y-6">
         <div>
           <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
-            Lessons
+            {t("student.lessons.title")}
           </h1>
-          <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">Browse lessons for your section.</p>
+          <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("student.lessons.subtitle")}</p>
         </div>
 
         {lessons.length === 0 ? (
           <div className="card flex flex-col items-center gap-2 py-12 text-center">
             <BookOpen className="h-10 w-10 text-gray-300" />
-            <p className="text-sm text-gray-500">No lessons available yet.</p>
+            <p className="text-sm text-gray-500">{t("student.lessons.noLessons")}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -91,17 +93,17 @@ export default function StudentLessonsPage() {
                 {expandedId === lesson.id && (
                   <div className="mt-3 border-t border-gray-100 pt-3 dark:border-white/5">
                     <div className="prose prose-sm max-w-none text-gray-700 dark:text-white/80 whitespace-pre-wrap">
-                      {lesson.content || "No content."}
+                      {lesson.content || t("student.lessons.noContent")}
                     </div>
                     <div className="mt-3 flex flex-wrap gap-3">
                       {lesson.fileUrl && (
                         <a href={lesson.fileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-brand-orange hover:underline">
-                          <ExternalLink className="h-3 w-3" /> File
+                          <ExternalLink className="h-3 w-3" /> {t("student.lessons.file")}
                         </a>
                       )}
                       {lesson.videoUrl && (
                         <a href={lesson.videoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-brand-orange hover:underline">
-                          <ExternalLink className="h-3 w-3" /> Video
+                          <ExternalLink className="h-3 w-3" /> {t("student.lessons.video")}
                         </a>
                       )}
                     </div>

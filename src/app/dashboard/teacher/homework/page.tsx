@@ -64,7 +64,7 @@ export default function TeacherHomeworkPage() {
     const url = sectionFilter ? `/api/homework?sectionId=${sectionFilter}` : "/api/homework";
     api<{ homeworks: Homework[] }>(url)
       .then((d) => setHomeworks(d.homeworks))
-      .catch((e: unknown) => error(e instanceof Error ? e.message : "Failed"))
+      .catch((e: unknown) => error(e instanceof Error ? e.message : t("common.failed")))
       .finally(() => setLoading(false));
   };
 
@@ -87,7 +87,7 @@ export default function TeacherHomeworkPage() {
       });
       setGradeValues((p) => ({ ...p, ...vals }));
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     } finally {
       setLoadingSubs((p) => ({ ...p, [hwId]: false }));
     }
@@ -124,23 +124,23 @@ export default function TeacherHomeworkPage() {
       setFormDesc("");
       setFormDueDate("");
       setFormFileUrl("");
-      success("Homework created");
+      success(t("teacher.homework.homeworkCreated"));
       loadHomeworks();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     } finally {
       setSubmitting(false);
     }
   };
 
   const onDelete = async (hw: Homework) => {
-    if (!confirm(`Delete "${hw.title}"?`)) return;
+    if (!confirm(t("teacher.homework.deleteConfirm", { title: hw.title }))) return;
     try {
       await api(`/api/homework/${hw.id}`, { method: "DELETE" });
-      success("Deleted");
+      success(t("teacher.homework.deleted"));
       loadHomeworks();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     }
   };
 
@@ -156,10 +156,10 @@ export default function TeacherHomeworkPage() {
           feedback: vals.feedback.trim()
         }
       });
-      success("Graded");
+      success(t("teacher.homework.graded"));
       if (expandedId) loadSubmissions(expandedId);
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     } finally {
       setGradingSub((p) => ({ ...p, [submissionId]: false }));
     }
@@ -177,10 +177,10 @@ export default function TeacherHomeworkPage() {
             <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
               {t("dashboard.homework")}
             </h1>
-            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">Create and manage homework assignments.</p>
+            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("teacher.homework.subtitle")}</p>
           </div>
           <button onClick={() => setAddOpen(true)} className="btn-primary">
-            <Plus className="h-4 w-4" /> Add Homework
+            <Plus className="h-4 w-4" /> {t("teacher.homework.addHomework")}
           </button>
         </div>
 
@@ -192,14 +192,14 @@ export default function TeacherHomeworkPage() {
           <>
             <div className="card">
               <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-sm font-bold text-brand-ink dark:text-brand-paper">Assignments</h2>
+                <h2 className="text-sm font-bold text-brand-ink dark:text-brand-paper">{t("teacher.homework.assignments")}</h2>
                 {sections.length > 0 && (
                   <select
                     value={sectionFilter}
                     onChange={(e) => setSectionFilter(e.target.value)}
                     className="input-field !py-1.5 !text-xs"
                   >
-                    <option value="">All sections</option>
+                    <option value="">{t("common.allSections")}</option>
                     {sections.map((s) => (
                       <option key={s.id} value={s.id}>{s.name}</option>
                     ))}
@@ -210,10 +210,10 @@ export default function TeacherHomeworkPage() {
               {homeworks.length === 0 ? (
                 <div className="flex flex-col items-center gap-2 py-10 text-center">
                   <FileText className="h-10 w-10 text-gray-300" />
-                  <p className="text-sm text-gray-500">No homework yet. Click "Add Homework" to create one.</p>
+                  <p className="text-sm text-gray-500">{t("teacher.homework.noHomework")}</p>
                 </div>
               ) : filtered.length === 0 ? (
-                <p className="text-sm text-gray-500">No homework in this section.</p>
+                <p className="text-sm text-gray-500">{t("teacher.homework.noHomeworkSection")}</p>
               ) : (
                 <div className="space-y-2">
                   {filtered.map((hw) => (
@@ -229,16 +229,16 @@ export default function TeacherHomeworkPage() {
                           </div>
                           <div className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-gray-500">
                             <span>{hw.section.name}</span>
-                            <span>Due: {new Date(hw.dueDate).toLocaleDateString()}</span>
-                            {isOverdue(hw.dueDate) && <span className="text-red-500 font-semibold">Overdue</span>}
-                            {submissions[hw.id] && <span>{submissions[hw.id].length} submission(s)</span>}
+                            <span>{t("teacher.homework.due")}: {new Date(hw.dueDate).toLocaleDateString()}</span>
+                            {isOverdue(hw.dueDate) && <span className="text-red-500 font-semibold">{t("teacher.homework.overdue")}</span>}
+                            {submissions[hw.id] && <span>{t("teacher.homework.submissionsCount", { count: submissions[hw.id].length })}</span>}
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
                           <button
                             onClick={(e) => { e.stopPropagation(); onDelete(hw); }}
                             className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10"
-                            title="Delete"
+                            title={t("common.delete")}
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -253,7 +253,7 @@ export default function TeacherHomeworkPage() {
                           )}
                           {hw.fileUrl && (
                             <a href={hw.fileUrl} target="_blank" rel="noopener noreferrer" className="mb-3 inline-flex items-center gap-1 text-sm text-brand-orange hover:underline">
-                              <FileText className="h-3 w-3" /> Attached file
+                              <FileText className="h-3 w-3" /> {t("teacher.homework.attachedFile")}
                             </a>
                           )}
                           {loadingSubs[hw.id] ? (
@@ -261,7 +261,7 @@ export default function TeacherHomeworkPage() {
                               <Spinner className="h-5 w-5 text-brand-orange" />
                             </div>
                           ) : submissions[hw.id]?.length === 0 ? (
-                            <p className="py-3 text-center text-sm text-gray-500">No submissions yet.</p>
+                            <p className="py-3 text-center text-sm text-gray-500">{t("teacher.homework.noSubmissions")}</p>
                           ) : submissions[hw.id] ? (
                             <div className="space-y-2">
                               {submissions[hw.id].map((sub) => (
@@ -269,7 +269,7 @@ export default function TeacherHomeworkPage() {
                                   <div className="mb-2 flex items-center justify-between">
                                     <div>
                                       <span className="text-sm font-semibold text-brand-ink dark:text-brand-paper">{sub.student.user.fullName}</span>
-                                      <span className="ml-2 text-xs text-gray-500">Submitted {new Date(sub.submittedAt).toLocaleDateString()}</span>
+                                       <span className="ml-2 text-xs text-gray-500">{t("teacher.homework.submitted")} {new Date(sub.submittedAt).toLocaleDateString()}</span>
                                     </div>
                                     {sub.score !== null && (
                                       <span className="text-sm font-bold text-green-600">
@@ -280,28 +280,28 @@ export default function TeacherHomeworkPage() {
                                   {sub.content && <p className="mb-2 text-xs text-gray-600 dark:text-white/70">{sub.content}</p>}
                                   {sub.fileUrl && (
                                     <a href={sub.fileUrl} target="_blank" rel="noopener noreferrer" className="mb-2 inline-flex items-center gap-1 text-xs text-brand-orange hover:underline">
-                                      <FileText className="h-3 w-3" /> Attachment
+                                      <FileText className="h-3 w-3" /> {t("teacher.homework.attachment")}
                                     </a>
                                   )}
                                   <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-end">
                                     <div className="flex-1">
-                                      <label className="mb-0.5 block text-[10px] font-semibold uppercase tracking-wider text-gray-500">Score</label>
+                                      <label className="mb-0.5 block text-[10px] font-semibold uppercase tracking-wider text-gray-500">{t("common.score")}</label>
                                       <input
                                         type="number" min="0" step="0.25"
                                         value={gradeValues[sub.id]?.score ?? ""}
                                         onChange={(e) => setGradeValues((p) => ({ ...p, [sub.id]: { ...p[sub.id], score: e.target.value, feedback: p[sub.id]?.feedback || "" } }))}
                                         className="input-field !py-1 !text-xs !w-20"
-                                        placeholder="Score"
+                                        placeholder={t("common.score")}
                                       />
                                     </div>
                                     <div className="flex-[2]">
-                                      <label className="mb-0.5 block text-[10px] font-semibold uppercase tracking-wider text-gray-500">Feedback</label>
+                                      <label className="mb-0.5 block text-[10px] font-semibold uppercase tracking-wider text-gray-500">{t("common.feedback")}</label>
                                       <textarea
                                         value={gradeValues[sub.id]?.feedback ?? ""}
                                         onChange={(e) => setGradeValues((p) => ({ ...p, [sub.id]: { ...p[sub.id], score: p[sub.id]?.score || "", feedback: e.target.value } }))}
                                         className="input-field !py-1 !text-xs"
                                         rows={1}
-                                        placeholder="Feedback..."
+                                        placeholder={t("teacher.homework.feedbackPlaceholder")}
                                       />
                                     </div>
                                     <button
@@ -310,7 +310,7 @@ export default function TeacherHomeworkPage() {
                                       className="btn-primary !py-1.5 !text-xs"
                                     >
                                       {gradingSub[sub.id] ? <Spinner className="h-3 w-3" /> : <Save className="h-3 w-3" />}
-                                      {sub.score !== null ? "Update" : "Grade"}
+                                      {sub.score !== null ? t("teacher.homework.update") : t("teacher.homework.grade")}
                                     </button>
                                   </div>
                                 </div>
@@ -332,12 +332,12 @@ export default function TeacherHomeworkPage() {
         )}
       </div>
 
-      <Modal open={addOpen} onClose={() => setAddOpen(false)} title="New Homework" size="lg">
+      <Modal open={addOpen} onClose={() => setAddOpen(false)} title={t("teacher.homework.newHomework")} size="lg">
         <form onSubmit={onAdd} className="space-y-3">
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Section</label>
+            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.section")}</label>
             <select required value={formSection} onChange={(e) => setFormSection(e.target.value)} className="input-field">
-              <option value="">Choose…</option>
+              <option value="">{t("common.choose")}</option>
               {sections.map((s) => (
                 <option key={s.id} value={s.id}>{s.name}</option>
               ))}
@@ -345,30 +345,30 @@ export default function TeacherHomeworkPage() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Subject</label>
-              <input required value={formSubject} onChange={(e) => setFormSubject(e.target.value)} className="input-field" placeholder="Mathematics" />
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.subject")}</label>
+              <input required value={formSubject} onChange={(e) => setFormSubject(e.target.value)} className="input-field" placeholder={t("teacher.grades.subjectPlaceholder")} />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Due date</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.dueDate")}</label>
               <input required type="date" value={formDueDate} onChange={(e) => setFormDueDate(e.target.value)} className="input-field" />
             </div>
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Title</label>
-            <input required value={formTitle} onChange={(e) => setFormTitle(e.target.value)} className="input-field" placeholder="Chapter 5 Exercises" />
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.title")}</label>
+              <input required value={formTitle} onChange={(e) => setFormTitle(e.target.value)} className="input-field" placeholder={t("teacher.homework.titlePlaceholder")} />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Description</label>
-            <textarea value={formDesc} onChange={(e) => setFormDesc(e.target.value)} className="input-field" rows={3} placeholder="Assignment details..." />
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.description")}</label>
+              <textarea value={formDesc} onChange={(e) => setFormDesc(e.target.value)} className="input-field" rows={3} placeholder={t("teacher.homework.descriptionPlaceholder")} />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">File URL (optional)</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.homework.fileUrlOptional")}</label>
             <input value={formFileUrl} onChange={(e) => setFormFileUrl(e.target.value)} className="input-field" placeholder="https://..." />
           </div>
           <div className="flex justify-end gap-2 pt-1">
-            <button type="button" onClick={() => setAddOpen(false)} className="btn-ghost">Cancel</button>
+            <button type="button" onClick={() => setAddOpen(false)} className="btn-ghost">{t("common.cancel")}</button>
             <button type="submit" disabled={submitting} className="btn-primary">
-              {submitting ? <Spinner /> : "Create"}
+              {submitting ? <Spinner /> : t("teacher.homework.create")}
             </button>
           </div>
         </form>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { api } from "@/lib/api-client";
 import { Spinner } from "@/components/ui/Spinner";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Clock } from "lucide-react";
 
 type Slot = {
@@ -19,6 +20,7 @@ type Slot = {
 const DAYS = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
 
 export default function TeacherTimetablePage() {
+  const { t } = useLanguage();
   const [slots, setSlots] = useState<Slot[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -43,15 +45,15 @@ export default function TeacherTimetablePage() {
       <div className="space-y-6">
         <div>
           <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
-            My timetable
+            {t("teacher.timetable.title")}
           </h1>
-          <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">Your weekly class schedule.</p>
+          <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("teacher.timetable.subtitle")}</p>
         </div>
 
         {slots.length === 0 ? (
           <div className="card flex flex-col items-center gap-2 py-12 text-center">
             <Clock className="h-10 w-10 text-gray-300" />
-            <p className="text-sm text-gray-500">No timetable slots assigned yet.</p>
+            <p className="text-sm text-gray-500">{t("teacher.timetable.noSlots")}</p>
           </div>
         ) : (
           <div className="overflow-x-auto">

@@ -92,10 +92,10 @@ export default function TeacherGradesPage() {
       setMaxScore("20");
       setSectionFilter("");
       setOpen(false);
-      success("Grade added");
+      success(t("teacher.grades.gradeAdded"));
       load();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     } finally {
       setSubmitting(false);
     }
@@ -116,7 +116,7 @@ export default function TeacherGradesPage() {
             examCount: Number(periodCount)
           }
         });
-        success("Period updated");
+        success(t("teacher.grades.periodUpdated"));
       } else {
         await api("/api/exam-periods", {
           method: "POST",
@@ -128,25 +128,25 @@ export default function TeacherGradesPage() {
             examCount: Number(periodCount)
           }
         });
-        success("Period created");
+        success(t("teacher.grades.periodCreated"));
       }
       setPeriodOpen(false);
       setEditingPeriod(null);
       setPeriodName("");
       load();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     }
   };
 
   const onDeletePeriod = async (p: Period) => {
-    if (!confirm(`Delete period "${p.name}"?`)) return;
+    if (!confirm(t("teacher.grades.deletePeriodConfirm", { name: p.name }))) return;
     try {
       await api(`/api/exam-periods/${p.id}`, { method: "DELETE" });
-      success("Period deleted");
+      success(t("teacher.grades.periodDeleted"));
       load();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     }
   };
 
@@ -175,14 +175,14 @@ export default function TeacherGradesPage() {
             <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
               {t("dashboard.grades")}
             </h1>
-            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">Add grades and configure exam periods.</p>
+            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("teacher.grades.subtitle")}</p>
           </div>
           <div className="flex gap-2">
             <button onClick={() => { setEditingPeriod(null); setPeriodName(""); setPeriodOpen(true); }} className="btn-ghost">
-              <Settings className="h-4 w-4" /> Periods
+              <Settings className="h-4 w-4" /> {t("teacher.grades.periods")}
             </button>
             <button onClick={() => setOpen(true)} className="btn-primary" disabled={periods.length === 0}>
-              <Plus className="h-4 w-4" /> {t("common.add")} grade
+              <Plus className="h-4 w-4" /> {t("teacher.grades.addGrade")}
             </button>
           </div>
         </div>
@@ -194,15 +194,15 @@ export default function TeacherGradesPage() {
         ) : (
           <>
             <div className="card">
-              <h2 className="mb-3 text-sm font-bold text-brand-ink dark:text-brand-paper">Exam periods</h2>
+              <h2 className="mb-3 text-sm font-bold text-brand-ink dark:text-brand-paper">{t("teacher.grades.examPeriods")}</h2>
               {periods.length === 0 ? (
-                <p className="text-sm text-gray-500">No periods yet. Click "Periods" to add one.</p>
+                <p className="text-sm text-gray-500">{t("teacher.grades.noPeriods")}</p>
               ) : (
                 <div className="flex flex-wrap gap-2">
                   {periods.map((p) => (
                     <div key={p.id} className="flex items-center gap-1 rounded-full border border-gray-200 bg-white py-1.5 pe-1 ps-3 text-xs font-semibold dark:border-white/10 dark:bg-white/5">
                       <span>{p.name}</span>
-                      <span className="text-gray-400">×{p.coefficient} · {p.examCount} exams</span>
+                      <span className="text-gray-400">{t("teacher.grades.periodInfo", { coefficient: p.coefficient, examCount: p.examCount })}</span>
                       <button onClick={() => openEditPeriod(p)} className="ms-1 rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-brand-orange dark:hover:bg-white/10">
                         <Settings className="h-3 w-3" />
                       </button>
@@ -217,14 +217,14 @@ export default function TeacherGradesPage() {
 
             <div className="card">
               <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-sm font-bold text-brand-ink dark:text-brand-paper">All grades</h2>
+                <h2 className="text-sm font-bold text-brand-ink dark:text-brand-paper">{t("teacher.grades.allGrades")}</h2>
                 {sections.length > 0 && (
                   <select
                     value={sectionFilter}
                     onChange={(e) => setSectionFilter(e.target.value)}
                     className="input-field !py-1.5 !text-xs"
                   >
-                    <option value="">All sections</option>
+                    <option value="">{t("common.allSections")}</option>
                     {sections.map((s) => (
                       <option key={s.id} value={s.id}>{s.name}</option>
                     ))}
@@ -232,18 +232,18 @@ export default function TeacherGradesPage() {
                 )}
               </div>
               {grades.length === 0 ? (
-                <p className="text-sm text-gray-500">No grades yet.</p>
+                <p className="text-sm text-gray-500">{t("teacher.grades.noGrades")}</p>
               ) : filteredGrades.length === 0 ? (
-                <p className="text-sm text-gray-500">No grades in this section.</p>
+                <p className="text-sm text-gray-500">{t("teacher.grades.noGradesSection")}</p>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead className="text-xs uppercase tracking-wider text-gray-500">
                       <tr>
-                        <th className="py-2 text-start">Student</th>
-                        <th className="py-2 text-start">Subject</th>
-                        <th className="py-2 text-start">Period</th>
-                        <th className="py-2 text-end">Score</th>
+                        <th className="py-2 text-start">{t("common.student")}</th>
+                        <th className="py-2 text-start">{t("common.subject")}</th>
+                        <th className="py-2 text-start">{t("teacher.grades.period")}</th>
+                        <th className="py-2 text-end">{t("common.score")}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -266,13 +266,13 @@ export default function TeacherGradesPage() {
         )}
       </div>
 
-      <Modal open={open} onClose={() => { setOpen(false); setSectionFilter(""); }} title="Add grade" size="md">
+      <Modal open={open} onClose={() => { setOpen(false); setSectionFilter(""); }} title={t("teacher.grades.addGradeTitle")} size="md">
         <form onSubmit={onAdd} className="space-y-3">
           {sections.length > 0 && (
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Section</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.section")}</label>
               <select value={sectionFilter} onChange={(e) => { setSectionFilter(e.target.value); setStudentId(""); }} className="input-field">
-                <option value="">All sections</option>
+                <option value="">{t("common.allSections")}</option>
                 {sections.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
@@ -280,34 +280,34 @@ export default function TeacherGradesPage() {
             </div>
           )}
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Student</label>
+            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.student")}</label>
             <select required value={studentId} onChange={(e) => setStudentId(e.target.value)} className="input-field">
-              <option value="">Choose…</option>
+              <option value="">{t("common.choose")}</option>
               {(sectionFilter ? students.filter((s) => s.sectionId === sectionFilter) : students).map((s) => (
                 <option key={s.id} value={s.id}>{s.user.fullName}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Period</label>
+            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.grades.period")}</label>
             <select required value={periodId} onChange={(e) => setPeriodId(e.target.value)} className="input-field">
-              <option value="">Choose…</option>
+              <option value="">{t("common.choose")}</option>
               {periods.map((p) => (
                 <option key={p.id} value={p.id}>{p.name} (×{p.coefficient})</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Subject</label>
-            <input required value={subject} onChange={(e) => setSubject(e.target.value)} className="input-field" placeholder="Mathematics" />
+            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.subject")}</label>
+            <input required value={subject} onChange={(e) => setSubject(e.target.value)} className="input-field" placeholder={t("teacher.grades.subjectPlaceholder")} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Score</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.score")}</label>
               <input required type="number" min="0" step="0.25" value={score} onChange={(e) => setScore(e.target.value)} className="input-field" placeholder="15" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Max</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.grades.max")}</label>
               <input required type="number" min="1" step="0.5" value={maxScore} onChange={(e) => setMaxScore(e.target.value)} className="input-field" />
             </div>
           </div>
@@ -320,29 +320,29 @@ export default function TeacherGradesPage() {
         </form>
       </Modal>
 
-      <Modal open={periodOpen} onClose={() => { setPeriodOpen(false); setEditingPeriod(null); }} title={editingPeriod ? "Edit period" : "New exam period"} size="md">
+      <Modal open={periodOpen} onClose={() => { setPeriodOpen(false); setEditingPeriod(null); }} title={editingPeriod ? t("teacher.grades.editPeriod") : t("teacher.grades.newExamPeriod")} size="md">
         <form onSubmit={savePeriod} className="space-y-3">
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Name</label>
-            <input required value={periodName} onChange={(e) => setPeriodName(e.target.value)} className="input-field" placeholder="Semester 1" />
+            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.name")}</label>
+            <input required value={periodName} onChange={(e) => setPeriodName(e.target.value)} className="input-field" placeholder={t("teacher.grades.namePlaceholder")} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Start</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.grades.start")}</label>
               <input required type="date" value={periodStart} onChange={(e) => setPeriodStart(e.target.value)} className="input-field" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">End</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.grades.end")}</label>
               <input required type="date" value={periodEnd} onChange={(e) => setPeriodEnd(e.target.value)} className="input-field" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Coefficient</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.grades.coefficient")}</label>
               <input required type="number" min="0.1" step="0.1" value={periodCoef} onChange={(e) => setPeriodCoef(e.target.value)} className="input-field" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Exam count</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.grades.examCount")}</label>
               <input required type="number" min="1" step="1" value={periodCount} onChange={(e) => setPeriodCount(e.target.value)} className="input-field" />
             </div>
           </div>
@@ -350,7 +350,7 @@ export default function TeacherGradesPage() {
             <button type="button" onClick={() => { setPeriodOpen(false); setEditingPeriod(null); }} className="btn-ghost">{t("common.cancel")}</button>
             <button type="submit" className="btn-primary">
               <Save className="h-4 w-4" />
-              {editingPeriod ? "Save" : "Create"}
+              {editingPeriod ? t("common.save") : t("teacher.grades.create")}
             </button>
           </div>
         </form>

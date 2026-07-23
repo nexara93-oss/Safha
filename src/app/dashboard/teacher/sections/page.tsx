@@ -39,23 +39,23 @@ export default function TeacherSectionsPage() {
       await api("/api/sections", { method: "POST", json: { name: name.trim() } });
       setName("");
       setOpen(false);
-      success("Section added");
+      success(t("teacher.sections.sectionAdded"));
       load();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     } finally {
       setSubmitting(false);
     }
   };
 
   const onDelete = async (id: string, name: string) => {
-    if (!confirm(`Delete section ${name}?`)) return;
+    if (!confirm(t("teacher.sections.deleteConfirm", { name }))) return;
     try {
       await api(`/api/sections/${id}`, { method: "DELETE" });
-      success("Section deleted");
+      success(t("teacher.sections.sectionDeleted"));
       load();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Delete failed");
+      error(e instanceof Error ? e.message : t("teacher.sections.deleteFailed"));
     }
   };
 
@@ -67,11 +67,11 @@ export default function TeacherSectionsPage() {
             <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
               {t("dashboard.sections")}
             </h1>
-            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">Manage your classes.</p>
+            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("teacher.sections.subtitle")}</p>
           </div>
           <button onClick={() => setOpen(true)} className="btn-primary">
             <Plus className="h-4 w-4" />
-            {t("common.add")} section
+            {t("common.add")} {t("teacher.sections.section")}
           </button>
         </div>
 
@@ -82,7 +82,7 @@ export default function TeacherSectionsPage() {
         ) : sections.length === 0 ? (
           <div className="card flex flex-col items-center gap-2 py-12 text-center">
             <BookOpen className="h-10 w-10 text-gray-300" />
-            <p className="text-sm text-gray-500">No sections yet.</p>
+            <p className="text-sm text-gray-500">{t("teacher.sections.noSections")}</p>
           </div>
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -90,12 +90,12 @@ export default function TeacherSectionsPage() {
               <div key={s.id} className="card flex items-center justify-between">
                 <div>
                   <div className="font-semibold text-brand-ink dark:text-brand-paper">{s.name}</div>
-                  <div className="text-xs text-gray-500">{s._count?.students ?? 0} students</div>
+                  <div className="text-xs text-gray-500">{t("teacher.sections.studentsCount", { count: s._count?.students ?? 0 })}</div>
                 </div>
                 <button
                   onClick={() => onDelete(s.id, s.name)}
                   className="rounded-lg p-2 text-red-500 transition-colors hover:bg-red-50 dark:hover:bg-red-500/10"
-                  aria-label="Delete"
+                  aria-label={t("common.delete")}
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -105,10 +105,10 @@ export default function TeacherSectionsPage() {
         )}
       </div>
 
-      <Modal open={open} onClose={() => setOpen(false)} title="Add section" size="sm">
+      <Modal open={open} onClose={() => setOpen(false)} title={t("teacher.sections.addSectionTitle")} size="sm">
         <form onSubmit={onAdd} className="space-y-4">
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Section name</label>
+            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.sections.sectionName")}</label>
             <input
               required
               autoFocus

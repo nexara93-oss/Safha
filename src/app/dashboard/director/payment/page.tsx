@@ -96,7 +96,7 @@ export default function DirectorPaymentPage() {
     if (!selectedPlan || !selectedMethod) return;
     if (selectedMethod === "visa") {
       if (!cardName.trim() || cardNumber.replace(/\s/g, "").length < 16 || cardExpiry.length < 7 || cardCvv.length < 3) {
-        error("Please fill in all card fields");
+        error(t("director.payment.fillAllFields"));
         return;
       }
     }
@@ -117,7 +117,7 @@ export default function DirectorPaymentPage() {
       success(selectedMethod === "visa" ? t("payment.success") : t("payment.successTransfer"));
       load();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Payment failed");
+      error(e instanceof Error ? e.message : t("director.payment.failed"));
     } finally {
       setProcessing(false);
     }
@@ -162,7 +162,7 @@ export default function DirectorPaymentPage() {
                   <div>
                     <div className="text-xs font-bold uppercase tracking-wider text-white/50">{t("payment.currentPlan")}</div>
                     <div className="mt-1 font-display text-2xl font-extrabold">
-                      {sub?.plan === "FREE_TRIAL" ? "Free Trial" : sub?.plan === "MONTHLY" ? t("pricing.monthly") : sub?.plan === "ANNUAL" ? t("pricing.annual") : "—"}
+                      {sub?.plan === "FREE_TRIAL" ? t("director.payment.freeTrial") : sub?.plan === "MONTHLY" ? t("pricing.monthly") : sub?.plan === "ANNUAL" ? t("pricing.annual") : "—"}
                     </div>
                     {sub && (
                       <div className="mt-1 flex items-center gap-1.5 text-xs text-white/50">
@@ -378,7 +378,7 @@ export default function DirectorPaymentPage() {
                       <li key={p.id} className="flex items-center justify-between py-2.5 text-sm">
                         <div>
                           <div className="font-semibold text-brand-ink dark:text-brand-paper">{p.plan} • ${p.amount}</div>
-                          <div className="text-xs text-gray-500">{new Date(p.createdAt).toLocaleString()} • {p.method || "card"}</div>
+                          <div className="text-xs text-gray-500">{new Date(p.createdAt).toLocaleString()} • {p.method || t("director.payment.card")}</div>
                         </div>
                         <span className={`badge ${p.status === "COMPLETED" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400" : "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400"}`}>
                           {p.status}
@@ -415,7 +415,7 @@ function PlanCard({ title, price, period, features, highlight, badge, onChoose, 
         <div className="relative z-10">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-brand-ink dark:text-white">{title}</h3>
-            {highlight && <span className="rounded-full bg-brand-orange px-2 py-0.5 text-[10px] font-bold text-white">ACTIVE</span>}
+            {highlight && <span className="rounded-full bg-brand-orange px-2 py-0.5 text-[10px] font-bold text-white">{t("director.payment.active")}</span>}
           </div>
           <div className="mt-3 flex items-end gap-1">
             <span className="font-display text-4xl font-extrabold text-brand-ink dark:text-white">{price}</span>

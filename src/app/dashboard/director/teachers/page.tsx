@@ -49,7 +49,7 @@ export default function DirectorTeachersPage() {
       setCopiedField({ id, kind });
       setTimeout(() => setCopiedField(null), 1500);
     } catch {
-      error("Could not copy");
+      error(t("director.teachers.couldNotCopy"));
     }
   };
 
@@ -74,23 +74,23 @@ export default function DirectorTeachersPage() {
       setFirstName("");
       setLastName("");
       setSubject("");
-      success("Teacher added. Share the credentials below.");
+      success(t("director.teachers.addSuccess"));
       load();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("director.teachers.addFailed"));
     } finally {
       setSubmitting(false);
     }
   };
 
   const onDelete = async (id: string, name: string) => {
-    if (!confirm(`Delete teacher ${name}? This cannot be undone.`)) return;
+    if (!confirm(t("director.teachers.deleteConfirm", { name }))) return;
     try {
       await api(`/api/teachers/${id}`, { method: "DELETE" });
-      success("Teacher deleted");
+      success(t("director.teachers.deleteSuccess"));
       load();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Delete failed");
+      error(e instanceof Error ? e.message : t("director.teachers.deleteFailed"));
     }
   };
 
@@ -110,12 +110,12 @@ export default function DirectorTeachersPage() {
               {t("dashboard.teachers")}
             </h1>
             <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">
-              Add teachers and share auto-generated credentials.
+              {t("director.teachers.subtitle")}
             </p>
           </div>
           <button onClick={() => setOpen(true)} className="btn-primary">
             <Plus className="h-4 w-4" />
-            {t("common.add")} teacher
+            {t("director.teachers.addTeacherBtn")}
           </button>
         </div>
 
@@ -135,7 +135,7 @@ export default function DirectorTeachersPage() {
         ) : filtered.length === 0 ? (
           <div className="card flex flex-col items-center gap-2 py-12 text-center">
             <Users className="h-10 w-10 text-gray-300" />
-            <p className="text-sm text-gray-500">No teachers yet. Click "Add teacher" to get started.</p>
+            <p className="text-sm text-gray-500">{t("director.teachers.noTeachers")}</p>
           </div>
         ) : (
           <>
@@ -143,12 +143,12 @@ export default function DirectorTeachersPage() {
               <table className="w-full text-sm">
                 <thead className="bg-gray-50 text-start text-xs font-bold uppercase tracking-wider text-gray-500 dark:bg-white/5">
                   <tr>
-                    <th className="px-4 py-3 text-start">Name</th>
-                    <th className="px-4 py-3 text-start">Subject</th>
-                    <th className="px-4 py-3 text-start">Email</th>
-                    <th className="px-4 py-3 text-start">Password</th>
-                    <th className="px-4 py-3 text-start">Students</th>
-                    <th className="px-4 py-3 text-end">Actions</th>
+                    <th className="px-4 py-3 text-start">{t("director.teachers.name")}</th>
+                    <th className="px-4 py-3 text-start">{t("director.teachers.subject")}</th>
+                    <th className="px-4 py-3 text-start">{t("director.teachers.email")}</th>
+                    <th className="px-4 py-3 text-start">{t("director.teachers.password")}</th>
+                    <th className="px-4 py-3 text-start">{t("director.teachers.students")}</th>
+                    <th className="px-4 py-3 text-end">{t("director.teachers.actions")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -194,22 +194,22 @@ export default function DirectorTeachersPage() {
         )}
       </div>
 
-      <Modal open={open} onClose={() => setOpen(false)} title={createdCreds ? "Teacher added" : "Add teacher"} size="md">
+      <Modal open={open} onClose={() => setOpen(false)} title={createdCreds ? t("director.teachers.modalTitleAdded") : t("director.teachers.modalTitleAdd")} size="md">
         {createdCreds ? (
           <div className="space-y-4">
             <div className="rounded-2xl bg-emerald-50 p-4 text-sm text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
-              <strong>{createdCreds.name}</strong> has been added. Share these credentials with them — they won't be shown again.
+              <strong>{createdCreds.name}</strong> {t("director.teachers.credentialsNote")}
             </div>
             <CredentialsDisplay fullName={createdCreds.name} email={createdCreds.email} password={createdCreds.password} />
             <div className="flex justify-end gap-2 pt-2">
-              <button onClick={() => { setOpen(false); setCreatedCreds(null); }} className="btn-primary">Done</button>
+              <button onClick={() => { setOpen(false); setCreatedCreds(null); }} className="btn-primary">{t("director.teachers.done")}</button>
             </div>
           </div>
         ) : (
           <form onSubmit={onAdd} className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">First name</label>
+                <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("director.teachers.firstName")}</label>
                 <input
                   required
                   value={firstName}
@@ -219,7 +219,7 @@ export default function DirectorTeachersPage() {
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Last name</label>
+                <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("director.teachers.lastName")}</label>
                 <input
                   required
                   value={lastName}
@@ -230,7 +230,7 @@ export default function DirectorTeachersPage() {
               </div>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Subject</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("director.teachers.subjectLabel")}</label>
               <input
                 required
                 value={subject}
@@ -240,7 +240,7 @@ export default function DirectorTeachersPage() {
               />
             </div>
             <div className="rounded-xl bg-brand-cream p-3 text-xs text-brand-ink/70 dark:bg-white/5 dark:text-white/70">
-              We'll auto-generate a unique email and 10-character password for this teacher.
+              {t("director.teachers.autoGenerate")}
             </div>
             <div className="flex justify-end gap-2 pt-1">
               <button type="button" onClick={() => setOpen(false)} className="btn-ghost">

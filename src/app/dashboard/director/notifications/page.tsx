@@ -27,7 +27,7 @@ export default function DirectorNotificationsPage() {
     setError(null);
     api<{ notifications: Notification[] }>("/api/notifications")
       .then((d) => setNotifications(d.notifications))
-      .catch((e: unknown) => setError(e instanceof Error ? e.message : "Failed to load notifications"))
+      .catch((e: unknown) => setError(e instanceof Error ? e.message : t("director.notifications.loadFailed")))
       .finally(() => setLoading(false));
   };
 
@@ -72,12 +72,12 @@ export default function DirectorNotificationsPage() {
               {t("dashboard.notifications")}
             </h1>
             <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">
-              {unreadCount > 0 ? `${unreadCount} unread` : t("notifications.allCaughtUp")}
+              {unreadCount > 0 ? t("director.notifications.unreadCount", { count: unreadCount }) : t("notifications.allCaughtUp")}
             </p>
           </div>
           {unreadCount > 0 && (
             <button onClick={markAllRead} className="btn-primary text-sm">
-              <CheckCheck className="h-4 w-4" /> Mark all read
+              <CheckCheck className="h-4 w-4" /> {t("notifications.markAllRead")}
             </button>
           )}
         </div>
@@ -89,7 +89,7 @@ export default function DirectorNotificationsPage() {
         ) : error ? (
           <div className="flex h-64 flex-col items-center justify-center gap-3 text-center">
             <p className="text-sm text-red-500">{error}</p>
-            <button onClick={load} className="btn-primary text-sm">Retry</button>
+            <button onClick={load} className="btn-primary text-sm">{t("director.notifications.retry")}</button>
           </div>
         ) : notifications.length === 0 ? (
           <div className="card flex flex-col items-center gap-3 py-16 text-center">

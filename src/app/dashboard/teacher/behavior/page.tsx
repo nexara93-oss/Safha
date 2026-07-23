@@ -53,7 +53,7 @@ export default function TeacherBehaviorPage() {
   const onAdd = async (e: FormEvent) => {
     e.preventDefault();
     if (!studentId) {
-      error("Choose a student");
+      error(t("teacher.behavior.chooseStudent"));
       return;
     }
     setSubmitting(true);
@@ -62,10 +62,10 @@ export default function TeacherBehaviorPage() {
       setNote("");
       setSectionFilter("");
       setOpen(false);
-      success("Behavior note added");
+      success(t("teacher.behavior.noteAdded"));
       load();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     } finally {
       setSubmitting(false);
     }
@@ -95,7 +95,7 @@ export default function TeacherBehaviorPage() {
             <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
               {t("dashboard.behavior")}
             </h1>
-            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">Track behavior notes for your students.</p>
+            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("teacher.behavior.subtitle")}</p>
           </div>
           <div className="flex items-center gap-2">
             {sections.length > 0 && (
@@ -104,7 +104,7 @@ export default function TeacherBehaviorPage() {
                 onChange={(e) => setSectionFilter(e.target.value)}
                 className="input-field !py-2"
               >
-                <option value="">All sections</option>
+                <option value="">{t("common.allSections")}</option>
                 {sections.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
@@ -112,7 +112,7 @@ export default function TeacherBehaviorPage() {
             )}
             <button onClick={() => setOpen(true)} className="btn-primary">
               <Plus className="h-4 w-4" />
-              {t("common.add")} note
+              {t("common.add")} {t("teacher.behavior.note")}
             </button>
           </div>
         </div>
@@ -124,7 +124,7 @@ export default function TeacherBehaviorPage() {
         ) : recs.length === 0 ? (
           <div className="card flex flex-col items-center gap-2 py-12 text-center">
             <Heart className="h-10 w-10 text-gray-300" />
-            <p className="text-sm text-gray-500">No behavior notes yet.</p>
+            <p className="text-sm text-gray-500">{t("teacher.behavior.noNotes")}</p>
           </div>
         ) : (
           <div className="card space-y-2 p-3 sm:p-4">
@@ -146,13 +146,13 @@ export default function TeacherBehaviorPage() {
         )}
       </div>
 
-      <Modal open={open} onClose={() => { setOpen(false); setSectionFilter(""); }} title="Add behavior note" size="md">
+      <Modal open={open} onClose={() => { setOpen(false); setSectionFilter(""); }} title={t("teacher.behavior.addNoteTitle")} size="md">
         <form onSubmit={onAdd} className="space-y-3">
           {sections.length > 0 && (
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Section</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.section")}</label>
               <select value={sectionFilter} onChange={(e) => { setSectionFilter(e.target.value); setStudentId(""); }} className="input-field">
-                <option value="">All sections</option>
+                <option value="">{t("common.allSections")}</option>
                 {sections.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
@@ -160,9 +160,9 @@ export default function TeacherBehaviorPage() {
             </div>
           )}
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Student</label>
+            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.student")}</label>
             <select required value={studentId} onChange={(e) => setStudentId(e.target.value)} className="input-field">
-              <option value="">Choose…</option>
+              <option value="">{t("common.choose")}</option>
               {(sectionFilter ? students.filter((s) => s.sectionId === sectionFilter) : students).map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.user.fullName}
@@ -171,13 +171,13 @@ export default function TeacherBehaviorPage() {
             </select>
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Type</label>
+            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.behavior.type")}</label>
             <div className="grid grid-cols-3 gap-2">
               {(
                 [
-                  { v: "POSITIVE", l: "Positive", icon: Smile, c: "emerald" },
-                  { v: "NEUTRAL", l: "Neutral", icon: Meh, c: "gray" },
-                  { v: "NEGATIVE", l: "Negative", icon: Frown, c: "red" }
+                  { v: "POSITIVE", l: t("teacher.behavior.positive"), icon: Smile, c: "emerald" },
+                  { v: "NEUTRAL", l: t("teacher.behavior.neutral"), icon: Meh, c: "gray" },
+                  { v: "NEGATIVE", l: t("teacher.behavior.negative"), icon: Frown, c: "red" }
                 ] as const
               ).map((o) => (
                 <button
@@ -196,14 +196,14 @@ export default function TeacherBehaviorPage() {
             </div>
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Note</label>
+            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.behavior.noteLabel")}</label>
             <textarea
               required
               rows={4}
               value={note}
               onChange={(e) => setNote(e.target.value)}
               className="input-field resize-y"
-              placeholder="Describe the behavior…"
+              placeholder={t("teacher.behavior.notePlaceholder")}
             />
           </div>
           <div className="flex justify-end gap-2 pt-1">

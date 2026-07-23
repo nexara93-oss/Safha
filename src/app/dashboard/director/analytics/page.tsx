@@ -30,7 +30,7 @@ export default function DirectorAnalyticsPage() {
   useEffect(() => {
     api<AnalyticsData>("/api/analytics/director")
       .then(setData)
-      .catch((e: unknown) => setError(e instanceof Error ? e.message : "Failed to load analytics"))
+      .catch((e: unknown) => setError(e instanceof Error ? e.message : t("director.analytics.loadFailed")))
       .finally(() => setLoading(false));
   }, []);
 
@@ -49,8 +49,8 @@ export default function DirectorAnalyticsPage() {
       <DashboardShell allowedRoles={["DIRECTOR"]}>
         <div className="flex h-64 items-center justify-center">
           <div className="text-center">
-            <p className="mb-3 text-sm text-red-500">{error ?? "No data available"}</p>
-            <button onClick={() => window.location.reload()} className="btn-primary text-sm">Retry</button>
+            <p className="mb-3 text-sm text-red-500">{error ?? t("director.analytics.noDataAvailable")}</p>
+            <button onClick={() => window.location.reload()} className="btn-primary text-sm">{t("director.analytics.retry")}</button>
           </div>
         </div>
       </DashboardShell>

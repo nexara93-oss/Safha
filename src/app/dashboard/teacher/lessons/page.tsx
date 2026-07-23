@@ -67,23 +67,23 @@ export default function TeacherLessonsPage() {
       setFileUrl("");
       setVideoUrl("");
       setOpen(false);
-      success("Lesson created");
+      success(t("teacher.lessons.lessonCreated"));
       load();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     } finally {
       setSubmitting(false);
     }
   };
 
   const onDelete = async (id: string) => {
-    if (!confirm("Delete this lesson?")) return;
+    if (!confirm(t("teacher.lessons.deleteConfirm"))) return;
     try {
       await api(`/api/lessons/${id}`, { method: "DELETE" });
-      success("Lesson deleted");
+      success(t("teacher.lessons.lessonDeleted"));
       load();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     }
   };
 
@@ -97,7 +97,7 @@ export default function TeacherLessonsPage() {
             <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
               {t("dashboard.lessons")}
             </h1>
-            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">Create and manage lessons for your sections.</p>
+            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("teacher.lessons.subtitle")}</p>
           </div>
           <div className="flex gap-2">
             {sections.length > 0 && (
@@ -106,14 +106,14 @@ export default function TeacherLessonsPage() {
                 onChange={(e) => setSectionFilter(e.target.value)}
                 className="input-field !py-1.5 !text-xs"
               >
-                <option value="">All sections</option>
+                <option value="">{t("common.allSections")}</option>
                 {sections.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
               </select>
             )}
             <button onClick={() => setOpen(true)} className="btn-primary">
-              <Plus className="h-4 w-4" /> {t("common.add")} lesson
+              <Plus className="h-4 w-4" /> {t("teacher.lessons.addLesson")}
             </button>
           </div>
         </div>
@@ -124,7 +124,7 @@ export default function TeacherLessonsPage() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="card py-12 text-center text-sm text-gray-500">
-            {sectionFilter ? "No lessons in this section." : "No lessons yet. Click \"Add lesson\" to create one."}
+            {sectionFilter ? t("teacher.lessons.noLessonsSection") : t("teacher.lessons.noLessons")}
           </div>
         ) : (
           <div className="space-y-3">
@@ -156,17 +156,17 @@ export default function TeacherLessonsPage() {
                 {expandedId === lesson.id && (
                   <div className="mt-3 border-t border-gray-100 pt-3 dark:border-white/5">
                     <div className="prose prose-sm max-w-none text-gray-700 dark:text-white/80 whitespace-pre-wrap">
-                      {lesson.content || "No content."}
+                      {lesson.content || t("teacher.lessons.noContent")}
                     </div>
                     <div className="mt-3 flex flex-wrap gap-3">
                       {lesson.fileUrl && (
                         <a href={lesson.fileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-brand-orange hover:underline">
-                          <ExternalLink className="h-3 w-3" /> File
+                          <ExternalLink className="h-3 w-3" /> {t("teacher.lessons.file")}
                         </a>
                       )}
                       {lesson.videoUrl && (
                         <a href={lesson.videoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-brand-orange hover:underline">
-                          <ExternalLink className="h-3 w-3" /> Video
+                          <ExternalLink className="h-3 w-3" /> {t("teacher.lessons.video")}
                         </a>
                       )}
                     </div>
@@ -178,38 +178,38 @@ export default function TeacherLessonsPage() {
         )}
       </div>
 
-      <Modal open={open} onClose={() => setOpen(false)} title="Add lesson" size="lg">
+      <Modal open={open} onClose={() => setOpen(false)} title={t("teacher.lessons.addLessonTitle")} size="lg">
         <form onSubmit={onAdd} className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Section</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.section")}</label>
               <select required value={sectionId} onChange={(e) => setSectionId(e.target.value)} className="input-field">
-                <option value="">Choose…</option>
+                <option value="">{t("common.choose")}</option>
                 {sections.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Subject</label>
-              <input required value={subject} onChange={(e) => setSubject(e.target.value)} className="input-field" placeholder="Mathematics" />
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.subject")}</label>
+              <input required value={subject} onChange={(e) => setSubject(e.target.value)} className="input-field" placeholder={t("teacher.grades.subjectPlaceholder")} />
             </div>
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Title</label>
-            <input required value={title} onChange={(e) => setTitle(e.target.value)} className="input-field" placeholder="Lesson title" />
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.title")}</label>
+              <input required value={title} onChange={(e) => setTitle(e.target.value)} className="input-field" placeholder={t("teacher.lessons.titlePlaceholder")} />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Content</label>
-            <textarea required value={content} onChange={(e) => setContent(e.target.value)} className="input-field min-h-[120px]" placeholder="Lesson content…" />
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.content")}</label>
+              <textarea required value={content} onChange={(e) => setContent(e.target.value)} className="input-field min-h-[120px]" placeholder={t("teacher.lessons.contentPlaceholder")} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">File URL (optional)</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.lessons.fileUrlOptional")}</label>
               <input value={fileUrl} onChange={(e) => setFileUrl(e.target.value)} className="input-field" placeholder="https://…" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Video URL (optional)</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.lessons.videoUrlOptional")}</label>
               <input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} className="input-field" placeholder="https://…" />
             </div>
           </div>

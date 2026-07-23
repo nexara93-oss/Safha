@@ -57,7 +57,7 @@ export default function DirectorTimetablePage() {
         setTeachers(t.teachers);
         setSections(sec.sections);
       })
-      .catch((e: unknown) => setError(e instanceof Error ? e.message : "Failed to load"))
+      .catch((e: unknown) => setError(e instanceof Error ? e.message : t("director.timetable.loadFailed")))
       .finally(() => setLoading(false));
   };
   useEffect(load, []);
@@ -65,7 +65,7 @@ export default function DirectorTimetablePage() {
   const onAdd = async (e: FormEvent) => {
     e.preventDefault();
     if (!subject.trim() || !teacherId || !sectionId) {
-      toastError("Please fill in all required fields");
+      toastError(t("director.timetable.fillRequired"));
       return;
     }
     setAdding(true);
@@ -77,9 +77,9 @@ export default function DirectorTimetablePage() {
       setSlots((prev) => [...prev, res.slot]);
       setSubject("");
       setRoom("");
-      success("Timetable slot added");
+      success(t("director.timetable.addSuccess"));
     } catch (e: unknown) {
-      toastError(e instanceof Error ? e.message : "Failed to add slot");
+      toastError(e instanceof Error ? e.message : t("director.timetable.addFailed"));
     } finally {
       setAdding(false);
     }
@@ -89,9 +89,9 @@ export default function DirectorTimetablePage() {
     try {
       await api(`/api/timetable/${id}`, { method: "DELETE" });
       setSlots((prev) => prev.filter((s) => s.id !== id));
-      success("Slot deleted");
+      success(t("director.timetable.deleteSuccess"));
     } catch (e: unknown) {
-      toastError(e instanceof Error ? e.message : "Failed to delete slot");
+      toastError(e instanceof Error ? e.message : t("director.timetable.deleteFailed"));
     }
   };
 
@@ -109,7 +109,7 @@ export default function DirectorTimetablePage() {
           {error ? (
             <div className="text-center">
               <p className="mb-3 text-sm text-red-500">{error}</p>
-              <button onClick={() => window.location.reload()} className="btn-primary text-sm">Retry</button>
+              <button onClick={() => window.location.reload()} className="btn-primary text-sm">{t("director.timetable.retry")}</button>
             </div>
           ) : (
             <Spinner className="h-8 w-8 text-brand-orange" />
@@ -133,7 +133,7 @@ export default function DirectorTimetablePage() {
           {/* Add form */}
           <form onSubmit={onAdd} className="card space-y-3">
             <h2 className="flex items-center gap-2 text-sm font-bold text-brand-ink dark:text-brand-paper">
-              <Plus className="h-4 w-4 text-brand-orange" /> Add slot
+              <Plus className="h-4 w-4 text-brand-orange" /> {t("director.timetable.addSlot")}
             </h2>
             <div>
               <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-gray-500">{t("common.day")}</label>
@@ -180,7 +180,7 @@ export default function DirectorTimetablePage() {
               <input type="text" value={room} onChange={(e) => setRoom(e.target.value)} className="input-field" placeholder={t("timetable.roomPlaceholder")} />
             </div>
             <button type="submit" disabled={adding} className="btn-primary w-full">
-              {adding ? <Spinner /> : <><Plus className="h-4 w-4" /> Add</>}
+              {adding ? <Spinner /> : <><Plus className="h-4 w-4" /> {t("director.timetable.add")}</>}
             </button>
           </form>
 
@@ -229,7 +229,7 @@ export default function DirectorTimetablePage() {
                       type="button"
                       onClick={() => onDelete(s.id)}
                       className="shrink-0 rounded-lg p-1.5 text-gray-400 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-500/10"
-                      aria-label="Delete slot"
+                      aria-label={t("director.timetable.deleteSlot")}
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>

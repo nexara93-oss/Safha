@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { api } from "@/lib/api-client";
 import { Spinner } from "@/components/ui/Spinner";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { BookOpen } from "lucide-react";
 
 type StudentData = {
@@ -14,6 +15,7 @@ type StudentData = {
 };
 
 export default function StudentGradesPage() {
+  const { t } = useLanguage();
   const [data, setData] = useState<StudentData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +34,7 @@ export default function StudentGradesPage() {
           {error ? (
             <div className="text-center">
               <p className="mb-3 text-sm text-red-500">{error}</p>
-              <button onClick={() => window.location.reload()} className="btn-primary text-sm">Retry</button>
+              <button onClick={() => window.location.reload()} className="btn-primary text-sm">{t("student.grades.retry")}</button>
             </div>
           ) : (
             <Spinner className="h-8 w-8 text-brand-orange" />
@@ -55,18 +57,18 @@ export default function StudentGradesPage() {
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
-              My grades
+              {t("student.grades.title")}
             </h1>
-            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">All your grades and averages.</p>
+            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("student.grades.subtitle")}</p>
           </div>
           <div className="rounded-2xl bg-gradient-to-br from-brand-orange to-blue-700 px-5 py-3 text-white shadow-lg shadow-brand-orange/30">
-            <div className="text-xs font-bold uppercase tracking-wider opacity-90">Overall average</div>
+            <div className="text-xs font-bold uppercase tracking-wider opacity-90">{t("student.grades.overallAverage")}</div>
             <div className="font-display text-3xl font-extrabold">{data.overallAverage.toFixed(2)}/20</div>
           </div>
         </div>
 
         {gradesByPeriod.length === 0 ? (
-          <div className="card py-10 text-center text-sm text-gray-500">No grades yet.</div>
+          <div className="card py-10 text-center text-sm text-gray-500">{t("student.grades.noGrades")}</div>
         ) : (
           gradesByPeriod.map(({ period, grades, average, weightedAverage }) => (
             <div key={period.id} className="card">
@@ -78,12 +80,12 @@ export default function StudentGradesPage() {
                   </p>
                 </div>
                 <div className="text-end">
-                  <div className="text-xs text-gray-500">Average</div>
+                  <div className="text-xs text-gray-500">{t("student.grades.average")}</div>
                   <div className="font-display text-2xl font-extrabold text-brand-orange">{average.toFixed(2)}</div>
                 </div>
               </div>
               {grades.length === 0 ? (
-                <p className="text-sm text-gray-500">No grades in this period.</p>
+                <p className="text-sm text-gray-500">{t("student.grades.noGradesPeriod")}</p>
               ) : (
                 <ul className="space-y-1.5">
                   {grades.map((g) => (

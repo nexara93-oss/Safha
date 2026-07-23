@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { api } from "@/lib/api-client";
 import { Spinner } from "@/components/ui/Spinner";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { CalendarCheck, CalendarX } from "lucide-react";
 
 type Rec = { status: string; date: string };
 
 export default function StudentAttendancePage() {
+  const { t } = useLanguage();
   const [recs, setRecs] = useState<Rec[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +29,7 @@ export default function StudentAttendancePage() {
           {error ? (
             <div className="text-center">
               <p className="mb-3 text-sm text-red-500">{error}</p>
-              <button onClick={() => window.location.reload()} className="btn-primary text-sm">Retry</button>
+              <button onClick={() => window.location.reload()} className="btn-primary text-sm">{t("student.attendance.retry")}</button>
             </div>
           ) : (
             <Spinner className="h-8 w-8 text-brand-orange" />
@@ -45,9 +47,9 @@ export default function StudentAttendancePage() {
       <div className="space-y-6">
         <div>
           <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
-            My attendance
+            {t("student.attendance.title")}
           </h1>
-          <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">Your attendance history.</p>
+          <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("student.attendance.subtitle")}</p>
         </div>
 
         <div className="grid grid-cols-2 gap-3 sm:gap-4">
@@ -56,7 +58,7 @@ export default function StudentAttendancePage() {
               <CalendarCheck className="h-6 w-6" />
             </div>
             <div>
-              <div className="text-xs uppercase tracking-wider text-gray-500">Present</div>
+              <div className="text-xs uppercase tracking-wider text-gray-500">{t("student.attendance.present")}</div>
               <div className="font-display text-2xl font-extrabold text-brand-ink dark:text-brand-paper">{present}</div>
             </div>
           </div>
@@ -65,14 +67,14 @@ export default function StudentAttendancePage() {
               <CalendarX className="h-6 w-6" />
             </div>
             <div>
-              <div className="text-xs uppercase tracking-wider text-gray-500">Absent</div>
+              <div className="text-xs uppercase tracking-wider text-gray-500">{t("student.attendance.absent")}</div>
               <div className="font-display text-2xl font-extrabold text-brand-ink dark:text-brand-paper">{absent}</div>
             </div>
           </div>
         </div>
 
         {recs.length === 0 ? (
-          <div className="card py-10 text-center text-sm text-gray-500">No attendance records yet.</div>
+          <div className="card py-10 text-center text-sm text-gray-500">{t("student.attendance.noRecords")}</div>
         ) : (
           <div className="card p-3 sm:p-4">
             <ul className="space-y-1.5">

@@ -76,7 +76,7 @@ export default function StudentHomeworkPage() {
           fileUrl: submitFileUrl.trim() || undefined
         }
       });
-      success("Submitted");
+      success(t("student.homework.submitted"));
       setSubmitOpen(null);
       setSubmitContent("");
       setSubmitFileUrl("");
@@ -85,7 +85,7 @@ export default function StudentHomeworkPage() {
         setHomeworks(d.homework);
       }
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("student.homework.failed"));
     } finally {
       setSubmitting(false);
     }
@@ -97,7 +97,7 @@ export default function StudentHomeworkPage() {
 
     if (sub?.score !== null && sub?.gradedAt) {
       return {
-        label: `Graded: ${sub.score}/${sub.maxScore ?? 20}`,
+        label: `${t("student.homework.graded")}: ${sub.score}/${sub.maxScore ?? 20}`,
         color: "text-green-700",
         bg: "bg-green-50 dark:bg-green-500/10",
         icon: <CheckCircle2 className="h-4 w-4 text-green-500" />
@@ -105,7 +105,7 @@ export default function StudentHomeworkPage() {
     }
     if (sub) {
       return {
-        label: "Submitted",
+        label: t("student.homework.submitted"),
         color: "text-yellow-700",
         bg: "bg-yellow-50 dark:bg-yellow-500/10",
         icon: <Clock className="h-4 w-4 text-yellow-500" />
@@ -113,14 +113,14 @@ export default function StudentHomeworkPage() {
     }
     if (overdue) {
       return {
-        label: "Overdue",
+        label: t("student.homework.overdue"),
         color: "text-red-700",
         bg: "bg-red-50 dark:bg-red-500/10",
         icon: <Ban className="h-4 w-4 text-red-500" />
       };
     }
     return {
-      label: "Pending",
+        label: t("student.homework.pending"),
       color: "text-gray-600",
       bg: "bg-gray-50 dark:bg-white/5",
       icon: <Clock className="h-4 w-4 text-gray-400" />
@@ -144,13 +144,13 @@ export default function StudentHomeworkPage() {
           <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
             {t("dashboard.homework")}
           </h1>
-          <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">View and submit your homework assignments.</p>
+          <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("student.homework.subtitle")}</p>
         </div>
 
         {homeworks.length === 0 ? (
           <div className="card flex flex-col items-center gap-2 py-12 text-center">
             <FileText className="h-10 w-10 text-gray-300" />
-            <p className="text-sm text-gray-500">No homework assigned yet.</p>
+            <p className="text-sm text-gray-500">{t("student.homework.noHomework")}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -166,13 +166,13 @@ export default function StudentHomeworkPage() {
                       </div>
                       <p className="mt-1 text-sm text-gray-600 dark:text-white/70">{hw.description}</p>
                       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
-                        <span>Teacher: {hw.teacher?.user?.fullName || "N/A"}</span>
-                        <span>Due: {new Date(hw.dueDate).toLocaleDateString()}</span>
-                        <span>Section: {hw.section.name}</span>
+                        <span>{t("student.homework.teacher")} {hw.teacher?.user?.fullName || "N/A"}</span>
+                        <span>{t("student.homework.due")} {new Date(hw.dueDate).toLocaleDateString()}</span>
+                        <span>{t("student.homework.section")} {hw.section.name}</span>
                       </div>
                       {hw.fileUrl && (
                         <a href={hw.fileUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 text-xs text-brand-orange hover:underline">
-                          <FileText className="h-3 w-3" /> Attachment
+                          <FileText className="h-3 w-3" /> {t("student.homework.attachment")}
                         </a>
                       )}
                     </div>
@@ -183,7 +183,7 @@ export default function StudentHomeworkPage() {
                       </span>
                       {!hw.submission && !(new Date(hw.dueDate) < new Date(new Date().toDateString())) && (
                         <button onClick={() => setSubmitOpen(hw.id)} className="btn-primary !py-1.5 !text-xs">
-                          <Send className="h-3 w-3" /> Submit
+                          <Send className="h-3 w-3" /> {t("student.homework.submit")}
                         </button>
                       )}
                     </div>
@@ -192,9 +192,9 @@ export default function StudentHomeworkPage() {
                   {hw.submission && hw.submission.score !== null && (
                     <div className="mt-3 rounded-lg bg-gray-50 p-3 dark:bg-white/5">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-gray-500">Feedback</span>
+                        <span className="text-xs font-semibold text-gray-500">{t("student.homework.feedback")}</span>
                         <span className="text-xs text-gray-500">
-                          Graded {hw.submission.gradedAt ? new Date(hw.submission.gradedAt).toLocaleDateString() : ""}
+                          {t("student.homework.graded")} {hw.submission.gradedAt ? new Date(hw.submission.gradedAt).toLocaleDateString() : ""}
                         </span>
                       </div>
                       {hw.submission.feedback && (
@@ -205,7 +205,7 @@ export default function StudentHomeworkPage() {
 
                   {hw.submission && !hw.submission.score && (
                     <div className="mt-3 rounded-lg bg-yellow-50 p-3 dark:bg-yellow-500/5">
-                      <p className="text-xs font-semibold text-yellow-700">Submitted — waiting for grading.</p>
+                      <p className="text-xs font-semibold text-yellow-700">{t("student.homework.submittedWaiting")}</p>
                     </div>
                   )}
                 </div>
@@ -215,20 +215,20 @@ export default function StudentHomeworkPage() {
         )}
       </div>
 
-      <Modal open={!!submitOpen} onClose={() => { setSubmitOpen(null); setSubmitContent(""); setSubmitFileUrl(""); }} title="Submit Homework" size="md">
+      <Modal open={!!submitOpen} onClose={() => { setSubmitOpen(null); setSubmitContent(""); setSubmitFileUrl(""); }} title={t("student.homework.submitHomework")} size="md">
         <form onSubmit={onSubmit} className="space-y-3">
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Your answer</label>
-            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} className="input-field" rows={4} placeholder="Write your answer here..." />
+            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("student.homework.yourAnswer")}</label>
+            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} className="input-field" rows={4} placeholder={t("student.homework.answerPlaceholder")} />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">File URL (optional)</label>
+            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("student.homework.fileUrlOptional")}</label>
             <input value={submitFileUrl} onChange={(e) => setSubmitFileUrl(e.target.value)} className="input-field" placeholder="https://..." />
           </div>
           <div className="flex justify-end gap-2 pt-1">
-            <button type="button" onClick={() => { setSubmitOpen(null); setSubmitContent(""); setSubmitFileUrl(""); }} className="btn-ghost">Cancel</button>
+            <button type="button" onClick={() => { setSubmitOpen(null); setSubmitContent(""); setSubmitFileUrl(""); }} className="btn-ghost">{t("student.homework.cancel")}</button>
             <button type="submit" disabled={submitting} className="btn-primary">
-              {submitting ? <Spinner /> : "Submit"}
+              {submitting ? <Spinner /> : t("student.homework.submit")}
             </button>
           </div>
         </form>

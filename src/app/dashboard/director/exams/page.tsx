@@ -54,7 +54,7 @@ export default function DirectorExamsPage() {
             <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
               {t("dashboard.exams")}
             </h1>
-            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">Overview of all exams across sections.</p>
+            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("director.exams.overview")}</p>
           </div>
           {sections.length > 0 && (
             <div className="flex items-center gap-2">
@@ -64,7 +64,7 @@ export default function DirectorExamsPage() {
                 onChange={(e) => setSectionFilter(e.target.value)}
                 className="input-field !py-1.5 !text-xs"
               >
-                <option value="">All sections</option>
+                <option value="">{t("director.exams.allSections")}</option>
                 {sections.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
@@ -81,18 +81,18 @@ export default function DirectorExamsPage() {
           <>
             <div className="grid grid-cols-3 gap-3">
               <div className="card text-center">
-                <div className="text-xs font-bold uppercase tracking-wider text-gray-500">Total</div>
+                <div className="text-xs font-bold uppercase tracking-wider text-gray-500">{t("director.exams.total")}</div>
                 <div className="mt-1 font-display text-3xl font-extrabold text-brand-ink dark:text-brand-paper">{totalExams}</div>
               </div>
               <div className="card text-center">
                 <div className="flex items-center justify-center gap-1 text-xs font-bold uppercase tracking-wider text-emerald-600">
-                  <CheckCircle2 className="h-3 w-3" /> Graded
+                  <CheckCircle2 className="h-3 w-3" /> {t("director.exams.graded")}
                 </div>
                 <div className="mt-1 font-display text-3xl font-extrabold text-emerald-600">{gradedCount}</div>
               </div>
               <div className="card text-center">
                 <div className="flex items-center justify-center gap-1 text-xs font-bold uppercase tracking-wider text-amber-600">
-                  <Clock className="h-3 w-3" /> Pending
+                  <Clock className="h-3 w-3" /> {t("director.exams.pending")}
                 </div>
                 <div className="mt-1 font-display text-3xl font-extrabold text-amber-600">{pendingCount}</div>
               </div>
@@ -101,7 +101,7 @@ export default function DirectorExamsPage() {
             {filtered.length === 0 ? (
               <div className="card flex flex-col items-center gap-2 py-12 text-center">
                 <BookOpen className="h-10 w-10 text-gray-300" />
-                <p className="text-sm text-gray-500">{sectionFilter ? "No exams in this section." : "No exams yet."}</p>
+                <p className="text-sm text-gray-500">{sectionFilter ? t("director.exams.noExamsInSection") : t("director.exams.noExams")}</p>
               </div>
             ) : (
               <div className="space-y-3">

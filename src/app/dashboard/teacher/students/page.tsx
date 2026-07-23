@@ -61,7 +61,7 @@ export default function TeacherStudentsPage() {
         method: "POST",
         json: { firstName: firstName.trim(), lastName: lastName.trim(), phone: phone.trim() || undefined, serialNumber: serialNumber.trim() || undefined, sectionId: sectionId || undefined }
       });
-      success("Student added!");
+      success(t("teacher.students.studentAdded"));
       setFirstName("");
       setLastName("");
       setPhone("");
@@ -74,20 +74,20 @@ export default function TeacherStudentsPage() {
       setCredPwd(res.defaultPassword);
       setCredOpen(true);
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     } finally {
       setSubmitting(false);
     }
   };
 
   const onDelete = async (id: string, name: string) => {
-    if (!confirm(`Delete ${name}?`)) return;
+    if (!confirm(t("teacher.students.deleteConfirm", { name }))) return;
     try {
       await api(`/api/students/${id}`, { method: "DELETE" });
-      success("Student deleted");
+      success(t("teacher.students.studentDeleted"));
       load();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Delete failed");
+      error(e instanceof Error ? e.message : t("teacher.students.deleteFailed"));
     }
   };
 
@@ -113,9 +113,9 @@ export default function TeacherStudentsPage() {
       });
       setCredEmail(res.email);
       setCredPwd(res.password);
-      success("Password reset");
+      success(t("teacher.students.passwordReset"));
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     } finally {
       setResetting(false);
     }
@@ -129,16 +129,16 @@ export default function TeacherStudentsPage() {
             <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
               {t("dashboard.students")}
             </h1>
-            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">Manage your students.</p>
+            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("teacher.students.subtitle")}</p>
           </div>
           <div className="flex gap-2">
             <button onClick={() => setPdfOpen(true)} className="btn-secondary">
               <Upload className="h-4 w-4" />
-              Import PDF
+              {t("teacher.students.importPdf")}
             </button>
             <button onClick={() => { setOpen(true); loadSections(); }} className="btn-primary">
               <Plus className="h-4 w-4" />
-              Add
+              {t("common.add")}
             </button>
           </div>
         </div>
@@ -148,7 +148,7 @@ export default function TeacherStudentsPage() {
             <Spinner className="h-8 w-8 text-brand-orange" />
           </div>
         ) : students.length === 0 ? (
-          <EmptyState icon={GraduationCap} message="No students yet." />
+          <EmptyState icon={GraduationCap} message={t("teacher.students.noStudents")} />
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {students.map((s) => (
@@ -168,33 +168,33 @@ export default function TeacherStudentsPage() {
       </div>
 
       {/* Add manual */}
-      <Modal open={open} onClose={() => setOpen(false)} title="Add student" size="md">
+      <Modal open={open} onClose={() => setOpen(false)} title={t("teacher.students.addStudentTitle")} size="md">
         <form onSubmit={onAdd} className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">First name</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.students.firstName")}</label>
               <input required value={firstName} onChange={(e) => setFirstName(e.target.value)} className="input-field" placeholder="Youssef" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Last name</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.students.lastName")}</label>
               <input required value={lastName} onChange={(e) => setLastName(e.target.value)} className="input-field" placeholder="Amrani" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Phone</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.phone")}</label>
               <input value={phone} onChange={(e) => setPhone(e.target.value)} className="input-field" placeholder="+212 6 12 34 56 78" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Serial #</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.students.serialNumber")}</label>
               <input value={serialNumber} onChange={(e) => setSerialNumber(e.target.value)} className="input-field" placeholder="1" />
             </div>
           </div>
           {sections.length > 0 && (
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Section</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.section")}</label>
               <select value={sectionId} onChange={(e) => setSectionId(e.target.value)} className="input-field">
-                <option value="">No section</option>
+                <option value="">{t("teacher.students.noSection")}</option>
                 {sections.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
@@ -202,7 +202,7 @@ export default function TeacherStudentsPage() {
             </div>
           )}
           <div className="rounded-xl bg-brand-cream p-3 text-xs text-brand-ink/70 dark:bg-white/5 dark:text-white/70">
-            An email and password will be generated. Share them with the student to log in.
+            {t("teacher.students.emailPasswordInfo")}
           </div>
           <div className="flex justify-end gap-2 pt-1">
             <button type="button" onClick={() => setOpen(false)} className="btn-ghost">
@@ -222,7 +222,7 @@ export default function TeacherStudentsPage() {
       )}
 
       {/* Credentials modal */}
-      <Modal open={credOpen} onClose={() => setCredOpen(false)} title="Student credentials" size="sm">
+      <Modal open={credOpen} onClose={() => setCredOpen(false)} title={t("teacher.students.credentialsTitle")} size="sm">
         {credStudent && (
           <CredentialsDisplay
             fullName={credStudent.user.fullName}

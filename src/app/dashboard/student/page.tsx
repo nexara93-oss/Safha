@@ -40,7 +40,7 @@ export default function StudentOverviewPage() {
           {error ? (
             <div className="text-center">
               <p className="mb-3 text-sm text-red-500">{error}</p>
-              <button onClick={() => window.location.reload()} className="btn-primary text-sm">Retry</button>
+              <button onClick={() => window.location.reload()} className="btn-primary text-sm">{t("student.overview.retry")}</button>
             </div>
           ) : (
             <Spinner className="h-8 w-8 text-brand-orange" />
@@ -58,28 +58,28 @@ export default function StudentOverviewPage() {
       <div className="space-y-6">
         <div>
           <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
-            Welcome, {user?.fullName.split(" ")[0]} 👋
+            {t("student.overview.welcome", { name: user?.fullName.split(" ")[0] || "" })}
           </h1>
           <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">
-            {data.student.section ? `${data.student.section.name}` : "Your student dashboard"}
+            {data.student.section ? `${data.student.section.name}` : t("student.overview.dashboardSubtitle")}
             {data.student.teacher ? ` • ${data.student.teacher.user.fullName}` : ""}
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          <Stat icon={TrendingUp} label="Overall avg" value={data.overallAverage.toFixed(2)} color="from-blue-500 to-blue-700" />
-          <Stat icon={CalendarCheck} label="Present" value={String(present)} color="from-emerald-500 to-emerald-600" />
-          <Stat icon={Award} label="Grades" value={String(data.grades.length)} color="from-indigo-500 to-indigo-600" />
-          <Stat icon={Heart} label="Notes" value={String(data.behavior.length)} color="from-pink-500 to-pink-600" />
+          <Stat icon={TrendingUp} label={t("student.overview.overallAvg")} value={data.overallAverage.toFixed(2)} color="from-blue-500 to-blue-700" />
+          <Stat icon={CalendarCheck} label={t("student.overview.present")} value={String(present)} color="from-emerald-500 to-emerald-600" />
+          <Stat icon={Award} label={t("student.overview.grades")} value={String(data.grades.length)} color="from-indigo-500 to-indigo-600" />
+          <Stat icon={Heart} label={t("student.overview.notes")} value={String(data.behavior.length)} color="from-pink-500 to-pink-600" />
         </div>
 
         <div className="grid gap-4 lg:grid-cols-2">
           <div className="card">
             <h2 className="mb-3 flex items-center gap-2 text-sm font-bold text-brand-ink dark:text-brand-paper">
-              <BookOpen className="h-4 w-4" /> Recent grades
+              <BookOpen className="h-4 w-4" /> {t("student.overview.recentGrades")}
             </h2>
             {data.grades.length === 0 ? (
-              <p className="text-sm text-gray-500">No grades yet.</p>
+              <p className="text-sm text-gray-500">{t("student.overview.noGrades")}</p>
             ) : (
               <ul className="space-y-1.5">
                 {data.grades.slice(0, 6).map((g) => (
@@ -99,10 +99,10 @@ export default function StudentOverviewPage() {
 
           <div className="card">
             <h2 className="mb-3 flex items-center gap-2 text-sm font-bold text-brand-ink dark:text-brand-paper">
-              <Heart className="h-4 w-4" /> Behavior notes
+              <Heart className="h-4 w-4" /> {t("student.overview.behaviorNotes")}
             </h2>
             {data.behavior.length === 0 ? (
-              <p className="text-sm text-gray-500">No behavior notes.</p>
+              <p className="text-sm text-gray-500">{t("student.overview.noBehaviorNotes")}</p>
             ) : (
               <ul className="space-y-2">
                 {data.behavior.slice(0, 4).map((b, i) => (
@@ -123,12 +123,12 @@ export default function StudentOverviewPage() {
 
         {data.messages.length > 0 && (
           <div className="card">
-            <h2 className="mb-3 text-sm font-bold text-brand-ink dark:text-brand-paper">Recent messages</h2>
+            <h2 className="mb-3 text-sm font-bold text-brand-ink dark:text-brand-paper">{t("student.overview.recentMessages")}</h2>
             <ul className="space-y-2">
               {data.messages.slice(0, 3).map((m) => (
                 <li key={m.id} className="rounded-lg bg-gray-50 p-3 text-sm dark:bg-white/5">
                   <div className="text-xs text-gray-500">
-                    From {m.sender.fullName} ({m.sender.role.toLowerCase()}) • {new Date(m.createdAt).toLocaleString()}
+                    {t("student.overview.from")} {m.sender.fullName} ({m.sender.role.toLowerCase()}) • {new Date(m.createdAt).toLocaleString()}
                   </div>
                   <p className="mt-1">{m.content}</p>
                 </li>

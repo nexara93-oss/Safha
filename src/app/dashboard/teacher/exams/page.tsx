@@ -86,24 +86,24 @@ export default function TeacherExamsPage() {
       setCoefficient("1");
       setMaxScore("20");
       setOpen(false);
-      success("Exam created");
+      success(t("teacher.exams.examCreated"));
       load();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     } finally {
       setSubmitting(false);
     }
   };
 
   const onDelete = async (id: string) => {
-    if (!confirm("Delete this exam?")) return;
+    if (!confirm(t("teacher.exams.deleteExamConfirm"))) return;
     try {
       await api(`/api/exams/${id}`, { method: "DELETE" });
-      success("Exam deleted");
+      success(t("teacher.exams.examDeleted"));
       if (expandedExam === id) setExpandedExam(null);
       load();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     }
   };
 
@@ -123,7 +123,7 @@ export default function TeacherExamsPage() {
       });
       setResults(resultMap);
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed to load results");
+      error(e instanceof Error ? e.message : t("teacher.exams.failedLoadResults"));
     } finally {
       setLoadingResults(false);
     }
@@ -148,9 +148,9 @@ export default function TeacherExamsPage() {
           [studentId]: { ...prev[studentId], id: res.result.id }
         }));
       }
-      success("Score saved");
+      success(t("teacher.exams.scoreSaved"));
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed to save score");
+      error(e instanceof Error ? e.message : t("teacher.exams.failedSaveScore"));
     }
   };
 
@@ -166,10 +166,10 @@ export default function TeacherExamsPage() {
             <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
               {t("dashboard.exams")}
             </h1>
-            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">Create and manage exams.</p>
+            <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("teacher.exams.subtitle")}</p>
           </div>
           <button onClick={() => setOpen(true)} className="btn-primary">
-            <Plus className="h-4 w-4" /> {t("common.add")} exam
+            <Plus className="h-4 w-4" /> {t("teacher.exams.addExam")}
           </button>
         </div>
 
@@ -178,7 +178,7 @@ export default function TeacherExamsPage() {
             <Spinner className="h-8 w-8 text-brand-orange" />
           </div>
         ) : exams.length === 0 ? (
-          <div className="card py-12 text-center text-sm text-gray-500">No exams yet. Click "Add exam" to create one.</div>
+          <div className="card py-12 text-center text-sm text-gray-500">{t("teacher.exams.noExams")}</div>
         ) : (
           <div className="space-y-3">
             {exams.map((exam) => (
@@ -213,7 +213,7 @@ export default function TeacherExamsPage() {
                         <Spinner className="h-6 w-6 text-brand-orange" />
                       </div>
                     ) : examStudents.length === 0 ? (
-                      <p className="py-4 text-center text-sm text-gray-500">No students found.</p>
+                      <p className="py-4 text-center text-sm text-gray-500">{t("teacher.exams.noStudentsFound")}</p>
                     ) : (
                       <div className="space-y-2">
                         {examStudents.map((st) => (
@@ -233,7 +233,7 @@ export default function TeacherExamsPage() {
                                   }))
                                 }
                                 className="input-field !w-20 !py-1 !text-xs !text-center"
-                                placeholder="Score"
+                                placeholder={t("common.score")}
                               />
                               <span className="text-xs text-gray-400">/{exam.maxScore}</span>
                               <button
@@ -255,48 +255,48 @@ export default function TeacherExamsPage() {
         )}
       </div>
 
-      <Modal open={open} onClose={() => setOpen(false)} title="Add exam" size="lg">
+      <Modal open={open} onClose={() => setOpen(false)} title={t("teacher.exams.addExamTitle")} size="lg">
         <form onSubmit={onAdd} className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Name</label>
-              <input required value={name} onChange={(e) => setName(e.target.value)} className="input-field" placeholder="Midterm exam" />
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.name")}</label>
+              <input required value={name} onChange={(e) => setName(e.target.value)} className="input-field" placeholder={t("teacher.exams.namePlaceholder")} />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Subject</label>
-              <input required value={subject} onChange={(e) => setSubject(e.target.value)} className="input-field" placeholder="Mathematics" />
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.subject")}</label>
+              <input required value={subject} onChange={(e) => setSubject(e.target.value)} className="input-field" placeholder={t("teacher.grades.subjectPlaceholder")} />
             </div>
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Section</label>
-            <select required value={sectionId} onChange={(e) => setSectionId(e.target.value)} className="input-field">
-              <option value="">Choose…</option>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.section")}</label>
+              <select required value={sectionId} onChange={(e) => setSectionId(e.target.value)} className="input-field">
+                <option value="">{t("common.choose")}</option>
               {sections.map((s) => (
                 <option key={s.id} value={s.id}>{s.name}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Date</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.date")}</label>
             <input required type="date" value={date} onChange={(e) => setDate(e.target.value)} className="input-field" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Start time</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.startTime")}</label>
               <input required type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="input-field" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">End time</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.endTime")}</label>
               <input required type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="input-field" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Coefficient</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.exams.coefficient")}</label>
               <input required type="number" min="0.1" step="0.1" value={coefficient} onChange={(e) => setCoefficient(e.target.value)} className="input-field" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">Max score</label>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.exams.maxScore")}</label>
               <input required type="number" min="1" step="0.5" value={maxScore} onChange={(e) => setMaxScore(e.target.value)} className="input-field" />
             </div>
           </div>

@@ -46,9 +46,9 @@ export default function TeacherOverviewPage() {
     try {
       await api("/api/teacher-attendance", { method: "POST", json: { status } });
       setToday({ status });
-      success(`Marked ${status.toLowerCase()} for today`);
+      success(t("teacher.overview.markedStatus", { status: status.toLowerCase() }));
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     } finally {
       setMarking(null);
     }
@@ -78,7 +78,7 @@ export default function TeacherOverviewPage() {
 
         {/* Self attendance */}
         <div className="card">
-          <h2 className="mb-3 text-base font-bold text-brand-ink dark:text-brand-paper">My attendance — today</h2>
+          <h2 className="mb-3 text-base font-bold text-brand-ink dark:text-brand-paper">{t("teacher.overview.myAttendanceToday")}</h2>
           <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
             <div className="flex items-center gap-2">
               <button
@@ -91,7 +91,7 @@ export default function TeacherOverviewPage() {
                 }`}
               >
                 <Check className="h-4 w-4" />
-                {today?.status === "PRESENT" ? "Present today" : "Mark present"}
+                {today?.status === "PRESENT" ? t("teacher.overview.presentToday") : t("teacher.overview.markPresent")}
               </button>
               <button
                 onClick={() => mark("ABSENT")}
@@ -103,27 +103,27 @@ export default function TeacherOverviewPage() {
                 }`}
               >
                 <X className="h-4 w-4" />
-                {today?.status === "ABSENT" ? "Absent today" : "Mark absent"}
+                {today?.status === "ABSENT" ? t("teacher.overview.absentToday") : t("teacher.overview.markAbsent")}
               </button>
             </div>
-            {!today && <p className="text-xs text-gray-500">You haven't marked your attendance yet.</p>}
+            {!today && <p className="text-xs text-gray-500">{t("teacher.overview.notMarkedYet")}</p>}
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
-          <Stat icon={GraduationCap} label="Students" value={teacher.students.length} color="from-indigo-500 to-indigo-600" />
-          <Stat icon={BookOpen} label="Sections" value={teacher.sections.length} color="from-emerald-500 to-emerald-600" />
-          <Stat icon={Users} label="Subject" value={teacher.subject} color="from-blue-500 to-blue-700" small />
+          <Stat icon={GraduationCap} label={t("teacher.overview.students")} value={teacher.students.length} color="from-indigo-500 to-indigo-600" />
+          <Stat icon={BookOpen} label={t("teacher.overview.sections")} value={teacher.sections.length} color="from-emerald-500 to-emerald-600" />
+          <Stat icon={Users} label={t("common.subject")} value={teacher.subject} color="from-blue-500 to-blue-700" small />
         </div>
 
         {teacher.sections.length > 0 && (
           <div className="card">
-            <h2 className="mb-3 text-base font-bold text-brand-ink dark:text-brand-paper">My sections</h2>
+            <h2 className="mb-3 text-base font-bold text-brand-ink dark:text-brand-paper">{t("teacher.overview.mySections")}</h2>
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {teacher.sections.map((s) => (
                 <div key={s.id} className="rounded-xl border border-gray-100 bg-white p-3 dark:border-white/5 dark:bg-white/5">
                   <div className="font-semibold text-brand-ink dark:text-brand-paper">{s.name}</div>
-                  <div className="text-xs text-gray-500">{s._count.students} students</div>
+                  <div className="text-xs text-gray-500">{t("teacher.overview.studentsCount", { count: s._count.students })}</div>
                 </div>
               ))}
             </div>

@@ -46,7 +46,7 @@ export default function TeacherMessagesPage() {
     e.preventDefault();
     if (!content.trim()) return;
     if (recipientType === "STUDENT" && !recipientId) {
-      error("Choose a student");
+      error(t("messages.chooseStudent"));
       return;
     }
     setSending(true);
@@ -60,10 +60,10 @@ export default function TeacherMessagesPage() {
         }
       });
       setContent("");
-      success("Message sent");
+      success(t("teacher.messages.sent"));
       load();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Send failed");
+      error(e instanceof Error ? e.message : t("teacher.messages.sendFailed"));
     } finally {
       setSending(false);
     }
@@ -76,20 +76,20 @@ export default function TeacherMessagesPage() {
           <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
             {t("dashboard.messages")}
           </h1>
-          <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">Talk to your director and students.</p>
+          <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("teacher.messages.subtitle")}</p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[1fr_2fr]">
           <form onSubmit={onSend} className="card space-y-3">
-            <h2 className="text-sm font-bold text-brand-ink dark:text-brand-paper">New message</h2>
+            <h2 className="text-sm font-bold text-brand-ink dark:text-brand-paper">{t("teacher.messages.newMessage")}</h2>
             <div>
-              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-500">Send to</label>
+              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-500">{t("teacher.messages.sendTo")}</label>
               <div className="grid grid-cols-2 gap-2">
                 {(
                   [
-                    { v: "DIRECTOR", l: "Director", icon: ShieldCheck },
-                    { v: "ALL_STUDENTS", l: "All students", icon: Users },
-                    { v: "STUDENT", l: "One student", icon: GraduationCap }
+                    { v: "DIRECTOR", l: t("teacher.messages.director"), icon: ShieldCheck },
+                    { v: "ALL_STUDENTS", l: t("teacher.messages.allStudents"), icon: Users },
+                    { v: "STUDENT", l: t("teacher.messages.oneStudent"), icon: GraduationCap }
                   ] as const
                 ).map((o) => (
                   <button
@@ -109,9 +109,9 @@ export default function TeacherMessagesPage() {
             </div>
             {recipientType === "STUDENT" && (
               <div>
-                <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-500">Student</label>
+                <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-500">{t("common.student")}</label>
                 <select value={recipientId} onChange={(e) => setRecipientId(e.target.value)} className="input-field">
-                  <option value="">Choose…</option>
+                  <option value="">{t("common.choose")}</option>
                   {students.map((s) => (
                     <option key={s.id} value={s.id}>{s.user.fullName}</option>
                   ))}
@@ -119,8 +119,8 @@ export default function TeacherMessagesPage() {
               </div>
             )}
             <div>
-              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-500">Message</label>
-              <textarea required rows={5} value={content} onChange={(e) => setContent(e.target.value)} className="input-field resize-y" placeholder="Type your message…" />
+              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-500">{t("teacher.messages.messageLabel")}</label>
+              <textarea required rows={5} value={content} onChange={(e) => setContent(e.target.value)} className="input-field resize-y" placeholder={t("teacher.messages.placeholder")} />
             </div>
             <button type="submit" disabled={sending} className="btn-primary w-full">
               {sending ? <Spinner /> : <><Send className="h-4 w-4" />{t("common.send")}</>}
@@ -128,7 +128,7 @@ export default function TeacherMessagesPage() {
           </form>
 
           <div className="card">
-            <h2 className="mb-3 text-sm font-bold text-brand-ink dark:text-brand-paper">Inbox</h2>
+            <h2 className="mb-3 text-sm font-bold text-brand-ink dark:text-brand-paper">{t("teacher.messages.inbox")}</h2>
             {loading ? (
               <div className="flex h-32 items-center justify-center">
                 <Spinner className="h-6 w-6 text-brand-orange" />
@@ -136,7 +136,7 @@ export default function TeacherMessagesPage() {
             ) : messages.length === 0 ? (
               <div className="flex flex-col items-center gap-2 py-10 text-center text-sm text-gray-500">
                 <MessageSquare className="h-8 w-8 text-gray-300" />
-                No messages yet
+                {t("msg.empty")}
               </div>
             ) : (
               <ul className="space-y-2 max-h-[500px] overflow-y-auto">
@@ -149,7 +149,7 @@ export default function TeacherMessagesPage() {
                     >
                       <div className="mb-1 flex items-center justify-between text-xs">
                         <span className="font-bold text-brand-ink dark:text-brand-paper">
-                          {fromMe ? "You" : m.sender.fullName} <span className="font-normal text-gray-500">({m.sender.role.toLowerCase()})</span>
+                          {fromMe ? t("msg.you") : m.sender.fullName} <span className="font-normal text-gray-500">({m.sender.role.toLowerCase()})</span>
                         </span>
                         <span className="text-gray-400">{new Date(m.createdAt).toLocaleString()}</span>
                       </div>

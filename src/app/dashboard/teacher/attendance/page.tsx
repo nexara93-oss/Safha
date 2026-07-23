@@ -68,7 +68,7 @@ export default function TeacherAttendancePage() {
         return [...without, res.attendance];
       });
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Failed");
+      error(e instanceof Error ? e.message : t("common.failed"));
     } finally {
       setSaving(null);
     }
@@ -84,7 +84,7 @@ export default function TeacherAttendancePage() {
           <h1 className="font-display text-2xl font-extrabold text-brand-ink sm:text-3xl dark:text-white">
             {t("dashboard.attendance")}
           </h1>
-          <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">Mark daily attendance for your students.</p>
+          <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("teacher.attendance.subtitle")}</p>
         </div>
 
         <div className="card flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -97,7 +97,7 @@ export default function TeacherAttendancePage() {
                 onChange={(e) => setSectionFilter(e.target.value)}
                 className="input-field !py-2"
               >
-                <option value="">All sections</option>
+                <option value="">{t("common.allSections")}</option>
                 {sections.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
@@ -106,12 +106,12 @@ export default function TeacherAttendancePage() {
           </div>
           <div className="flex items-center gap-3 text-sm">
             <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 font-bold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400">
-              {present} present
+              {present} {t("attendance.present")}
             </span>
             <span className="rounded-full bg-red-100 px-2.5 py-0.5 font-bold text-red-700 dark:bg-red-500/15 dark:text-red-400">
-              {absent} absent
+              {absent} {t("attendance.absent")}
             </span>
-            <span className="text-gray-500">{filtered.length} total</span>
+            <span className="text-gray-500">{filtered.length} {t("teacher.attendance.total")}</span>
           </div>
         </div>
 
@@ -120,7 +120,7 @@ export default function TeacherAttendancePage() {
             <Spinner className="h-8 w-8 text-brand-orange" />
           </div>
         ) : students.length === 0 ? (
-          <div className="card py-10 text-center text-sm text-gray-500">No students in your class yet.</div>
+          <div className="card py-10 text-center text-sm text-gray-500">{t("teacher.attendance.noStudents")}</div>
         ) : (
           <div className="card space-y-2 p-3 sm:p-4">
             {filtered.map((s) => {

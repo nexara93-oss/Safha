@@ -53,7 +53,7 @@ export default function DirectorMessagesPage() {
     e.preventDefault();
     if (!content.trim()) return;
     if ((recipientType === "TEACHER" || recipientType === "STUDENT") && !recipientId) {
-      error("Please choose a recipient");
+      error(t("director.messages.chooseRecipient"));
       return;
     }
     setSending(true);
@@ -67,10 +67,10 @@ export default function DirectorMessagesPage() {
         }
       });
       setContent("");
-      success("Message sent");
+      success(t("director.messages.sent"));
       load();
     } catch (e: unknown) {
-      error(e instanceof Error ? e.message : "Send failed");
+      error(e instanceof Error ? e.message : t("director.messages.sendFailed"));
     } finally {
       setSending(false);
     }
