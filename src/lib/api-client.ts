@@ -27,10 +27,18 @@ export async function api<T = unknown>(
   const text = await res.text();
   const data = text ? safeParse(text) : null;
   if (!res.ok) {
-    const msg =
-      (data && typeof data === "object" && "error" in data
-        ? String((data as { error: unknown }).error)
-        : null) || `Request failed (${res.status})`;
+    let msg: string;
+    if (
+      data &&
+      typeof data === "object" &&
+      "error" in data &&
+      (data as { error: unknown }).error != null
+    ) {
+      const raw = String((data as { error: unknown }).error);
+      msg = raw && raw !== "null" && raw !== "undefined" ? raw : `Request failed (${res.status})`;
+    } else {
+      msg = `Request failed (${res.status})`;
+    }
     throw new Error(msg);
   }
   if (data === null) throw new Error("Invalid server response");
