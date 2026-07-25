@@ -34,7 +34,6 @@ const navByRole = {
     { href: "/dashboard/director/analytics", icon: BarChart3, key: "dashboard.analytics" },
     { href: "/dashboard/director/messages", icon: MessageSquare, key: "dashboard.messages" },
     { href: "/dashboard/director/payment", icon: CreditCard, key: "dashboard.payment" },
-    { href: "/dashboard/director/timetable", icon: Clock, key: "dashboard.timetable" },
     { href: "/dashboard/director/notifications", icon: Bell, key: "dashboard.notifications" }
   ],
   TEACHER: [
@@ -47,8 +46,7 @@ const navByRole = {
     { href: "/dashboard/teacher/behavior", icon: Heart, key: "dashboard.behavior" },
     { href: "/dashboard/teacher/grades", icon: BookOpen, key: "dashboard.grades" },
     { href: "/dashboard/teacher/homework", icon: FileText, key: "dashboard.homework" },
-    { href: "/dashboard/teacher/messages", icon: MessageSquare, key: "dashboard.messages" },
-    { href: "/dashboard/teacher/timetable", icon: Clock, key: "dashboard.timetable" }
+    { href: "/dashboard/teacher/messages", icon: MessageSquare, key: "dashboard.messages" }
   ],
   STUDENT: [
     { href: "/dashboard/student", icon: LayoutDashboard, key: "dashboard.overview" },
@@ -58,8 +56,7 @@ const navByRole = {
     { href: "/dashboard/student/homework", icon: FileText, key: "dashboard.homework" },
     { href: "/dashboard/student/attendance", icon: CalendarCheck, key: "dashboard.attendance" },
     { href: "/dashboard/student/behavior", icon: Heart, key: "dashboard.behavior" },
-    { href: "/dashboard/student/messages", icon: MessageSquare, key: "dashboard.messages" },
-    { href: "/dashboard/student/timetable", icon: Clock, key: "dashboard.timetable" }
+    { href: "/dashboard/student/messages", icon: MessageSquare, key: "dashboard.messages" }
   ],
   ADMIN: [{ href: "/dashboard/admin", icon: ShieldCheck, key: "dashboard.admin" }]
 };

@@ -26,7 +26,6 @@ model School {
   subscription Subscription?
   payments    Payment[]
   parents     Parent[]
-  timetables  TimetableSlot[]
   homeworks   Homework[]
   lessons     Lesson[]
   finalExams  FinalExam[]
@@ -72,7 +71,6 @@ model Teacher {
   attendance   TeacherAttendance[]
   grades       Grade[]
   behavior     Behavior[]
-  timetableSlots TimetableSlot[]
   homeworks    Homework[]
   lessons      Lesson[]
   createdAt    DateTime       @default(now())
@@ -126,26 +124,6 @@ model StudentParent {
 
   @@id([studentId, parentId])
   @@index([parentId])
-}
-
-model TimetableSlot {
-  id        String   @id @default(cuid())
-  schoolId  String
-  school    School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  day       String   // MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY
-  startTime String   // HH:mm
-  endTime   String   // HH:mm
-  subject   String
-  teacherId String
-  teacher   Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
-  sectionId String
-  section   Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-  room      String?
-  createdAt DateTime @default(now())
-
-  @@index([schoolId, day])
-  @@index([sectionId])
-  @@index([teacherId])
 }
 
 model Homework {
@@ -264,7 +242,6 @@ model Section {
   teacherId  String?
   teacher    Teacher?  @relation(fields: [teacherId], references: [id], onDelete: SetNull)
   students      Student[]
-  timetableSlots TimetableSlot[]
   homeworks     Homework[]
   lessons       Lesson[]
   finalExams    FinalExam[]
