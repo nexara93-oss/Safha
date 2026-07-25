@@ -561,7 +561,10 @@ const translations: Record<Locale, Record<string, string>> = {
     "student.lessons.noLessons": "No lessons available yet.",
     "student.lessons.noContent": "No content.",
     "student.lessons.file": "File",
-    "student.lessons.video": "Video"
+    "student.lessons.video": "Video",
+    "student.timetable.title": "My timetable",
+    "student.timetable.subtitle": "Your weekly class schedule.",
+    "student.timetable.noSlots": "No timetable assigned yet."
   },
   fr: {
     "nav.features": "Fonctionnalités",
@@ -1112,7 +1115,10 @@ const translations: Record<Locale, Record<string, string>> = {
     "student.lessons.noLessons": "Aucune leçon disponible pour le moment.",
     "student.lessons.noContent": "Aucun contenu.",
     "student.lessons.file": "Fichier",
-    "student.lessons.video": "Vidéo"
+    "student.lessons.video": "Vidéo",
+    "student.timetable.title": "Mon emploi du temps",
+    "student.timetable.subtitle": "Votre emploi du temps hebdomadaire.",
+    "student.timetable.noSlots": "Aucun créneau horaire assigné pour le moment."
   },
   ar: {
     "nav.features": "الميزات",
@@ -1663,7 +1669,10 @@ const translations: Record<Locale, Record<string, string>> = {
     "student.lessons.noLessons": "لا توجد دروس متاحة بعد.",
     "student.lessons.noContent": "لا يوجد محتوى.",
     "student.lessons.file": "ملف",
-    "student.lessons.video": "فيديو"
+    "student.lessons.video": "فيديو",
+    "student.timetable.title": "جدول حصصي",
+    "student.timetable.subtitle": "جدول حصصك الأسبوعي.",
+    "student.timetable.noSlots": "لم يتم تعيين حصص زمنية بعد."
   }
 };
 
