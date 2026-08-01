@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { api } from "@/lib/api-client";
+import { useToast } from "@/components/ui/Toast";
 import { Spinner } from "@/components/ui/Spinner";
+import { Modal } from "@/components/ui/Modal";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { BookOpen, CheckCircle2, Clock, Filter } from "lucide-react";
+import { BookOpen, CheckCircle2, Clock, Filter, Pencil, Trash2 } from "lucide-react";
 
 type Section = { id: string; name: string };
 type Exam = {
@@ -23,12 +25,23 @@ type Exam = {
 
 export default function DirectorExamsPage() {
   const { t } = useLanguage();
+  const { success, error } = useToast();
   const [exams, setExams] = useState<Exam[]>([]);
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
   const [sectionFilter, setSectionFilter] = useState("");
+  const [editing, setEditing] = useState<Exam | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editSubject, setEditSubject] = useState("");
+  const [editDate, setEditDate] = useState("");
+  const [editStartTime, setEditStartTime] = useState("");
+  const [editEndTime, setEditEndTime] = useState("");
+  const [editCoefficient, setEditCoefficient] = useState("1");
+  const [editMaxScore, setEditMaxScore] = useState("20");
+  const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
+  const load = () => {
+    setLoading(true);
     Promise.all([
       api<{ exams: Exam[] }>("/api/exams"),
       api<{ sections: Section[] }>("/api/sections")
@@ -38,7 +51,58 @@ export default function DirectorExamsPage() {
         setSections(s.sections);
       })
       .finally(() => setLoading(false));
-  }, []);
+  };
+
+  useEffect(load, []);
+
+  const onDelete = async (exam: Exam) => {
+    if (!confirm(t("director.exams.deleteConfirm", { name: exam.name }))) return;
+    try {
+      await api(`/api/exams/${exam.id}`, { method: "DELETE" });
+      success(t("director.exams.deleteSuccess"));
+      load();
+    } catch (e: unknown) {
+      error(e instanceof Error ? e.message : t("director.exams.deleteFailed"));
+    }
+  };
+
+  const openEdit = (exam: Exam) => {
+    setEditing(exam);
+    setEditName(exam.name);
+    setEditSubject(exam.subject);
+    setEditDate(exam.date.slice(0, 10));
+    setEditStartTime(exam.startTime ?? "");
+    setEditEndTime(exam.endTime ?? "");
+    setEditCoefficient(String(exam.coefficient));
+    setEditMaxScore(String(exam.maxScore));
+  };
+
+  const onSaveEdit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!editing) return;
+    setSaving(true);
+    try {
+      await api(`/api/exams/${editing.id}`, {
+        method: "PATCH",
+        json: {
+          name: editName.trim(),
+          subject: editSubject.trim(),
+          date: new Date(editDate).toISOString(),
+          startTime: editStartTime || null,
+          endTime: editEndTime || null,
+          coefficient: Number(editCoefficient),
+          maxScore: Number(editMaxScore)
+        }
+      });
+      success(t("director.exams.updateSuccess"));
+      setEditing(null);
+      load();
+    } catch (e: unknown) {
+      error(e instanceof Error ? e.message : t("director.exams.updateFailed"));
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const filtered = sectionFilter ? exams.filter((ex) => ex.section?.id === sectionFilter) : exams;
 
@@ -110,8 +174,8 @@ export default function DirectorExamsPage() {
                   const total = exam._count?.results ?? 0;
                   return (
                     <div key={exam.id} className="card">
-                      <div className="flex items-center justify-between">
-                        <div>
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
                             <h3 className="font-display text-lg font-bold text-brand-ink dark:text-brand-paper">{exam.name}</h3>
                             <span className="badge bg-brand-orange/10 text-brand-orange text-xs">{exam.subject}</span>
@@ -122,7 +186,7 @@ export default function DirectorExamsPage() {
                             {total > 0 && ` · ${graded}/${total} graded`}
                           </p>
                         </div>
-                        <div className="text-end">
+                        <div className="flex shrink-0 items-center gap-1">
                           {total > 0 && (
                             <div className="text-xs font-semibold">
                               <span className={graded === total ? "text-emerald-600" : "text-amber-600"}>
@@ -130,6 +194,20 @@ export default function DirectorExamsPage() {
                               </span>
                             </div>
                           )}
+                          <button
+                            onClick={() => openEdit(exam)}
+                            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-brand-ink dark:hover:bg-white/10 dark:hover:text-white"
+                            aria-label={t("common.edit")}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => onDelete(exam)}
+                            className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10"
+                            aria-label={t("common.delete")}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -140,6 +218,53 @@ export default function DirectorExamsPage() {
           </>
         )}
       </div>
+
+      <Modal open={!!editing} onClose={() => setEditing(null)} title={t("director.exams.editTitle")} size="lg">
+        {editing && (
+          <form onSubmit={onSaveEdit} className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.name")}</label>
+                <input required value={editName} onChange={(e) => setEditName(e.target.value)} className="input-field" />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.subject")}</label>
+                <input required value={editSubject} onChange={(e) => setEditSubject(e.target.value)} className="input-field" />
+              </div>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.date")}</label>
+              <input required type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)} className="input-field" />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.startTime")}</label>
+                <input type="time" value={editStartTime} onChange={(e) => setEditStartTime(e.target.value)} className="input-field" />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.endTime")}</label>
+                <input type="time" value={editEndTime} onChange={(e) => setEditEndTime(e.target.value)} className="input-field" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.exams.coefficient")}</label>
+                <input required type="number" min="0" step="0.1" value={editCoefficient} onChange={(e) => setEditCoefficient(e.target.value)} className="input-field" />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("teacher.exams.maxScore")}</label>
+                <input required type="number" min="0.1" step="0.5" value={editMaxScore} onChange={(e) => setEditMaxScore(e.target.value)} className="input-field" />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 pt-1">
+              <button type="button" onClick={() => setEditing(null)} className="btn-ghost">{t("common.cancel")}</button>
+              <button type="submit" disabled={saving} className="btn-primary">
+                {saving ? <Spinner /> : t("common.save")}
+              </button>
+            </div>
+          </form>
+        )}
+      </Modal>
     </DashboardShell>
   );
 }

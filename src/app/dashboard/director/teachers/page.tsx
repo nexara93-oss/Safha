@@ -6,7 +6,7 @@ import { api } from "@/lib/api-client";
 import { useToast } from "@/components/ui/Toast";
 import { Spinner } from "@/components/ui/Spinner";
 import { Modal } from "@/components/ui/Modal";
-import { Plus, Users, Eye, EyeOff, Copy, Check, Mail } from "lucide-react";
+import { Plus, Users, Copy, Check, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { TeacherTableRow, TeacherMobileCard } from "@/components/teachers/TeacherRow";
 import { CredentialsDisplay } from "@/components/ui/CredentialsDisplay";

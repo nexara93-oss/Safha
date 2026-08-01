@@ -1,6 +1,7 @@
 "use client";
 import { useState, memo } from "react";
-import { Eye, EyeOff, Copy, Check } from "lucide-react";
+import { Copy, Check } from "lucide-react";
+import { EyeIcon } from "@/components/ui/EyeIcon";
 
 type PasswordFieldProps = {
   password: string;
@@ -37,7 +38,7 @@ export const PasswordField = memo(function PasswordField({ password, id, visible
         {visible ? password : "•".repeat(password.length)}
       </code>
       <button onClick={toggle} className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-brand-ink dark:hover:bg-white/10 dark:hover:text-white" aria-label={visible ? "Hide" : "Show"} title={visible ? "Hide" : "Show"}>
-        {visible ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+        <EyeIcon visible={visible} className="h-3.5 w-3.5" />
       </button>
       <button onClick={doCopy} className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-brand-ink dark:hover:bg-white/10 dark:hover:text-white" aria-label="Copy" title="Copy">
         {copiedId === id ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}

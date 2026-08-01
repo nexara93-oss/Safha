@@ -6,7 +6,8 @@ import { api } from "@/lib/api-client";
 import { Spinner } from "@/components/ui/Spinner";
 import { Modal } from "@/components/ui/Modal";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { GraduationCap, Eye, EyeOff, BookOpen, CalendarCheck, Heart, Copy, Check } from "lucide-react";
+import { GraduationCap, BookOpen, CalendarCheck, Heart, Copy, Check } from "lucide-react";
+import { EyeIcon } from "@/components/ui/EyeIcon";
 
 type Student = {
   id: string;
@@ -144,7 +145,7 @@ export default function DirectorStudentsPage() {
                       {visiblePasswords.has(s.id) ? getDefaultPassword(s) : "•".repeat(10)}
                     </code>
                     <button type="button" onClick={() => togglePassword(s.id)} className="rounded p-1 text-gray-400 hover:bg-gray-200 hover:text-brand-ink dark:hover:bg-white/10" aria-label="Toggle password">
-                      {visiblePasswords.has(s.id) ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                      <EyeIcon visible={visiblePasswords.has(s.id)} className="h-3.5 w-3.5" />
                     </button>
                     <button type="button" onClick={() => copyPassword(s)} className="rounded p-1 text-gray-400 hover:bg-gray-200 hover:text-brand-ink dark:hover:bg-white/10" aria-label="Copy password">
                       {copiedId === s.id ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}

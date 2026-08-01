@@ -3,7 +3,8 @@
 import { Suspense, useState, FormEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Mail, Eye, EyeOff } from "lucide-react";
+import { Mail } from "lucide-react";
+import { EyeIcon } from "@/components/ui/EyeIcon";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/components/ui/Toast";
@@ -152,7 +153,7 @@ function LoginForm() {
                 className="absolute end-2 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 hover:text-brand-ink dark:hover:bg-white/10 dark:hover:text-brand-paper"
                 aria-label={showPwd ? "Hide password" : "Show password"}
               >
-                {showPwd ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                <EyeIcon visible={showPwd} className="h-5 w-5" />
               </button>
             </div>
             {mode === "student" && (

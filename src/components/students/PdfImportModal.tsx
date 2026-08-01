@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { Spinner } from "@/components/ui/Spinner";
-import { FileText, Eye, EyeOff, Copy, Check } from "lucide-react";
+import { FileText, Copy, Check } from "lucide-react";
+import { EyeIcon } from "@/components/ui/EyeIcon";
 import { api } from "@/lib/api-client";
 import { useToast } from "@/components/ui/Toast";
 
@@ -83,7 +84,7 @@ export default function PdfImportModal({ open, onClose, onImported }: PdfImportM
                   {showPwd[s.id] ? s.defaultPassword : "•".repeat(s.defaultPassword.length)}
                 </code>
                 <button onClick={() => setShowPwd((m) => ({ ...m, [s.id]: !m[s.id] }))} className="rounded-md p-1 text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10" aria-label="Show">
-                  {showPwd[s.id] ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                  <EyeIcon visible={!!showPwd[s.id]} className="h-3.5 w-3.5" />
                 </button>
                 <button onClick={() => { navigator.clipboard.writeText(s.defaultPassword); setCopied(s.id); setTimeout(() => setCopied(null), 1500); }} className="rounded-md p-1 text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10" aria-label="Copy">
                   {copied === s.id ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}

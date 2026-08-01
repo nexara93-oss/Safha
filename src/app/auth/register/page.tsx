@@ -3,7 +3,8 @@
 import { Suspense, useState, FormEvent, useRef, ChangeEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Mail, Phone, Eye, EyeOff, Upload, X, School } from "lucide-react";
+import { Mail, Phone, Upload, X, School } from "lucide-react";
+import { EyeIcon } from "@/components/ui/EyeIcon";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/components/ui/Toast";
@@ -197,7 +198,7 @@ function RegisterForm() {
                 className="absolute end-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-gray-400 hover:text-brand-ink dark:hover:text-brand-paper"
                 aria-label={showPwd ? "Hide password" : "Show password"}
               >
-                {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                <EyeIcon visible={showPwd} className="h-4 w-4" />
               </button>
             </div>
             {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}

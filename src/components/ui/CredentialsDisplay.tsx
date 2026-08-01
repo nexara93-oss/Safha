@@ -1,6 +1,7 @@
 "use client";
 import { useState, memo } from "react";
-import { Mail, Eye, EyeOff, Copy, Check } from "lucide-react";
+import { Mail, Copy, Check } from "lucide-react";
+import { EyeIcon } from "@/components/ui/EyeIcon";
 import { Spinner } from "@/components/ui/Spinner";
 
 type CredentialsDisplayProps = {
@@ -48,7 +49,7 @@ export const CredentialsDisplay = memo(function CredentialsDisplay({ fullName, e
               {password && (
                 <>
                   <button onClick={() => setShowPwd((s) => !s)} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10">
-                    {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    <EyeIcon visible={showPwd} className="h-4 w-4" />
                   </button>
                   <button onClick={() => doCopy(password, "password")} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10">
                     {copied === "password" ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}

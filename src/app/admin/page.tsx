@@ -2,7 +2,8 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Eye, EyeOff, Lock } from "lucide-react";
+import { ShieldCheck, Lock } from "lucide-react";
+import { EyeIcon } from "@/components/ui/EyeIcon";
 
 export default function AdminLoginPage() {
   const [username, setUsername] = useState("");
@@ -72,7 +73,7 @@ export default function AdminLoginPage() {
                   autoComplete="current-password"
                 />
                 <button type="button" onClick={() => setShowPwd((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
-                  {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  <EyeIcon visible={showPwd} className="h-4 w-4" />
                 </button>
               </div>
             </div>
