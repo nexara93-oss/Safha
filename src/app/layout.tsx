@@ -19,17 +19,17 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "EduWave — School Management Platform",
+  title: "Safha — School Management Platform",
   description:
     "Modern school management platform for Moroccan private schools. Attendance, grades, behavior, and communication — all in one place.",
   keywords: ["school", "management", "morocco", "education", "saas"],
-  authors: [{ name: "EduWave" }],
+  authors: [{ name: "Safha" }],
   robots: {
     index: false,
     follow: false
   },
   openGraph: {
-    title: "EduWave — School Management Platform",
+    title: "Safha — School Management Platform",
     description: "Replace paper. Empower schools.",
     type: "website"
   }
@@ -48,7 +48,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#1e293b" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-title" content="EduWave" />
+        <meta name="apple-mobile-web-app-title" content="Safha" />
         <script nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: `try{document.documentElement.classList.remove('dark')}catch(e){}`

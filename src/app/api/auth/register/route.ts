@@ -2,8 +2,9 @@ import { NextRequest } from "next/server";
 import { z } from "zod";
 import { prisma, hashPassword, describePrismaError } from "@/lib/db";
 import { Prisma } from "@prisma/client";
-import { signToken, setAuthCookie } from "@/lib/auth";
+import { signToken, setAuthCookie, type AuthClaims } from "@/lib/auth";
 import { ok, err, parseJson, zodToErrorResponse } from "@/lib/api";
+import { buildVerificationEmail, generateVerificationToken, hashToken, sendEmail, APP_URL } from "@/lib/email";
 
 const schema = z.object({
   fullName: z.string().min(2).max(120),
@@ -50,6 +51,9 @@ export async function POST(request: NextRequest) {
       if (exists) return err("An account with this phone already exists", 409);
     }
 
+    const verificationToken = generateVerificationToken();
+    const verificationExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
     const result = await prisma.$transaction(async (tx) => {
       const user = await tx.user.create({
         data: {
@@ -57,7 +61,14 @@ export async function POST(request: NextRequest) {
           email: isEmailInput ? body.identifier : null,
           phone: isEmailInput ? null : body.identifier,
           passwordHash,
-          role: "DIRECTOR"
+          role: "DIRECTOR",
+          ...(isEmailInput
+            ? {
+                status: "PENDING_VERIFICATION",
+                emailVerificationToken: hashToken(verificationToken),
+                emailVerificationExpires: verificationExpiry
+              }
+            : {})
         }
       });
 
@@ -88,9 +99,25 @@ export async function POST(request: NextRequest) {
       return { user, school };
     });
 
+    if (isEmailInput) {
+      const verifyUrl = `${APP_URL}/auth/verify-email?token=${verificationToken}`;
+      const mail = buildVerificationEmail({
+        name: result.user.fullName.split(" ")[0],
+        url: verifyUrl
+      });
+      const sent = await sendEmail({ to: body.identifier, subject: mail.subject, html: mail.html });
+
+      return ok({
+        user: null,
+        needsVerification: true,
+        email: result.user.email,
+        emailSent: sent.ok
+      });
+    }
+
     const token = signToken({
       userId: result.user.id,
-      role: "DIRECTOR",
+      role: "DIRECTOR" as AuthClaims["role"],
       schoolId: result.school.id
     });
     await setAuthCookie(token);

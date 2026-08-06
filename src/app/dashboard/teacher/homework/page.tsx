@@ -53,7 +53,7 @@ export default function TeacherHomeworkPage() {
   const [gradingSub, setGradingSub] = useState<Record<string, boolean>>({});
 
   const [formSection, setFormSection] = useState("");
-  const [formSubject, setFormSubject] = useState("");
+  const [defaultSubject, setDefaultSubject] = useState("");
   const [formTitle, setFormTitle] = useState("");
   const [formDesc, setFormDesc] = useState("");
   const [formDueDate, setFormDueDate] = useState("");
@@ -69,8 +69,14 @@ export default function TeacherHomeworkPage() {
   };
 
   useEffect(() => {
-    api<{ sections: Section[] }>("/api/sections")
-      .then((d) => setSections(d.sections))
+    Promise.all([
+      api<{ teacher?: { subject: string } }>("/api/dashboard/teacher").catch(() => ({ teacher: undefined })),
+      api<{ sections: Section[] }>("/api/sections")
+    ])
+      .then(([profile, d]) => {
+        if (profile?.teacher?.subject) setDefaultSubject(profile.teacher.subject);
+        setSections(d.sections);
+      })
       .catch(() => {});
   }, []);
 
@@ -110,7 +116,7 @@ export default function TeacherHomeworkPage() {
         method: "POST",
         json: {
           sectionId: formSection,
-          subject: formSubject.trim(),
+          subject: defaultSubject.trim(),
           title: formTitle.trim(),
           description: formDesc.trim(),
           dueDate: formDueDate,
@@ -119,7 +125,6 @@ export default function TeacherHomeworkPage() {
       });
       setAddOpen(false);
       setFormSection("");
-      setFormSubject("");
       setFormTitle("");
       setFormDesc("");
       setFormDueDate("");
@@ -346,7 +351,13 @@ export default function TeacherHomeworkPage() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.subject")}</label>
-              <input required value={formSubject} onChange={(e) => setFormSubject(e.target.value)} className="input-field" placeholder={t("teacher.grades.subjectPlaceholder")} />
+              <input
+                required
+                value={defaultSubject}
+                readOnly
+                className="input-field cursor-not-allowed bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-white/50"
+                placeholder={t("teacher.grades.subjectPlaceholder")}
+              />
             </div>
             <div>
               <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.dueDate")}</label>

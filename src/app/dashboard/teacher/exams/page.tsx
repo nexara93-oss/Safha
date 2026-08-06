@@ -33,7 +33,7 @@ export default function TeacherExamsPage() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
-  const [subject, setSubject] = useState("");
+  const [defaultSubject, setDefaultSubject] = useState("");
   const [sectionId, setSectionId] = useState("");
   const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -49,10 +49,12 @@ export default function TeacherExamsPage() {
   const load = () => {
     setLoading(true);
     Promise.all([
+      api<{ teacher?: { subject: string } }>("/api/dashboard/teacher").catch(() => ({ teacher: undefined })),
       api<{ exams: Exam[] }>("/api/exams"),
       api<{ sections: Section[] }>("/api/sections")
     ])
-      .then(([e, s]) => {
+      .then(([profile, e, s]) => {
+        if (profile?.teacher?.subject) setDefaultSubject(profile.teacher.subject);
         setExams(e.exams);
         setSections(s.sections);
       })
@@ -68,7 +70,7 @@ export default function TeacherExamsPage() {
         method: "POST",
         json: {
           name: name.trim(),
-          subject: subject.trim(),
+          subject: defaultSubject.trim(),
           sectionId,
           date,
           startTime,
@@ -78,7 +80,6 @@ export default function TeacherExamsPage() {
         }
       });
       setName("");
-      setSubject("");
       setSectionId("");
       setDate("");
       setStartTime("");
@@ -264,7 +265,13 @@ export default function TeacherExamsPage() {
             </div>
             <div>
               <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.subject")}</label>
-              <input required value={subject} onChange={(e) => setSubject(e.target.value)} className="input-field" placeholder={t("teacher.grades.subjectPlaceholder")} />
+              <input
+                required
+                value={defaultSubject}
+                readOnly
+                className="input-field cursor-not-allowed bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-white/50"
+                placeholder={t("teacher.grades.subjectPlaceholder")}
+              />
             </div>
           </div>
           <div>

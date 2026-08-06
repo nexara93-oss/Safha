@@ -30,7 +30,7 @@ export default function TeacherLessonsPage() {
   const [sectionFilter, setSectionFilter] = useState("");
   const [open, setOpen] = useState(false);
   const [sectionId, setSectionId] = useState("");
-  const [subject, setSubject] = useState("");
+  const [defaultSubject, setDefaultSubject] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [fileUrl, setFileUrl] = useState("");
@@ -41,10 +41,12 @@ export default function TeacherLessonsPage() {
   const load = () => {
     setLoading(true);
     Promise.all([
+      api<{ teacher?: { subject: string } }>("/api/dashboard/teacher").catch(() => ({ teacher: undefined })),
       api<{ lessons: Lesson[] }>("/api/lessons"),
       api<{ sections: Section[] }>("/api/sections")
     ])
-      .then(([l, s]) => {
+      .then(([profile, l, s]) => {
+        if (profile?.teacher?.subject) setDefaultSubject(profile.teacher.subject);
         setLessons(l.lessons);
         setSections(s.sections);
       })
@@ -58,10 +60,9 @@ export default function TeacherLessonsPage() {
     try {
       await api("/api/lessons", {
         method: "POST",
-        json: { sectionId, subject: subject.trim(), title: title.trim(), content, fileUrl: fileUrl || null, videoUrl: videoUrl || null }
+        json: { sectionId, subject: defaultSubject.trim(), title: title.trim(), content, fileUrl: fileUrl || null, videoUrl: videoUrl || null }
       });
       setSectionId("");
-      setSubject("");
       setTitle("");
       setContent("");
       setFileUrl("");
@@ -192,7 +193,13 @@ export default function TeacherLessonsPage() {
             </div>
             <div>
               <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.subject")}</label>
-              <input required value={subject} onChange={(e) => setSubject(e.target.value)} className="input-field" placeholder={t("teacher.grades.subjectPlaceholder")} />
+              <input
+                required
+                value={defaultSubject}
+                readOnly
+                className="input-field cursor-not-allowed bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-white/50"
+                placeholder={t("teacher.grades.subjectPlaceholder")}
+              />
             </div>
           </div>
           <div>

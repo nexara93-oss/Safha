@@ -43,6 +43,12 @@ export async function POST(req: NextRequest) {
       recordFailedAttempt(identifier);
       return err("Invalid credentials", 401);
     }
+    if (user.status === "PENDING_VERIFICATION") {
+      return err("Please verify your email before signing in.", 403, {
+        code: "EMAIL_NOT_VERIFIED",
+        email: user.email
+      });
+    }
     if (user.status !== "ACTIVE") return err("Account suspended", 403);
     if (user.role === "STUDENT") return err("Students must use the student login form", 400);
 

@@ -1,9 +1,8 @@
 import { NextRequest } from "next/server";
-import { prisma, hashPassword } from "@/lib/db";
+import { prisma, hashPassword, generateStrongPassword } from "@/lib/db";
 import { getAuthFromRequest } from "@/lib/auth";
 import { ok, err, zodToErrorResponse } from "@/lib/api";
 import { z } from "zod";
-import crypto from "crypto";
 
 const schema = z.object({
   students: z
@@ -38,7 +37,7 @@ export async function POST(req: NextRequest) {
 
     for (const s of parsed.data.students) {
       const fullName = `${s.firstName}${s.lastName ? " " + s.lastName : ""}`;
-      const defaultPwd = `${s.firstName.toLowerCase()}${crypto.randomInt(1000, 10000)}`;
+      const defaultPwd = generateStrongPassword();
       const passwordHash = await hashPassword(defaultPwd);
 
       const student = await prisma.$transaction(async (tx) => {

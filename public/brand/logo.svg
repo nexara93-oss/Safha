@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="800" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+            <stop offset="0%" stop-color="#0F2027" />
+            <stop offset="100%" stop-color="#050B14" />
+        </radialGradient>
+        
+        <linearGradient id="paperGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFFFFF" />
+            <stop offset="100%" stop-color="#D6E4F0" />
+        </linearGradient>
+
+        <linearGradient id="digitalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00D2FF" />
+            <stop offset="100%" stop-color="#0066FF" />
+        </linearGradient>
+
+        <linearGradient id="penGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00F0FF" />
+            <stop offset="100%" stop-color="#0044FF" />
+        </linearGradient>
+
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="10" stdDeviation="15" flood-color="#000000" flood-opacity="0.4"/>
+        </filter>
+        
+        <filter id="digitalGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="8" result="blur" />
+            <feComponentTransfer in="blur" result="glow1">
+                <feFuncA type="linear" slope="0.8"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode in="glow1" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- Base Circle -->
+    <circle cx="400" cy="400" r="360" fill="url(#bgGlow)" stroke="#1A365D" stroke-width="4" />
+    <circle cx="400" cy="400" r="320" fill="none" stroke="#00D2FF" stroke-width="2" stroke-dasharray="12 12" opacity="0.4" />
+
+    <g>
+        <!-- Paper Section (Analog Writing) -->
+        <g filter="url(#shadow)">
+            <path d="M 240 250 C 320 230, 420 260, 460 300 C 480 320, 460 480, 420 540 C 350 580, 240 560, 200 500 C 180 440, 180 300, 240 250 Z" fill="url(#paperGrad)" />
+            <path d="M 250 320 C 290 310, 340 325, 370 340" stroke="#4A5568" stroke-width="5" stroke-linecap="round" opacity="0.7" />
+            <path d="M 240 370 C 280 360, 330 375, 380 390" stroke="#4A5568" stroke-width="5" stroke-linecap="round" opacity="0.7" />
+            <path d="M 230 420 C 270 410, 310 420, 350 435" stroke="#4A5568" stroke-width="5" stroke-linecap="round" opacity="0.5" />
+        </g>
+
+        <!-- Digital Transition Particles -->
+        <g filter="url(#digitalGlow)">
+            <circle cx="420" cy="350" r="6" fill="#00D2FF" />
+            <circle cx="460" cy="380" r="8" fill="#FFFFFF" />
+            <circle cx="440" cy="430" r="5" fill="#0066FF" />
+            <circle cx="490" cy="420" r="7" fill="#00F0FF" />
+            <path d="M 370 340 L 420 350 L 460 380" stroke="#00D2FF" stroke-width="2" stroke-dasharray="4 4" opacity="0.8" />
+            <path d="M 380 390 L 440 430 L 490 420" stroke="#00D2FF" stroke-width="2" stroke-dasharray="4 4" opacity="0.8" />
+        </g>
+
+        <!-- Digital Interface / Screen -->
+        <g filter="url(#shadow)">
+            <rect x="380" y="240" width="240" height="320" rx="24" fill="#0A192F" stroke="url(#digitalGrad)" stroke-width="6" opacity="0.95" />
+            <line x1="420" y1="290" x2="560" y2="290" stroke="#00D2FF" stroke-width="6" stroke-linecap="round" filter="url(#digitalGlow)" />
+            <line x1="420" y1="330" x2="520" y2="330" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" opacity="0.9" />
+            <line x1="420" y1="370" x2="540" y2="370" stroke="#00D2FF" stroke-width="6" stroke-linecap="round" filter="url(#digitalGlow)" />
+            <rect x="550" y="360" width="4" height="20" fill="#FFFFFF" filter="url(#digitalGlow)" />
+            <path d="M 420 440 H 540 A 10 10 0 0 1 550 450 V 510 A 10 10 0 0 1 540 520 H 420 A 10 10 0 0 1 410 510 V 450 A 10 10 0 0 1 420 440 Z" fill="#112240" stroke="#1E3A8A" stroke-width="3" />
+            <circle cx="440" cy="465" r="4" fill="#00D2FF" />
+            <circle cx="470" cy="465" r="4" fill="#00D2FF" />
+            <circle cx="500" cy="465" r="4" fill="#00D2FF" />
+            <circle cx="530" cy="465" r="4" fill="#00D2FF" />
+            <circle cx="455" cy="485" r="4" fill="#00D2FF" />
+            <circle cx="485" cy="485" r="4" fill="#FFFFFF" />
+            <circle cx="515" cy="485" r="4" fill="#00D2FF" />
+            <line x1="450" y1="505" x2="510" y2="505" stroke="#00D2FF" stroke-width="4" stroke-linecap="round" />
+        </g>
+
+        <!-- Stylus Pen -->
+        <g filter="url(#shadow)">
+            <g transform="rotate(-35, 400, 400)">
+                <rect x="385" y="180" width="30" height="320" rx="15" fill="url(#penGrad)" filter="url(#digitalGlow)" />
+                <path d="M 385 490 L 400 540 L 415 490 Z" fill="#FFFFFF" />
+                <circle cx="400" cy="540" r="6" fill="#00F0FF" filter="url(#digitalGlow)" />
+                <rect x="396" y="210" width="8" height="80" rx="4" fill="#FFFFFF" opacity="0.8" />
+            </g>
+        </g>
+        
+        <!-- Sparkles -->
+        <path d="M 570 210 L 575 225 L 590 230 L 575 235 L 570 250 L 565 235 L 550 230 L 565 225 Z" fill="#00F0FF" filter="url(#digitalGlow)" />
+        <path d="M 220 210 L 223 220 L 233 223 L 223 226 L 220 236 L 217 226 L 207 223 L 217 220 Z" fill="#FFFFFF" opacity="0.8" />
+        <path d="M 610 380 L 612 388 L 620 390 L 612 392 L 610 400 L 608 392 L 600 390 L 608 388 Z" fill="#00D2FF" filter="url(#digitalGlow)" />
+    </g>
+</svg>

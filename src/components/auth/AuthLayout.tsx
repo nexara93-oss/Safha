@@ -4,7 +4,7 @@ import { ReactNode, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { GraduationCap } from "lucide-react";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
@@ -38,17 +38,9 @@ export function AuthLayout({
     <div className="min-h-screen bg-brand-cream dark:bg-[#0A0A0A]">
       <div className="absolute inset-x-0 top-0 z-20 mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-20 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-brand-orange shadow-lg shadow-brand-orange/30">
-            <svg viewBox="0 0 64 64" className="h-full w-full" aria-hidden>
-              <path d="M32 14 L8 24 L32 34 L56 24 Z" fill="#FFFFFF" />
-              <path d="M18 27.5 L18 36 C18 38.5 24 41 32 41 C40 41 46 38.5 46 36 L46 27.5 L32 34 Z" fill="#FFFFFF" />
-              <path d="M52 24 L52 38" stroke="#FFFFFF" strokeWidth="2" fill="none" strokeLinecap="round" />
-              <circle cx="52" cy="40" r="1.6" fill="#FFFFFF" />
-              <path d="M50.5 41.2 L51 46 M52 41.5 L52 46.5 M53.5 41.2 L53 46" stroke="#FFFFFF" strokeWidth="1.4" strokeLinecap="round" fill="none" />
-            </svg>
-          </div>
+          <BrandLogo className="h-10 w-10" />
           <span className="font-display text-xl font-extrabold tracking-tight text-brand-ink dark:text-brand-paper">
-            EduWave
+            Safha
           </span>
         </Link>
         <div className="flex items-center gap-2">
@@ -79,7 +71,7 @@ export function AuthLayout({
               <h2 className="mt-6 font-display text-4xl font-extrabold leading-tight xl:text-5xl">
                 {mode === "register"
                   ? "Set up your school in minutes."
-                  : "Welcome back to EduWave."}
+                  : "Welcome back to Safha."}
               </h2>
               <p className="mt-4 max-w-md text-white/70">
                 {mode === "register"
@@ -95,7 +87,7 @@ export function AuthLayout({
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-white">
-                    "EduWave transformed how we run our school. We replaced 3 notebooks in one week."
+                    "Safha transformed how we run our school. We replaced 3 notebooks in one week."
                   </p>
                   <p className="mt-2 text-xs text-white/60">— Mme. Bennani, Directrice, Casablanca</p>
                 </div>

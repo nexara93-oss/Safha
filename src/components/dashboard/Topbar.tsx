@@ -44,7 +44,7 @@ export function Topbar() {
           </button>
           <div className="hidden sm:block">
             <h1 className="text-base font-bold text-brand-ink dark:text-brand-paper">
-              {user?.school?.name ? user.school.name : "EduWave"}
+              {user?.school?.name ? user.school.name : "Safha"}
             </h1>
             <p className="text-xs text-brand-ink/60 dark:text-brand-paper/60">
               {user?.role === "DIRECTOR" ? t("auth.welcomeDirector") : user?.role === "TEACHER" ? t("auth.welcomeTeacher") : user?.role === "ADMIN" ? t("auth.welcomeAdmin") : user?.role === "PARENT" ? t("auth.welcomeParent") : t("auth.welcomeStudent")}

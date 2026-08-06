@@ -1,8 +1,7 @@
 import { NextRequest } from "next/server";
-import { prisma, hashPassword } from "@/lib/db";
+import { prisma, hashPassword, generateStrongPassword } from "@/lib/db";
 import { getAuthFromRequest } from "@/lib/auth";
 import { ok, err } from "@/lib/api";
-import crypto from "crypto";
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   const auth = await getAuthFromRequest(req);
@@ -36,8 +35,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     const user = await prisma.user.findUnique({ where: { id: student.userId } });
     if (!user) return err("User not found", 404);
 
-    const name = user.fullName.split(" ")[0].toLowerCase();
-    const newPwd = `${name}${crypto.randomInt(1000, 10000)}`;
+    const newPwd = generateStrongPassword();
     const passwordHash = await hashPassword(newPwd);
     await prisma.user.update({ where: { id: student.userId }, data: { passwordHash } });
     return ok({ email: user.email, password: newPwd });

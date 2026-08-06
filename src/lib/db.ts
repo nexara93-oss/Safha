@@ -42,8 +42,8 @@ export async function verifyPassword(plain: string, hash: string): Promise<boole
 }
 
 /**
- * Generate a strong 10-character password.
- * Format: 4 lowercase + 2 uppercase + 2 digits + 2 symbols (rearranged for uniqueness).
+ * Generate a strong 12-character password.
+ * Format: 4 lowercase + 3 uppercase + 2 digits + 3 symbols (rearranged for uniqueness).
  * Guarantees unique across the school's teachers (caller checks).
  */
 export function generateStrongPassword(): string {
@@ -57,13 +57,15 @@ export function generateStrongPassword(): string {
     pick(lower),
     pick(lower),
     pick(lower),
+    pick(lower),
+    pick(upper),
     pick(upper),
     pick(upper),
     pick(digits),
     pick(digits),
     pick(symbols),
     pick(symbols),
-    pick(lower)
+    pick(symbols)
   ];
   // Shuffle (Fisher-Yates) using crypto
   for (let i = arr.length - 1; i > 0; i--) {

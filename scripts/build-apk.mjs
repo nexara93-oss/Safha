@@ -1,5 +1,5 @@
 /**
- * Build script for EduWave APK
+ * Build script for Safha APK
  * 
  * Usage:
  *   node scripts/build-apk.mjs          # Build APK (requires Android SDK)
@@ -17,7 +17,7 @@ import { existsSync } from "fs";
 const args = process.argv.slice(2);
 const mode = args.includes("--sync") ? "sync" : "full";
 
-console.log("=== EduWave APK Builder ===");
+console.log("=== Safha APK Builder ===");
 console.log(`Mode: ${mode}\n`);
 
 // 1. Build Next.js

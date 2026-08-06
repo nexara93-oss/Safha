@@ -26,36 +26,48 @@ export const CredentialsDisplay = memo(function CredentialsDisplay({ fullName, e
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-gray-50 p-4 dark:bg-white/5">
-        <div className="mb-1 text-sm font-bold text-brand-ink dark:text-brand-paper">{fullName}</div>
-        <div className="space-y-2 text-sm">
+      <div className="rounded-2xl border border-gray-100 bg-gray-50 p-5 dark:border-white/5 dark:bg-white/[0.03]">
+        <div className="mb-3 text-end text-sm font-bold text-brand-ink dark:text-white">{fullName}</div>
+        <div className="space-y-3">
           <div>
-            <span className="text-xs font-semibold uppercase text-gray-500">Email</span>
-            <div className="mt-0.5 flex items-center gap-2">
-              <code className="flex-1 rounded-lg bg-white px-3 py-1.5 font-mono text-sm dark:bg-white/10">{email || "—"}</code>
+            <div className="mb-1 flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Email</span>
               {email && (
-                <button onClick={() => doCopy(email, "email")} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10">
-                  {copied === "email" ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
+                <button onClick={() => doCopy(email, "email")} className="flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-semibold text-gray-500 transition-colors hover:bg-white hover:text-brand-ink dark:hover:bg-white/10 dark:hover:text-white">
+                  {copied === "email" ? <><Check className="h-3 w-3 text-emerald-500" /> Copied</> : <><Copy className="h-3 w-3" /> Copy</>}
                 </button>
               )}
             </div>
+            <code className="block w-full truncate rounded-xl bg-white px-4 py-2.5 text-end font-mono text-sm text-brand-ink dark:bg-white/10 dark:text-white">{email || "—"}</code>
           </div>
           <div>
-            <span className="text-xs font-semibold uppercase text-gray-500">Password</span>
-            <div className="mt-0.5 flex items-center gap-2">
-              <code className="flex-1 rounded-lg bg-white px-3 py-1.5 font-mono text-sm dark:bg-white/10">
-                {password ? (showPwd ? password : "•".repeat(password.length)) : "••••••••"}
-              </code>
+            <div className="mb-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Password</span>
+            </div>
+            <div className="flex items-center gap-1 rounded-xl bg-white px-2 py-1.5 dark:bg-white/10">
               {password && (
                 <>
-                  <button onClick={() => setShowPwd((s) => !s)} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10">
-                    <EyeIcon visible={showPwd} className="h-4 w-4" />
+                  <button
+                    onClick={() => setShowPwd((s) => !s)}
+                    className="shrink-0 rounded-md p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-brand-ink dark:hover:bg-white/10 dark:hover:text-white"
+                    aria-label={showPwd ? "Hide password" : "Show password"}
+                    title={showPwd ? "Hide" : "Show"}
+                  >
+                    <EyeIcon visible={showPwd} className="h-3.5 w-3.5" />
                   </button>
-                  <button onClick={() => doCopy(password, "password")} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10">
-                    {copied === "password" ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
+                  <button
+                    onClick={() => doCopy(password, "password")}
+                    className="shrink-0 rounded-md p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-brand-ink dark:hover:bg-white/10 dark:hover:text-white"
+                    aria-label="Copy password"
+                    title="Copy"
+                  >
+                    {copied === "password" ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
                   </button>
                 </>
               )}
+              <code className="flex-1 truncate px-2 text-end font-mono text-sm tracking-wider text-brand-ink dark:text-white" dir="ltr">
+                {password ? (showPwd ? password : "•".repeat(password.length)) : "••••••••"}
+              </code>
             </div>
           </div>
         </div>

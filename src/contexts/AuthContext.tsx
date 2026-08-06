@@ -21,9 +21,15 @@ type AuthContextType = {
   loading: boolean;
   login: (identifier: string, password: string) => Promise<AuthUser>;
   loginStudent: (identifier: string, password: string) => Promise<AuthUser>;
-  register: (data: RegisterPayload) => Promise<AuthUser>;
+  register: (data: RegisterPayload) => Promise<RegisterResult>;
   logout: () => void;
   refresh: () => Promise<void>;
+};
+
+type RegisterResult = {
+  user: AuthUser | null;
+  needsVerification: boolean;
+  email?: string | null;
 };
 
 type RegisterPayload = {
@@ -37,7 +43,7 @@ type RegisterPayload = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const USER_KEY = "eduwave_user";
+const USER_KEY = "safha_user";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -85,7 +91,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || "Login failed");
+      const e = new Error(err.error || "Login failed") as Error & { code?: string; email?: string };
+      if (err.code) e.code = err.code;
+      if (err.email) e.email = err.email;
+      throw e;
     }
     const data = (await res.json()) as { user: AuthUser; token?: string };
     setUser(data.user);
@@ -121,10 +130,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || "Registration failed");
     }
-    const data = (await res.json()) as { user: AuthUser; token?: string };
-    setUser(data.user);
-    persistUser(data.user);
-    return data.user;
+    const data = (await res.json()) as { user?: AuthUser | null; needsVerification?: boolean; email?: string | null };
+    if (data.user) {
+      setUser(data.user);
+      persistUser(data.user);
+    }
+    return {
+      user: data.user ?? null,
+      needsVerification: !!data.needsVerification,
+      email: data.email
+    };
   }, [persistUser]);
 
   const logout = useCallback(async () => {

@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     const parsed = schema.safeParse(body);
     if (!parsed.success) return err("Validation failed", 422);
 
-    const amount = parsed.data.plan === "MONTHLY" ? 20 : 119;
+    const amount = parsed.data.plan === "MONTHLY" ? 50 : 500;
     const days = parsed.data.plan === "MONTHLY" ? 30 : 365;
     const start = new Date();
     const end = new Date(start.getTime() + days * 24 * 60 * 60 * 1000);

@@ -6,6 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { WaveDivider, WaveDividerMulti } from "@/components/ui/WaveDivider";
 import { Reveal } from "@/components/ui/Reveal";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import {
   CheckCircle2,
   Users,
@@ -20,8 +21,7 @@ import {
   Sparkles,
   Instagram,
   MessageCircle,
-  Mail,
-  GraduationCap
+  Mail
 } from "lucide-react";
 
 // Real photos from Unsplash (free, no API key required for static URLs).
@@ -141,14 +141,14 @@ export function LandingPage() {
                     <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
                     <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
                     <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                    <span className="ms-3 text-xs font-medium text-gray-500">app.eduwave.ma</span>
+                    <span className="ms-3 text-xs font-medium text-gray-500">app.safha.ma</span>
                   </div>
                   <div className="grid grid-cols-12 gap-3">
                     <div className="col-span-12 sm:col-span-3">
                       <div className="rounded-xl bg-brand-cream p-3 dark:bg-white/5">
                         <div className="mb-3 flex items-center gap-2">
                           <div className="h-7 w-7 rounded-lg bg-brand-orange" />
-                          <div className="text-xs font-bold text-brand-ink dark:text-brand-paper">EduWave</div>
+                          <div className="text-xs font-bold text-brand-ink dark:text-brand-paper">Safha</div>
                         </div>
                         {["Aperçu", "Enseignants", "Élèves", "Messages", "Paiement"].map((item, i) => (
                           <div
@@ -342,7 +342,7 @@ export function LandingPage() {
                 <h3 className="text-xl font-bold text-[#1F2738]">{t("pricing.monthly")}</h3>
                 <p className="mt-1 text-sm text-slate-600 dark:text-slate-500">Pay as you go</p>
                 <div className="mt-6 flex items-baseline gap-1">
-                  <span className="font-display text-5xl font-extrabold text-[#1F2738]" dir="ltr">$20</span>
+                  <span className="font-display text-5xl font-extrabold text-[#1F2738]" dir="ltr">$50</span>
                   <span className="text-sm font-medium text-slate-600 dark:text-slate-500">{t("pricing.perMonth")}</span>
                 </div>
                 <ul className="mt-6 space-y-2.5 text-sm">
@@ -375,10 +375,10 @@ export function LandingPage() {
                   </span>
                 </p>
                 <div className="mt-6 flex items-baseline gap-1">
-                  <span className="font-display text-5xl font-extrabold text-white" dir="ltr">$119</span>
+                  <span className="font-display text-5xl font-extrabold text-white" dir="ltr">$500</span>
                   <span className="text-sm font-medium text-white/80">{t("pricing.perYear")}</span>
                 </div>
-                <p className="mt-1 text-xs text-white/70" dir="ltr">~$9.92/month</p>
+                <p className="mt-1 text-xs text-white/70" dir="ltr">~$41.67/month</p>
                 <ul className="mt-6 space-y-2.5 text-sm">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <li key={i} className="flex items-start gap-2 text-white">
@@ -446,11 +446,9 @@ export function LandingPage() {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-orange to-blue-700 text-white shadow-lg shadow-brand-orange/30">
-                  <GraduationCap className="h-4 w-4" />
-                </div>
+                <BrandLogo className="h-9 w-9" />
                 <span className="font-display text-lg font-extrabold text-brand-ink dark:text-brand-paper">
-                  EduWave
+                  Safha
                 </span>
               </div>
               <p className="mt-3 text-sm text-brand-ink/70 dark:text-white/60">{t("footer.tagline")}</p>

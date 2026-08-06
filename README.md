@@ -1,6 +1,6 @@
-# School Management Platform
+# Safha — School Management Platform
 
-A complete SaaS School Management application for Moroccan private schools, replacing paper-based systems with digital attendance, grades, behavior tracking, and communication.
+A complete SaaS School Management application (formerly "EduWave") for Moroccan private schools, replacing paper-based systems with digital attendance, grades, behavior tracking, and communication.
 
 ## Features
 - Multi-role auth (Director, Teacher, Student, Admin)

@@ -5,7 +5,8 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
-import { Menu, X, GraduationCap } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import { useState, useEffect } from "react";
 
 export function Navbar() {
@@ -42,18 +43,11 @@ export function Navbar() {
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-20 sm:px-6 lg:px-8">
         <Link href="/" className="group flex items-center gap-2.5">
-          <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-brand-orange shadow-lg shadow-brand-orange/30 transition-transform group-hover:scale-105">
-            {/* Graduation cap logo */}
-            <svg viewBox="0 0 64 64" className="h-full w-full" aria-hidden>
-              <path d="M32 14 L8 24 L32 34 L56 24 Z" fill="#FFFFFF" />
-              <path d="M18 27.5 L18 36 C18 38.5 24 41 32 41 C40 41 46 38.5 46 36 L46 27.5 L32 34 Z" fill="#FFFFFF" />
-              <path d="M52 24 L52 38" stroke="#FFFFFF" strokeWidth="2" fill="none" strokeLinecap="round" />
-              <circle cx="52" cy="40" r="1.6" fill="#FFFFFF" />
-              <path d="M50.5 41.2 L51 46 M52 41.5 L52 46.5 M53.5 41.2 L53 46" stroke="#FFFFFF" strokeWidth="1.4" strokeLinecap="round" fill="none" />
-            </svg>
+          <div className="transition-transform group-hover:scale-105">
+            <BrandLogo className="h-10 w-10" />
           </div>
           <span data-nav-over-hero className="font-display text-xl font-extrabold tracking-tight text-brand-ink transition-colors dark:text-brand-paper">
-            EduWave
+            Safha
           </span>
         </Link>
 

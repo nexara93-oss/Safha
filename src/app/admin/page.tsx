@@ -41,7 +41,7 @@ export default function AdminLoginPage() {
             <ShieldCheck className="h-8 w-8 text-white" />
           </div>
           <h1 className="font-display text-3xl font-extrabold text-white">Admin Panel</h1>
-          <p className="mt-1 text-sm text-slate-400">EduWave Platform Management</p>
+          <p className="mt-1 text-sm text-slate-400">Safha Platform Management</p>
         </div>
 
         <form onSubmit={onSubmit} className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
@@ -90,7 +90,7 @@ export default function AdminLoginPage() {
         </form>
 
         <p className="mt-6 text-center text-xs text-slate-600">
-          &copy; {new Date().getFullYear()} EduWave. All rights reserved.
+          &copy; {new Date().getFullYear()} Safha. All rights reserved.
         </p>
       </div>
     </div>

@@ -40,7 +40,10 @@ model User {
   phone        String?  @unique
   passwordHash String
   role         String   // DIRECTOR | TEACHER | STUDENT | PARENT | ADMIN
-  status       String   @default("ACTIVE") // ACTIVE | SUSPENDED | DELETED
+  status       String   @default("ACTIVE") // ACTIVE | SUSPENDED | DELETED | PENDING_VERIFICATION
+  emailVerified DateTime?
+  emailVerificationToken String?  @unique
+  emailVerificationExpires DateTime?
   language     String   @default("fr")
   theme        String   @default("light")
   schoolId     String?

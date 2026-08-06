@@ -3,7 +3,7 @@
 import { Suspense, useState, FormEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Mail } from "lucide-react";
+import { Mail, RefreshCcw } from "lucide-react";
 import { EyeIcon } from "@/components/ui/EyeIcon";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -25,11 +25,13 @@ function LoginForm() {
   const [studentName, setStudentName] = useState("");
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
+  const [resending, setResending] = useState(false);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (mode === "director" && !identifier.trim()) {
-      error("Please enter your email or phone");
+      error("Please enter your email");
       return;
     }
     if (mode === "student" && !studentName.trim()) {
@@ -60,9 +62,34 @@ function LoginForm() {
       router.push(target);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Login failed";
+      if (e instanceof Error && "code" in e && (e as { code?: string }).code === "EMAIL_NOT_VERIFIED") {
+        setUnverifiedEmail((e as { email?: string }).email || identifier.trim());
+      }
       error(msg);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (!unverifiedEmail) return;
+    setResending(true);
+    try {
+      const res = await fetch("/api/auth/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: unverifiedEmail })
+      });
+      if (res.ok) {
+        success(t("auth.resendSent"));
+      } else {
+        const data = await res.json().catch(() => ({}));
+        error(data?.error || t("auth.resendFailed"));
+      }
+    } catch {
+      error(t("auth.resendFailed"));
+    } finally {
+      setResending(false);
     }
   };
 
@@ -97,12 +124,12 @@ function LoginForm() {
           {mode === "director" ? (
             <div>
               <label htmlFor="identifier" className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">
-                {t("common.email")} / {t("common.phone")}
+                {t("common.email")}
               </label>
               <div className="relative">
                 <input
                   id="identifier"
-                  type="text"
+                  type="email"
                   required
                   autoComplete="username"
                   value={identifier}
@@ -124,7 +151,7 @@ function LoginForm() {
                 required
                 value={studentName}
                 onChange={(e) => setStudentName(e.target.value)}
-                placeholder="student@eduwave.ma"
+                placeholder="student@safha.ma"
                 className="input-field"
               />
               <p className="mt-1 text-xs text-gray-500">Enter your email or full name.</p>
@@ -167,6 +194,24 @@ function LoginForm() {
             {loading ? <Spinner /> : t("common.signin")}
           </button>
         </form>
+
+        {unverifiedEmail && (
+          <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-500/20 dark:bg-amber-500/10">
+            <p className="text-sm font-semibold text-amber-800 dark:text-amber-200">
+              {t("auth.needVerify")}
+            </p>
+            <p className="mt-1 text-xs text-amber-700/80 dark:text-amber-200/70">{unverifiedEmail}</p>
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={resending}
+              className="mt-3 inline-flex items-center gap-2 rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-bold text-white transition-all hover:bg-amber-600 disabled:opacity-50"
+            >
+              {resending ? <Spinner className="h-3.5 w-3.5" /> : <RefreshCcw className="h-3.5 w-3.5" />}
+              {t("auth.resendEmail")}
+            </button>
+          </div>
+        )}
 
         <p className="mt-6 text-center text-sm text-brand-ink/70 dark:text-brand-paper/70">
           {t("common.newHere")}{" "}

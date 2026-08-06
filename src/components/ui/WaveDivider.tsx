@@ -1,7 +1,5 @@
 "use client";
 
-import { ReactNode } from "react";
-
 /**
  * Animated SVG wave divider between color sections.
  * Use with two color props to smoothly transition between sections.

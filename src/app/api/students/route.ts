@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { prisma, hashPassword } from "@/lib/db";
+import { prisma, hashPassword, generateStrongPassword } from "@/lib/db";
 import { getAuthFromRequest } from "@/lib/auth";
 import { ok, err, zodToErrorResponse } from "@/lib/api";
 import { z } from "zod";
@@ -71,10 +71,8 @@ export async function POST(req: NextRequest) {
       `${slugify(parsed.data.firstName)}.${slugify(parsed.data.lastName)}@gmail.com`
     );
 
-    // Default password = 10 characters: first 6 letters of firstName (lower) + last 4 of phone (or random 4)
-    const base = parsed.data.firstName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z]/g, "").slice(0, 6);
-    const last4 = parsed.data.phone ? parsed.data.phone.slice(-4) : String(Math.floor(1000 + Math.random() * 9000));
-    const defaultPwd = (base + last4).slice(0, 10);
+    // Default password = 12 characters: 4 lowercase + 3 uppercase + 2 digits + 3 symbols (shuffled)
+    const defaultPwd = generateStrongPassword();
     const passwordHash = await hashPassword(defaultPwd);
 
     // Determine teacher (only teachers can create students from their UI; director can choose one)

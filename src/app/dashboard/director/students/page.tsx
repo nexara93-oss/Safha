@@ -155,7 +155,7 @@ export default function DirectorStudentsPage() {
                     onClick={() => setView(s)}
                     className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-gray-200 bg-white py-2 text-xs font-semibold text-brand-ink transition-colors hover:border-brand-orange hover:text-brand-orange dark:border-white/10 dark:bg-white/5 dark:text-white"
                   >
-                    <Eye className="h-3.5 w-3.5" />
+                    <EyeIcon visible className="h-3.5 w-3.5" />
                     {t("director.students.viewDetails")}
                   </button>
                 </div>

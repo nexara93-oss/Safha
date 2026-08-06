@@ -3,15 +3,13 @@
 import { Suspense, useState, FormEvent, useRef, ChangeEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Mail, Phone, Upload, X, School } from "lucide-react";
+import { Upload, X, School, MailCheck, RefreshCcw } from "lucide-react";
 import { EyeIcon } from "@/components/ui/EyeIcon";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/components/ui/Toast";
 import { Spinner } from "@/components/ui/Spinner";
 import { AuthLayout } from "@/components/auth/AuthLayout";
-
-type IdKind = "email" | "phone";
 
 function RegisterForm() {
   const { t } = useLanguage();
@@ -22,7 +20,6 @@ function RegisterForm() {
   const rawPlan = params.get("plan") || "";
   const allowedPlans = ["starter", "pro", "enterprise", "free"];
   const planParam = allowedPlans.includes(rawPlan) ? rawPlan : "";
-  const [idKind, setIdKind] = useState<IdKind>("email");
   const [fullName, setFullName] = useState("");
   const [schoolName, setSchoolName] = useState("");
   const [identifier, setIdentifier] = useState("");
@@ -31,6 +28,8 @@ function RegisterForm() {
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
+  const [resending, setResending] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleLogo = (e: ChangeEvent<HTMLInputElement>) => {
@@ -53,11 +52,7 @@ function RegisterForm() {
     const errs: Record<string, string> = {};
     if (fullName.trim().length < 2) errs.fullName = "Full name is required";
     if (schoolName.trim().length < 2) errs.schoolName = "School name is required";
-    if (idKind === "email") {
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier)) errs.identifier = "Invalid email";
-    } else {
-      if (identifier.replace(/\D/g, "").length < 8) errs.identifier = "Invalid phone number";
-    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier)) errs.identifier = "Invalid email";
     if (password.length < 8) errs.password = "Password must be at least 8 characters";
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -68,13 +63,17 @@ function RegisterForm() {
     if (!validate()) return;
     setLoading(true);
     try {
-      await register({
+      const result = await register({
         fullName: fullName.trim(),
         schoolName: schoolName.trim(),
         identifier: identifier.trim(),
         password,
         logoDataUrl: logoDataUrl || undefined
       });
+      if (result.needsVerification) {
+        setRegisteredEmail(result.email || identifier.trim());
+        return;
+      }
       success(`Welcome, ${fullName.split(" ")[0]}! Your school is ready.`);
       router.push("/dashboard/director");
     } catch (e: unknown) {
@@ -84,9 +83,62 @@ function RegisterForm() {
     }
   };
 
+  const handleResend = async () => {
+    if (!registeredEmail) return;
+    setResending(true);
+    try {
+      const res = await fetch("/api/auth/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: registeredEmail })
+      });
+      if (res.ok) {
+        success(t("auth.resendSent"));
+      } else {
+        const data = await res.json().catch(() => ({}));
+        error(data?.error || t("auth.resendFailed"));
+      }
+    } catch {
+      error(t("auth.resendFailed"));
+    } finally {
+      setResending(false);
+    }
+  };
+
   return (
     <AuthLayout mode="register">
       <div>
+        {registeredEmail ? (
+          <div className="text-center">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-orange/10">
+              <MailCheck className="h-8 w-8 text-brand-orange" />
+            </div>
+            <h1 className="mt-6 font-display text-3xl font-extrabold tracking-tight text-brand-ink sm:text-4xl dark:text-white">
+              {t("auth.verifyEmail")}
+            </h1>
+            <p className="mt-3 text-sm text-brand-ink/70 dark:text-brand-paper/70">
+              {t("auth.verifyEmailSub", { email: registeredEmail })}
+            </p>
+
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={resending}
+              className="mt-8 inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-brand-ink transition-all hover:border-brand-orange hover:text-brand-orange disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:text-brand-paper"
+            >
+              {resending ? <Spinner /> : <RefreshCcw className="h-4 w-4" />}
+              {t("auth.resendEmail")}
+            </button>
+
+            <p className="mt-6 text-sm text-brand-ink/70 dark:text-brand-paper/70">
+              {t("common.alreadyAccount")}{" "}
+              <Link href="/auth/login" className="font-semibold text-brand-orange hover:underline">
+                {t("common.signin")}
+              </Link>
+            </p>
+          </div>
+        ) : (
+          <>
         <h1 className="font-display text-3xl font-extrabold tracking-tight text-brand-ink sm:text-4xl dark:text-white">
           {t("auth.createAccount")}
         </h1>
@@ -135,43 +187,19 @@ function RegisterForm() {
           </div>
 
           <div>
-            <span className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">
-              {idKind === "email" ? t("common.email") : t("common.phone")}
-            </span>
-            <div className="inline-flex rounded-2xl bg-gray-100 p-1 dark:bg-white/5">
-              <button
-                type="button"
-                onClick={() => setIdKind("email")}
-                className={`flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-semibold transition-all ${
-                  idKind === "email"
-                    ? "bg-white text-brand-ink shadow-sm dark:bg-brand-navy dark:text-white"
-                    : "text-brand-ink/60 dark:text-brand-paper/60"
-                }`}
-              >
-                <Mail className="h-3.5 w-3.5" /> Email
-              </button>
-              <button
-                type="button"
-                onClick={() => setIdKind("phone")}
-                className={`flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-semibold transition-all ${
-                  idKind === "phone"
-                    ? "bg-white text-brand-ink shadow-sm dark:bg-brand-navy dark:text-white"
-                    : "text-brand-ink/60 dark:text-brand-paper/60"
-                }`}
-              >
-                <Phone className="h-3.5 w-3.5" /> Phone
-              </button>
-            </div>
+            <label htmlFor="identifier" className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">
+              {t("common.email")}
+            </label>
             <input
               id="identifier"
-              type={idKind === "email" ? "email" : "tel"}
+              type="email"
               required
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
-              placeholder={idKind === "email" ? "director@school.ma" : "+212 6 12 34 56 78"}
-              className="input-field mt-2"
+              placeholder="director@school.ma"
+              className="input-field"
               aria-invalid={!!errors.identifier}
-              autoComplete={idKind === "email" ? "email" : "tel"}
+              autoComplete="email"
             />
             {errors.identifier && <p className="mt-1 text-xs text-red-500">{errors.identifier}</p>}
           </div>
@@ -264,6 +292,8 @@ function RegisterForm() {
             {t("common.signin")}
           </Link>
         </p>
+        </>
+        )}
       </div>
     </AuthLayout>
   );

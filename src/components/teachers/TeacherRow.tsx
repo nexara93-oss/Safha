@@ -1,7 +1,7 @@
 "use client";
 import { memo } from "react";
-import { Trash2, Mail, Copy, Check } from "lucide-react";
-import { PasswordField, EmailField } from "@/components/ui/PasswordField";
+import { Trash2, Mail, Copy } from "lucide-react";
+import { EyeIcon } from "@/components/ui/EyeIcon";
 
 type TeacherRowProps = {
   id: string;
@@ -40,8 +40,8 @@ export const TeacherTableRow = memo(function TeacherTableRow({
             <code className="rounded-md bg-gray-50 px-2 py-1 font-mono text-xs dark:bg-white/5">
               {visiblePasswords.has(id) ? generatedPassword : "•".repeat(generatedPassword.length)}
             </code>
-            <button onClick={() => onTogglePassword(id)} className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-brand-ink dark:hover:bg-white/10 dark:hover:text-white" aria-label="Toggle password">
-              {visiblePasswords.has(id) ? "👁" : "👁‍🗨"}
+            <button onClick={() => onTogglePassword(id)} className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-brand-ink dark:hover:bg-white/10 dark:hover:text-white" aria-label={visiblePasswords.has(id) ? "Hide password" : "Show password"} title={visiblePasswords.has(id) ? "Hide" : "Show"}>
+              <EyeIcon visible={visiblePasswords.has(id)} className="h-3.5 w-3.5" />
             </button>
             <button onClick={() => onCopyCell(generatedPassword, id, "password")} className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-brand-ink dark:hover:bg-white/10 dark:hover:text-white" aria-label="Copy password">
               {<Copy className="h-3.5 w-3.5" />}
@@ -84,8 +84,8 @@ export const TeacherMobileCard = memo(function TeacherMobileCard({
               <code className="rounded-md bg-gray-50 px-2 py-0.5 font-mono text-gray-600 dark:bg-white/5 dark:text-white/70">
                 {visiblePasswords.has(id) ? generatedPassword : "•".repeat(generatedPassword.length)}
               </code>
-              <button onClick={() => onTogglePassword(id)} className="shrink-0 rounded p-0.5 text-gray-400 hover:text-brand-ink dark:hover:text-white" aria-label="Toggle password">
-                {visiblePasswords.has(id) ? "👁" : "👁‍🗨"}
+              <button onClick={() => onTogglePassword(id)} className="shrink-0 rounded p-0.5 text-gray-400 hover:text-brand-ink dark:hover:text-white" aria-label={visiblePasswords.has(id) ? "Hide password" : "Show password"} title={visiblePasswords.has(id) ? "Hide" : "Show"}>
+                <EyeIcon visible={visiblePasswords.has(id)} className="h-3 w-3" />
               </button>
               <button onClick={() => onCopyCell(generatedPassword, id, "password")} className="shrink-0 rounded p-0.5 text-gray-400 hover:text-brand-ink dark:hover:text-white" aria-label="Copy password">
                 {<Copy className="h-3 w-3" />}

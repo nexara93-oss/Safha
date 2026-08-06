@@ -40,7 +40,7 @@ export default function TeacherGradesPage() {
   const [open, setOpen] = useState(false);
   const [studentId, setStudentId] = useState("");
   const [periodId, setPeriodId] = useState("");
-  const [subject, setSubject] = useState("");
+  const [defaultSubject, setDefaultSubject] = useState("");
   const [score, setScore] = useState("");
   const [maxScore, setMaxScore] = useState("20");
   const [submitting, setSubmitting] = useState(false);
@@ -57,12 +57,14 @@ export default function TeacherGradesPage() {
   const load = () => {
     setLoading(true);
     Promise.all([
+      api<{ teacher?: { subject: string } }>("/api/dashboard/teacher").catch(() => ({ teacher: undefined })),
       api<{ students: Student[] }>("/api/students"),
       api<{ periods: Period[] }>("/api/exam-periods"),
       api<{ grades: Grade[] }>("/api/grades"),
       api<{ sections: Section[] }>("/api/sections")
     ])
-      .then(([s, p, g, sec]) => {
+      .then(([profile, s, p, g, sec]) => {
+        if (profile?.teacher?.subject) setDefaultSubject(profile.teacher.subject);
         setStudents(s.students);
         setPeriods(p.periods);
         setGrades(g.grades);
@@ -81,13 +83,12 @@ export default function TeacherGradesPage() {
         json: {
           studentId,
           periodId,
-          subject: subject.trim(),
+          subject: defaultSubject.trim(),
           score: Number(score),
           maxScore: Number(maxScore)
         }
       });
       setStudentId("");
-      setSubject("");
       setScore("");
       setMaxScore("20");
       setSectionFilter("");
@@ -299,7 +300,13 @@ export default function TeacherGradesPage() {
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">{t("common.subject")}</label>
-            <input required value={subject} onChange={(e) => setSubject(e.target.value)} className="input-field" placeholder={t("teacher.grades.subjectPlaceholder")} />
+            <input
+              required
+              value={defaultSubject}
+              readOnly
+              className="input-field cursor-not-allowed bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-white/50"
+              placeholder={t("teacher.grades.subjectPlaceholder")}
+            />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>

@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 import { prisma } from "./db";
 
-const COOKIE = "eduwave_token";
+const COOKIE = "safha_token";
 
 function getJwtSecret(): string {
   const s = process.env.JWT_SECRET;

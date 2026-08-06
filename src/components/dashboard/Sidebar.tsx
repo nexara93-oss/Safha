@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import { useDashboard } from "./DashboardShell";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -30,7 +31,6 @@ const navByRole = {
     { href: "/dashboard/director", icon: LayoutDashboard, key: "dashboard.overview" },
     { href: "/dashboard/director/teachers", icon: Users, key: "dashboard.teachers" },
     { href: "/dashboard/director/students", icon: GraduationCap, key: "dashboard.students" },
-    { href: "/dashboard/director/exams", icon: FileText, key: "dashboard.exams" },
     { href: "/dashboard/director/analytics", icon: BarChart3, key: "dashboard.analytics" },
     { href: "/dashboard/director/messages", icon: MessageSquare, key: "dashboard.messages" },
     { href: "/dashboard/director/payment", icon: CreditCard, key: "dashboard.payment" },
@@ -98,18 +98,10 @@ export function Sidebar({ role }: { role: "DIRECTOR" | "TEACHER" | "STUDENT" | "
       >
         <div className="flex h-16 items-center justify-between border-b border-gray-100 px-5 dark:border-white/5 lg:h-20">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl bg-brand-orange shadow-md">
-              <svg viewBox="0 0 64 64" className="h-full w-full" aria-hidden>
-                <path d="M32 14 L8 24 L32 34 L56 24 Z" fill="#FFFFFF" />
-                <path d="M18 27.5 L18 36 C18 38.5 24 41 32 41 C40 41 46 38.5 46 36 L46 27.5 L32 34 Z" fill="#FFFFFF" />
-                <path d="M52 24 L52 38" stroke="#FFFFFF" strokeWidth="2" fill="none" strokeLinecap="round" />
-                <circle cx="52" cy="40" r="1.6" fill="#FFFFFF" />
-                <path d="M50.5 41.2 L51 46 M52 41.5 L52 46.5 M53.5 41.2 L53 46" stroke="#FFFFFF" strokeWidth="1.4" strokeLinecap="round" fill="none" />
-              </svg>
-            </div>
+            <BrandLogo className="h-9 w-9" />
             <div>
               <div className="font-display text-base font-extrabold text-brand-ink dark:text-brand-paper">
-                EduWave
+                Safha
               </div>
               <div className="text-[10px] uppercase tracking-wider text-brand-ink/50 dark:text-brand-paper/50">
                 {user?.role}
