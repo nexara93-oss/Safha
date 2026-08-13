@@ -25,13 +25,15 @@ export default function TeacherAttendancePage() {
   const [students, setStudents] = useState<Student[]>([]);
   const [recs, setRecs] = useState<AttendanceRec[]>([]);
   const [loading, setLoading] = useState(true);
-  const [date, setDate] = useState(localDateStr);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [date, setDate] = useState(() => (typeof window !== "undefined" ? localDateStr() : ""));
   const [saving, setSaving] = useState<string | null>(null);
   const [sections, setSections] = useState<Section[]>([]);
   const [sectionFilter, setSectionFilter] = useState("");
 
   const load = () => {
     setLoading(true);
+    setLoadError(null);
     Promise.all([
       api<{ students: Student[] }>("/api/students"),
       api<{ attendance: AttendanceRec[] }>("/api/attendance"),
@@ -42,6 +44,7 @@ export default function TeacherAttendancePage() {
         setRecs(a.attendance);
         setSections(sec.sections);
       })
+      .catch((e: unknown) => setLoadError(e instanceof Error ? e.message : t("common.failed")))
       .finally(() => setLoading(false));
   };
   useEffect(load, []);
@@ -115,9 +118,16 @@ export default function TeacherAttendancePage() {
           </div>
         </div>
 
-        {loading ? (
+        {loading || loadError ? (
           <div className="flex h-48 items-center justify-center">
-            <Spinner className="h-8 w-8 text-brand-orange" />
+            {loadError ? (
+              <div className="text-center">
+                <p className="mb-3 text-sm text-red-500">{loadError}</p>
+                <button onClick={load} className="btn-primary text-sm">{t("common.retry")}</button>
+              </div>
+            ) : (
+              <Spinner className="h-8 w-8 text-brand-orange" />
+            )}
           </div>
         ) : students.length === 0 ? (
           <div className="card py-10 text-center text-sm text-gray-500">{t("teacher.attendance.noStudents")}</div>

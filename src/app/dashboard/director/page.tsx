@@ -41,6 +41,7 @@ export default function DirectorOverviewPage() {
   const { t } = useLanguage();
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [stats, setStats] = useState<DirectorStats | null>(null);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [sub, setSub] = useState<Sub>(null);
@@ -71,14 +72,22 @@ export default function DirectorOverviewPage() {
         setTrialDays(d.trialDaysLeft);
         if (s.subscription) setSub(s.subscription);
       })
+      .catch((e: unknown) => setLoadError(e instanceof Error ? e.message : t("common.failed")))
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) {
+  if (loading || loadError) {
     return (
       <DashboardShell allowedRoles={["DIRECTOR"]}>
         <div className="flex h-64 items-center justify-center">
-          <Spinner className="h-8 w-8 text-brand-orange" />
+          {loadError ? (
+            <div className="text-center">
+              <p className="mb-3 text-sm text-red-500">{loadError}</p>
+              <button onClick={() => window.location.reload()} className="btn-primary text-sm">{t("common.retry")}</button>
+            </div>
+          ) : (
+            <Spinner className="h-8 w-8 text-brand-orange" />
+          )}
         </div>
       </DashboardShell>
     );

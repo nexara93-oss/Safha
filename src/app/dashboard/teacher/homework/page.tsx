@@ -274,7 +274,7 @@ export default function TeacherHomeworkPage() {
                                   <div className="mb-2 flex items-center justify-between">
                                     <div>
                                       <span className="text-sm font-semibold text-brand-ink dark:text-brand-paper">{sub.student.user.fullName}</span>
-                                       <span className="ml-2 text-xs text-gray-500">{t("teacher.homework.submitted")} {new Date(sub.submittedAt).toLocaleDateString()}</span>
+                                       <span className="ms-2 text-xs text-gray-500">{t("teacher.homework.submitted")} {new Date(sub.submittedAt).toLocaleDateString()}</span>
                                     </div>
                                     {sub.score !== null && (
                                       <span className="text-sm font-bold text-green-600">

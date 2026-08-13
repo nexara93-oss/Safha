@@ -12,12 +12,13 @@ const updateSchema = z.object({
   videoUrl: z.string().url().max(500).nullish()
 });
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const auth = await getAuthFromRequest(req);
   if (!auth || !auth.user.schoolId) return err("Forbidden", 403);
 
   const lesson = await prisma.lesson.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       teacher: { include: { user: { select: { fullName: true } } } },
       section: { select: { id: true, name: true } }
@@ -29,11 +30,12 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   return ok({ lesson });
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const auth = await getAuthFromRequest(req);
   if (!auth || !auth.user.schoolId) return err("Forbidden", 403);
 
-  const lesson = await prisma.lesson.findUnique({ where: { id: params.id } });
+  const lesson = await prisma.lesson.findUnique({ where: { id } });
   if (!lesson) return err("Not found", 404);
   if (lesson.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
 
@@ -44,16 +46,17 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     return err("Forbidden", 403);
   }
 
-  await prisma.lesson.delete({ where: { id: params.id } });
+  await prisma.lesson.delete({ where: { id } });
   return ok({ success: true });
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const auth = await getAuthFromRequest(req);
     if (!auth || !auth.user.schoolId) return err("Forbidden", 403);
 
-    const lesson = await prisma.lesson.findUnique({ where: { id: params.id } });
+    const lesson = await prisma.lesson.findUnique({ where: { id } });
     if (!lesson) return err("Not found", 404);
     if (lesson.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
 
@@ -69,7 +72,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (!parsed.success) return err("Validation failed", 422, { fieldErrors: parsed.error.flatten().fieldErrors });
 
     const updated = await prisma.lesson.update({
-      where: { id: params.id },
+      where: { id },
       data: parsed.data,
       include: {
         teacher: { include: { user: { select: { fullName: true } } } },

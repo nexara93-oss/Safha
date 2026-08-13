@@ -23,11 +23,16 @@ export default function AdminPage() {
   const { success, error } = useToast();
   const [data, setData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
 
   const load = () => {
     setLoading(true);
-    api<AdminData>("/api/admin/stats").then(setData).finally(() => setLoading(false));
+    setLoadError(null);
+    api<AdminData>("/api/admin/stats")
+      .then(setData)
+      .catch((e: unknown) => setLoadError(e instanceof Error ? e.message : "Failed"))
+      .finally(() => setLoading(false));
   };
   useEffect(load, []);
 
@@ -40,6 +45,17 @@ export default function AdminPage() {
       error(e instanceof Error ? e.message : "Failed");
     }
   };
+
+  if (loadError) return (
+    <DashboardShell allowedRoles={["ADMIN"]}>
+      <div className="flex h-64 items-center justify-center">
+        <div className="text-center">
+          <p className="mb-3 text-sm text-red-500">{loadError}</p>
+          <button onClick={load} className="btn-primary text-sm">Retry</button>
+        </div>
+      </div>
+    </DashboardShell>
+  );
 
   if (loading || !data) return (
     <DashboardShell allowedRoles={["ADMIN"]}>
@@ -129,9 +145,9 @@ export default function AdminPage() {
               <Building2 className="h-4 w-4" /> All Schools ({data.schools.length})
             </h2>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search schools..." className="input-field !py-1.5 !ps-9 !text-xs" />
-              {search && <button onClick={() => setSearch("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"><X className="h-3.5 w-3.5" /></button>}
+              {search && <button onClick={() => setSearch("")} className="absolute end-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"><X className="h-3.5 w-3.5" /></button>}
             </div>
           </div>
           {filteredSchools.length === 0 ? (

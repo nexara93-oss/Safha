@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     const email = body.email.toLowerCase().trim();
 
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return err("No account found with this email", 404);
+    if (!user) return ok({ ok: true });
     if (user.emailVerified) return err("This email is already verified", 400);
 
     const raw = generateVerificationToken();

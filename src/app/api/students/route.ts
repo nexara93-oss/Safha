@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma, hashPassword, generateStrongPassword } from "@/lib/db";
 import { getAuthFromRequest } from "@/lib/auth";
 import { ok, err, zodToErrorResponse } from "@/lib/api";
@@ -37,8 +38,15 @@ export async function GET(req: NextRequest) {
   if (!auth || !auth.user.schoolId) return err("Forbidden", 403);
   if (auth.user.role === "STUDENT") return err("Forbidden", 403);
 
+  const where: Prisma.StudentWhereInput = { schoolId: auth.user.schoolId };
+  if (auth.user.role === "TEACHER") {
+    const teacher = await prisma.teacher.findUnique({ where: { userId: auth.user.id } });
+    if (!teacher) return err("Not found", 404);
+    where.teacherId = teacher.id;
+  }
+
   const students = await prisma.student.findMany({
-    where: { schoolId: auth.user.schoolId },
+    where,
     include: {
       user: { select: { id: true, fullName: true, email: true, phone: true, status: true } },
       teacher: { include: { user: { select: { fullName: true } } } },

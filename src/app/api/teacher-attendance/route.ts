@@ -62,5 +62,5 @@ export async function GET(req: NextRequest) {
     return ok({ teachers });
   }
 
-  return ok({ today: null });
+  return err("Forbidden", 403);
 }

@@ -14,12 +14,13 @@ const updateSchema = z.object({
   maxScore: z.number().min(0.1).optional()
 });
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const auth = await getAuthFromRequest(req);
   if (!auth || !auth.user.schoolId) return err("Forbidden", 403);
 
   const exam = await prisma.finalExam.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       section: { select: { id: true, name: true } },
       results: {
@@ -31,16 +32,23 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   if (!exam) return err("Not found", 404);
   if (exam.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
 
+  if (auth.user.role === "STUDENT") {
+    const student = await prisma.student.findUnique({ where: { userId: auth.user.id } });
+    if (!student) return err("Not found", 404);
+    exam.results = exam.results.filter((r) => r.studentId === student.id);
+  }
+
   return ok({ exam });
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const auth = await getAuthFromRequest(req);
     if (!auth || !auth.user.schoolId) return err("Forbidden", 403);
     if (auth.user.role !== "DIRECTOR" && auth.user.role !== "TEACHER") return err("Forbidden", 403);
 
-    const exam = await prisma.finalExam.findUnique({ where: { id: params.id } });
+    const exam = await prisma.finalExam.findUnique({ where: { id } });
     if (!exam) return err("Not found", 404);
     if (exam.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
 
@@ -52,7 +60,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (parsed.data.date) updateData.date = new Date(parsed.data.date);
 
     const updated = await prisma.finalExam.update({
-      where: { id: params.id },
+      where: { id },
       data: updateData,
       include: { section: { select: { id: true, name: true } } }
     });
@@ -62,15 +70,16 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const auth = await getAuthFromRequest(req);
   if (!auth || !auth.user.schoolId) return err("Forbidden", 403);
   if (auth.user.role !== "DIRECTOR" && auth.user.role !== "TEACHER") return err("Forbidden", 403);
 
-  const exam = await prisma.finalExam.findUnique({ where: { id: params.id } });
+  const exam = await prisma.finalExam.findUnique({ where: { id } });
   if (!exam) return err("Not found", 404);
   if (exam.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
 
-  await prisma.finalExam.delete({ where: { id: params.id } });
+  await prisma.finalExam.delete({ where: { id } });
   return ok({ success: true });
 }

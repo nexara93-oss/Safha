@@ -9,6 +9,9 @@ import { checkRateLimit, getClientIP, isAccountLocked, recordFailedAttempt, clea
 const RATE_LIMIT_MAX = 10;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
 
+// Valid bcrypt hash of a throwaway string, used to equalize timing for unknown accounts.
+const DUMMY_HASH = "$2a$12$vGGSDmj.Dz1Pp/vRFV.fauy/HzVxUg7BKzd0cAOGYx/5Q.8ZhpjVu";
+
 const schema = z.object({
   identifier: z.string().min(3),
   password: z.string().min(1)
@@ -40,6 +43,7 @@ export async function POST(req: NextRequest) {
       include: { school: { select: { id: true, name: true, logoUrl: true } }, teacher: true, student: true }
     });
     if (!user) {
+      await verifyPassword(body.password, DUMMY_HASH);
       recordFailedAttempt(identifier);
       return err("Invalid credentials", 401);
     }

@@ -2,8 +2,8 @@
 
 const nextConfig = {
   poweredByHeader: false,
+  devIndicators: false,
   productionBrowserSourceMaps: false,
-  eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
   images: {
     remotePatterns: [
@@ -12,9 +12,7 @@ const nextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" }
     ]
   },
-  experimental: {
-    serverComponentsExternalPackages: ["pdf-parse"]
-  },
+  serverExternalPackages: ["pdf-parse"],
 };
 
 module.exports = nextConfig;

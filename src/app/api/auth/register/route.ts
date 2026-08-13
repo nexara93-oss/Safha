@@ -11,7 +11,22 @@ const schema = z.object({
   schoolName: z.string().min(2).max(120),
   identifier: z.string().min(3),
   password: z.string().min(8).max(128),
-  logoDataUrl: z.string().optional()
+  logoDataUrl: z
+    .string()
+    .optional()
+    .refine(
+      (val) => {
+        if (!val) return true;
+        if (!/^data:image\/(png|jpeg|jpg|webp|svg\+xml);base64,/i.test(val)) return false;
+        try {
+          const base64 = val.slice(val.indexOf(",") + 1);
+          return Buffer.from(base64, "base64").length < 300 * 1024;
+        } catch {
+          return false;
+        }
+      },
+      { message: "Logo must be a data URL (png/jpeg/webp/svg) under 300KB" }
+    )
 });
 
 const rateMap = new Map<string, { count: number; reset: number }>();
@@ -32,6 +47,10 @@ function isEmail(s: string) {
 }
 
 export async function POST(request: NextRequest) {
+  if (process.env.REGISTRATION_ENABLED !== "true") {
+    return err("Registration is currently closed", 403);
+  }
+
   const ip = request.headers.get("x-forwarded-for") || "unknown";
   if (!rateLimit(`register:${ip}`, 5)) {
     return Response.json({ error: "Too fast" }, { status: 429 });
@@ -43,13 +62,10 @@ export async function POST(request: NextRequest) {
     const isEmailInput = isEmail(body.identifier);
     const passwordHash = await hashPassword(body.password);
 
-    if (isEmailInput) {
-      const exists = await prisma.user.findUnique({ where: { email: body.identifier } });
-      if (exists) return err("An account with this email already exists", 409);
-    } else {
-      const exists = await prisma.user.findUnique({ where: { phone: body.identifier } });
-      if (exists) return err("An account with this phone already exists", 409);
-    }
+    const exists = await prisma.user.findUnique({
+      where: isEmailInput ? { email: body.identifier } : { phone: body.identifier }
+    });
+    if (exists) return err("An account already exists with this information", 409);
 
     const verificationToken = generateVerificationToken();
     const verificationExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);

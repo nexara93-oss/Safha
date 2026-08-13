@@ -37,6 +37,7 @@ export default function TeacherGradesPage() {
   const [periods, setPeriods] = useState<Period[]>([]);
   const [grades, setGrades] = useState<Grade[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [studentId, setStudentId] = useState("");
   const [periodId, setPeriodId] = useState("");
@@ -46,8 +47,10 @@ export default function TeacherGradesPage() {
   const [submitting, setSubmitting] = useState(false);
   const [periodOpen, setPeriodOpen] = useState(false);
   const [periodName, setPeriodName] = useState("");
-  const [periodStart, setPeriodStart] = useState(localDateStr);
-  const [periodEnd, setPeriodEnd] = useState(localDateStr(new Date(Date.now() + 30 * 86400000)));
+  const [periodStart, setPeriodStart] = useState(() => (typeof window !== "undefined" ? localDateStr() : ""));
+  const [periodEnd, setPeriodEnd] = useState(() =>
+    typeof window !== "undefined" ? localDateStr(new Date(Date.now() + 30 * 86400000)) : ""
+  );
   const [periodCoef, setPeriodCoef] = useState("1");
   const [periodCount, setPeriodCount] = useState("1");
   const [editingPeriod, setEditingPeriod] = useState<Period | null>(null);
@@ -56,6 +59,7 @@ export default function TeacherGradesPage() {
 
   const load = () => {
     setLoading(true);
+    setLoadError(null);
     Promise.all([
       api<{ teacher?: { subject: string } }>("/api/dashboard/teacher").catch(() => ({ teacher: undefined })),
       api<{ students: Student[] }>("/api/students"),
@@ -70,6 +74,7 @@ export default function TeacherGradesPage() {
         setGrades(g.grades);
         setSections(sec.sections);
       })
+      .catch((e: unknown) => setLoadError(e instanceof Error ? e.message : t("common.failed")))
       .finally(() => setLoading(false));
   };
   useEffect(load, []);
@@ -188,9 +193,16 @@ export default function TeacherGradesPage() {
           </div>
         </div>
 
-        {loading ? (
+        {loading || loadError ? (
           <div className="flex h-48 items-center justify-center">
-            <Spinner className="h-8 w-8 text-brand-orange" />
+            {loadError ? (
+              <div className="text-center">
+                <p className="mb-3 text-sm text-red-500">{loadError}</p>
+                <button onClick={load} className="btn-primary text-sm">{t("common.retry")}</button>
+              </div>
+            ) : (
+              <Spinner className="h-8 w-8 text-brand-orange" />
+            )}
           </div>
         ) : (
           <>

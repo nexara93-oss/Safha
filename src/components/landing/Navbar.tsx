@@ -5,8 +5,9 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
-import { Menu, X } from "lucide-react";
 import { BrandLogo } from "@/components/ui/BrandLogo";
+import { Menu, X } from "lucide-react";
+
 import { useState, useEffect } from "react";
 
 export function Navbar() {
@@ -44,7 +45,7 @@ export function Navbar() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-20 sm:px-6 lg:px-8">
         <Link href="/" className="group flex items-center gap-2.5">
           <div className="transition-transform group-hover:scale-105">
-            <BrandLogo className="h-10 w-10" />
+            <BrandLogo className="h-12 w-12" />
           </div>
           <span data-nav-over-hero className="font-display text-xl font-extrabold tracking-tight text-brand-ink transition-colors dark:text-brand-paper">
             Safha

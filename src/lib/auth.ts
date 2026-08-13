@@ -25,7 +25,7 @@ export function signToken(claims: AuthClaims): string {
 
 export function verifyToken(token: string): AuthClaims | null {
   try {
-    const decoded = jwt.verify(token, getJwtSecret()) as AuthClaims;
+    const decoded = jwt.verify(token, getJwtSecret(), { algorithms: ["HS256"] }) as AuthClaims;
     return decoded;
   } catch {
     return null;
@@ -42,6 +42,7 @@ export async function getAuthFromRequest(req: NextRequest): Promise<{
   if (!claims) return null;
   const user = await getUserById(claims.userId);
   if (!user) return null;
+  if (user.status !== "ACTIVE") return null;
   return { claims, user };
 }
 

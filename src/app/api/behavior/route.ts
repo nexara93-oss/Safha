@@ -70,6 +70,7 @@ export async function POST(req: NextRequest) {
     const student = await prisma.student.findUnique({ where: { id: parsed.data.studentId } });
     if (!student) return err("Student not found", 404);
     if (student.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
+    if (student.teacherId !== teacher.id) return err("Forbidden", 403);
 
     const rec = await prisma.behavior.create({
       data: {

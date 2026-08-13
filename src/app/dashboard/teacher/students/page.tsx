@@ -24,6 +24,7 @@ export default function TeacherStudentsPage() {
   const { success, error } = useToast();
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -41,8 +42,10 @@ export default function TeacherStudentsPage() {
 
   const load = () => {
     setLoading(true);
+    setLoadError(null);
     api<{ students: Student[] }>("/api/students")
       .then((d) => setStudents(d.students))
+      .catch((e: unknown) => setLoadError(e instanceof Error ? e.message : t("common.failed")))
       .finally(() => setLoading(false));
   };
   useEffect(load, []);
@@ -143,9 +146,16 @@ export default function TeacherStudentsPage() {
           </div>
         </div>
 
-        {loading ? (
+        {loading || loadError ? (
           <div className="flex h-48 items-center justify-center">
-            <Spinner className="h-8 w-8 text-brand-orange" />
+            {loadError ? (
+              <div className="text-center">
+                <p className="mb-3 text-sm text-red-500">{loadError}</p>
+                <button onClick={load} className="btn-primary text-sm">{t("common.retry")}</button>
+              </div>
+            ) : (
+              <Spinner className="h-8 w-8 text-brand-orange" />
+            )}
           </div>
         ) : students.length === 0 ? (
           <EmptyState icon={GraduationCap} message={t("teacher.students.noStudents")} />

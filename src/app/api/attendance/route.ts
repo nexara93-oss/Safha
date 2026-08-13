@@ -72,6 +72,10 @@ export async function POST(req: NextRequest) {
     const student = await prisma.student.findUnique({ where: { id: parsed.data.studentId } });
     if (!student) return err("Student not found", 404);
     if (student.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
+    if (auth.user.role === "TEACHER") {
+      const teacher = await prisma.teacher.findUnique({ where: { userId: auth.user.id } });
+      if (!teacher || student.teacherId !== teacher.id) return err("Forbidden", 403);
+    }
 
     const date = parsed.data.date ? new Date(parsed.data.date + "T00:00:00.000Z") : new Date();
 

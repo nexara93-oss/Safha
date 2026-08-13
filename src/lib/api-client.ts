@@ -24,6 +24,7 @@ export async function api<T = unknown>(
     headers,
     credentials: "same-origin"
   });
+  if (res.status === 401) notifyUnauthorized();
   const text = await res.text();
   const data = text ? safeParse(text) : null;
   if (!res.ok) {
@@ -50,5 +51,16 @@ function safeParse(s: string): unknown {
     return JSON.parse(s);
   } catch {
     return null;
+  }
+}
+
+let lastUnauthorizedAt = 0;
+
+function notifyUnauthorized() {
+  const now = Date.now();
+  if (now - lastUnauthorizedAt < 5000) return;
+  lastUnauthorizedAt = now;
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("safha:unauthorized", { detail: { status: 401 } }));
   }
 }

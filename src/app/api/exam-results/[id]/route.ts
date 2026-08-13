@@ -10,8 +10,9 @@ const updateSchema = z.object({
   remarks: z.string().max(500).nullish()
 });
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const auth = await getAuthFromRequest(req);
     if (!auth) return err("Forbidden", 403);
     if (auth.user.role !== "TEACHER" && auth.user.role !== "DIRECTOR") return err("Forbidden", 403);
@@ -20,14 +21,14 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     const parsed = updateSchema.safeParse(body);
     if (!parsed.success) return err("Validation failed", 422, { fieldErrors: parsed.error.flatten().fieldErrors });
 
-    const result = await prisma.finalExamResult.findUnique({ where: { id: params.id } });
+    const result = await prisma.finalExamResult.findUnique({ where: { id } });
     if (!result) return err("Not found", 404);
 
     const exam = await prisma.finalExam.findUnique({ where: { id: result.examId } });
     if (!exam || exam.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
 
     const updated = await prisma.finalExamResult.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         score: parsed.data.score ?? result.score,
         maxScore: parsed.data.maxScore ?? result.maxScore,

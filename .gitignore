@@ -13,3 +13,5 @@ coverage
 list-users.js
 prisma/*.db
 prisma/*.db-journal
+*.db
+*.db-journal

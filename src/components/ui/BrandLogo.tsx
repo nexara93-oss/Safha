@@ -18,7 +18,7 @@ export function BrandLogo({
       src={src}
       alt={alt}
       draggable={false}
-      className={`object-contain ${className}`}
+      className={`shrink-0 rounded-full object-contain shadow-sm ring-1 ring-brand-orange/20 ${className}`}
     />
   );
 }

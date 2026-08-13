@@ -10,7 +10,9 @@ export async function GET(req: NextRequest) {
   const student = await prisma.student.findUnique({
     where: { userId: auth.user.id },
     include: {
-      user: true,
+      user: {
+        select: { id: true, fullName: true, email: true, role: true, status: true, schoolId: true }
+      },
       teacher: { include: { user: { select: { fullName: true } } } },
       section: true,
       school: { select: { name: true, logoUrl: true } }

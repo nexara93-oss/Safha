@@ -12,12 +12,13 @@ const updateSchema = z.object({
   fileUrl: z.string().url().max(500).nullish()
 });
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const auth = await getAuthFromRequest(req);
   if (!auth || !auth.user.schoolId) return err("Forbidden", 403);
 
   const homework = await prisma.homework.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       teacher: { include: { user: { select: { fullName: true } } } },
       section: { select: { id: true, name: true } },
@@ -32,14 +33,31 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   if (!homework) return err("Not found", 404);
   if (homework.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
 
+  if (auth.user.role === "STUDENT") {
+    const student = await prisma.student.findUnique({ where: { userId: auth.user.id } });
+    if (!student) return err("Not found", 404);
+    homework.submissions = homework.submissions.filter((s) => s.studentId === student.id);
+  } else if (auth.user.role === "PARENT") {
+    const parent = await prisma.parent.findUnique({
+      where: { userId: auth.user.id },
+      include: { students: { select: { studentId: true } } }
+    });
+    if (!parent) return err("Not found", 404);
+    const childIds = new Set(parent.students.map((s) => s.studentId));
+    homework.submissions = homework.submissions.filter((s) => childIds.has(s.studentId));
+  } else if (auth.user.role !== "TEACHER" && auth.user.role !== "DIRECTOR") {
+    return err("Forbidden", 403);
+  }
+
   return ok({ homework });
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const auth = await getAuthFromRequest(req);
   if (!auth || !auth.user.schoolId) return err("Forbidden", 403);
 
-  const homework = await prisma.homework.findUnique({ where: { id: params.id } });
+  const homework = await prisma.homework.findUnique({ where: { id } });
   if (!homework) return err("Not found", 404);
   if (homework.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
 
@@ -50,16 +68,17 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     return err("Forbidden", 403);
   }
 
-  await prisma.homework.delete({ where: { id: params.id } });
+  await prisma.homework.delete({ where: { id } });
   return ok({ success: true });
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const auth = await getAuthFromRequest(req);
     if (!auth || !auth.user.schoolId) return err("Forbidden", 403);
 
-    const homework = await prisma.homework.findUnique({ where: { id: params.id } });
+    const homework = await prisma.homework.findUnique({ where: { id } });
     if (!homework) return err("Not found", 404);
     if (homework.schoolId !== auth.user.schoolId) return err("Forbidden", 403);
 
@@ -78,7 +97,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (parsed.data.dueDate) updateData.dueDate = new Date(parsed.data.dueDate);
 
     const updated = await prisma.homework.update({
-      where: { id: params.id },
+      where: { id },
       data: updateData,
       include: {
         teacher: { include: { user: { select: { fullName: true } } } },

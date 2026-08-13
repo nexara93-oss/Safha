@@ -43,12 +43,14 @@ export default function DirectorPaymentPage() {
   const [sub, setSub] = useState<Sub>(null);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const [step, setStep] = useState<Step>("plan");
   const [selectedPlan, setSelectedPlan] = useState<"MONTHLY" | "ANNUAL" | null>(null);
   const [selectedMethod, setSelectedMethod] = useState<"visa" | "virement" | null>(null);
   const [processing, setProcessing] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [reference] = useState(() => `EDUWAVE-${Date.now().toString(36).toUpperCase()}`);
 
   const [cardName, setCardName] = useState("");
   const [cardNumber, setCardNumber] = useState("");
@@ -57,8 +59,10 @@ export default function DirectorPaymentPage() {
 
   const load = () => {
     setLoading(true);
+    setLoadError(null);
     api<{ subscription: Sub; payments: Payment[] }>("/api/subscription")
       .then((d) => { setSub(d.subscription); setPayments(d.payments); })
+      .catch((e: unknown) => setLoadError(e instanceof Error ? e.message : t("common.failed")))
       .finally(() => setLoading(false));
   };
   useEffect(load, []);
@@ -94,7 +98,11 @@ export default function DirectorPaymentPage() {
   };
 
   const copyIban = () => {
-    navigator.clipboard.writeText("FR76 3000 4028 3700 0100 0431 853");
+    if (!navigator.clipboard?.writeText) {
+      error(t("director.teachers.couldNotCopy"));
+      return;
+    }
+    navigator.clipboard.writeText("FR76 3000 4028 3700 0100 0431 853").catch(() => error(t("director.teachers.couldNotCopy")));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -158,9 +166,16 @@ export default function DirectorPaymentPage() {
           <p className="text-sm text-brand-ink/60 dark:text-brand-paper/60">{t("payment.manageSub")}</p>
         </div>
 
-        {loading ? (
+        {loading || loadError ? (
           <div className="flex h-48 items-center justify-center">
-            <Spinner className="h-8 w-8 text-brand-orange" />
+            {loadError ? (
+              <div className="text-center">
+                <p className="mb-3 text-sm text-red-500">{loadError}</p>
+                <button onClick={load} className="btn-primary text-sm">{t("common.retry")}</button>
+              </div>
+            ) : (
+              <Spinner className="h-8 w-8 text-brand-orange" />
+            )}
           </div>
         ) : (
           <>
@@ -404,7 +419,7 @@ export default function DirectorPaymentPage() {
                     <InfoRow label="BIC" value="BNPAFRPPXXX" />
                     <InfoRow label={t("payment.bank")} value="BNP Paribas" />
                     <InfoRow label={t("payment.amount")} value={planAmount} highlight />
-                    <InfoRow label={t("payment.reference")} value={`EDUWAVE-${Date.now().toString(36).toUpperCase()}`} />
+                    <InfoRow label={t("payment.reference")} value={reference} />
                   </div>
                   <div className="flex items-start gap-2 rounded-xl bg-amber-50 p-3 text-xs text-amber-800 dark:bg-amber-500/10 dark:text-amber-300">
                     <span className="text-base">⚠️</span>

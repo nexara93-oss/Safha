@@ -162,12 +162,12 @@ export default function DirectorAnalyticsPage() {
                   <div key={s.subject}>
                     <div className="mb-1 flex justify-between text-sm">
                       <span className="font-semibold text-brand-ink dark:text-brand-paper">{s.subject}</span>
-                      <span className="text-gray-500">{s.average.toFixed(2)}/20</span>
+                      <span className="text-gray-500">{s.average.toFixed(1)}%</span>
                     </div>
                     <div className="h-3 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
                       <div
                         className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 transition-all"
-                        style={{ width: `${(s.average / 20) * 100}%` }}
+                        style={{ width: `${Math.min(100, s.average)}%` }}
                       />
                     </div>
                   </div>

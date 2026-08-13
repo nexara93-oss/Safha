@@ -116,25 +116,26 @@ export default function StudentReportCardPage() {
                   </div>
                 </div>
 
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-gray-100 text-left text-xs font-bold uppercase tracking-wider text-gray-500 dark:border-white/10">
-                      <th className="pb-2 pr-2">{t("student.reportCard.subject")}</th>
-                      <th className="pb-2 px-2">{t("student.reportCard.score")}</th>
-                      <th className="pb-2 pl-2 text-end">{t("student.reportCard.grade")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {grades.map((g) => (
-                      <tr key={g.id} className="border-b border-gray-50 dark:border-white/5">
-                        <td className="py-2 pr-2 font-semibold text-brand-ink dark:text-brand-paper">{g.subject}</td>
-                        <td className="py-2 px-2">
-                          <div className="flex items-baseline gap-1">
-                            <span className="font-bold">{g.score}</span>
-                            <span className="text-xs text-gray-400">/ {g.maxScore}</span>
-                          </div>
-                        </td>
-                        <td className="py-2 pl-2 text-end">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-100 text-start text-xs font-bold uppercase tracking-wider text-gray-500 dark:border-white/10">
+                        <th className="pb-2 pe-2">{t("student.reportCard.subject")}</th>
+                        <th className="pb-2 px-2">{t("student.reportCard.score")}</th>
+                        <th className="pb-2 ps-2 text-end">{t("student.reportCard.grade")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {grades.map((g) => (
+                        <tr key={g.id} className="border-b border-gray-50 dark:border-white/5">
+                          <td className="py-2 pe-2 font-semibold text-brand-ink dark:text-brand-paper">{g.subject}</td>
+                          <td className="py-2 px-2">
+                            <div className="flex items-baseline gap-1">
+                              <span className="font-bold">{g.score}</span>
+                              <span className="text-xs text-gray-400">/ {g.maxScore}</span>
+                            </div>
+                          </td>
+                          <td className="py-2 ps-2 text-end">
                           <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-bold ${
                             g.score / g.maxScore >= 0.8 ? "bg-emerald-100 text-emerald-700" :
                             g.score / g.maxScore >= 0.5 ? "bg-amber-100 text-amber-700" :
@@ -149,6 +150,7 @@ export default function StudentReportCardPage() {
                     ))}
                   </tbody>
                 </table>
+                </div>
 
                 <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-3 text-xs text-gray-500 dark:border-white/10">
                   <span>{t("student.reportCard.weightedAverage")} {weightedAverage.toFixed(2)}</span>

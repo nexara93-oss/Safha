@@ -16,10 +16,12 @@ export function Reveal({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
     if (!ref.current) return;
+    setVisible(false);
     const obs = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {

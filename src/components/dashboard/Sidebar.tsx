@@ -21,10 +21,11 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { BrandLogo } from "@/components/ui/BrandLogo";
+
 import { useDashboard } from "./DashboardShell";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 
 const navByRole = {
   DIRECTOR: [
@@ -98,7 +99,7 @@ export function Sidebar({ role }: { role: "DIRECTOR" | "TEACHER" | "STUDENT" | "
       >
         <div className="flex h-16 items-center justify-between border-b border-gray-100 px-5 dark:border-white/5 lg:h-20">
           <Link href="/" className="flex items-center gap-2.5">
-            <BrandLogo className="h-9 w-9" />
+            <BrandLogo className="h-11 w-11" />
             <div>
               <div className="font-display text-base font-extrabold text-brand-ink dark:text-brand-paper">
                 Safha

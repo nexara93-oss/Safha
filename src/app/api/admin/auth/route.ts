@@ -1,13 +1,29 @@
 import { NextRequest } from "next/server";
+import { timingSafeEqual } from "crypto";
 import { prisma } from "@/lib/db";
 import { signToken, setAuthCookie, type AuthClaims } from "@/lib/auth";
 import { ok, err } from "@/lib/api";
 import { checkRateLimit, getClientIP, isAccountLocked, recordFailedAttempt, clearFailedAttempts } from "@/lib/rate-limit";
 
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "Rinyom mr";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "rhvfggvvvY566&$#&";
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME ?? "";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "";
+
+if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
+  throw new Error("ADMIN_USERNAME and ADMIN_PASSWORD environment variables are required");
+}
+
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+
+function safeEqual(a: string, b: string): boolean {
+  const ab = Buffer.from(a);
+  const bb = Buffer.from(b);
+  if (ab.length !== bb.length) {
+    timingSafeEqual(ab, ab);
+    return false;
+  }
+  return timingSafeEqual(ab, bb);
+}
 
 export async function POST(req: NextRequest) {
   const ip = getClientIP(req);
@@ -28,7 +44,7 @@ export async function POST(req: NextRequest) {
       return err(`Admin account temporarily locked. Try again in ${lock.retryAfter} seconds.`, 429);
     }
 
-    if (username !== ADMIN_USERNAME || password !== ADMIN_PASSWORD) {
+    if (!safeEqual(username, ADMIN_USERNAME) || !safeEqual(password, ADMIN_PASSWORD)) {
       recordFailedAttempt(lockKey);
       return err("Invalid credentials", 401);
     }

@@ -6,8 +6,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { MailCheck, MailWarning, RefreshCcw, Loader2 } from "lucide-react";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { BrandLogo } from "@/components/ui/BrandLogo";
+import { useLanguage } from "@/contexts/LanguageContext";
+
 import { Spinner } from "@/components/ui/Spinner";
 
 type State = "loading" | "success" | "invalid" | "expired";
@@ -81,7 +82,7 @@ function VerifyContent() {
     <div className="min-h-screen bg-brand-cream dark:bg-[#0A0A0A]">
       <div className="absolute inset-x-0 top-0 z-20 mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-20 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2.5">
-          <BrandLogo className="h-10 w-10" />
+          <BrandLogo className="h-12 w-12" />
           <span className="font-display text-xl font-extrabold tracking-tight text-brand-ink dark:text-brand-paper">
             Safha
           </span>

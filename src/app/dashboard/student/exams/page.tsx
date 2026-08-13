@@ -106,12 +106,12 @@ export default function StudentExamsPage() {
                     </div>
                     <div className="text-end">
                       {r.score !== null ? (
-                        <div className="text-right">
+                        <div className="text-end">
                           <div className="font-display text-2xl font-extrabold text-brand-orange">{r.score}/{r.exam.maxScore}</div>
                           <span className="badge bg-emerald-100 text-emerald-700 text-[10px] dark:bg-emerald-500/15 dark:text-emerald-400">{t("student.exams.graded")}</span>
                         </div>
                       ) : (
-                        <div className="text-right">
+                        <div className="text-end">
                           <div className="text-sm font-bold text-gray-400">—</div>
                           <span className="badge bg-amber-100 text-amber-700 text-[10px] dark:bg-amber-500/15 dark:text-amber-400">{t("student.exams.pending")}</span>
                         </div>

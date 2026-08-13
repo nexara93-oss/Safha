@@ -31,10 +31,26 @@ export async function GET(req: NextRequest) {
     return ok({ submissions });
   }
 
+  if (auth.user.role === "PARENT") {
+    const parent = await prisma.parent.findUnique({
+      where: { userId: auth.user.id },
+      include: { students: { select: { studentId: true } } }
+    });
+    if (!parent) return err("Not found", 404);
+    const submissions = await prisma.homeworkSubmission.findMany({
+      where: { homeworkId, studentId: { in: parent.students.map((s) => s.studentId) } },
+      include: {
+        student: { include: { user: { select: { id: true, fullName: true } } } }
+      },
+      orderBy: { submittedAt: "desc" }
+    });
+    return ok({ submissions });
+  }
+
   if (auth.user.role === "TEACHER") {
     const teacher = await prisma.teacher.findUnique({ where: { userId: auth.user.id } });
     if (!teacher || homework.teacherId !== teacher.id) return err("Forbidden", 403);
-  } else if (auth.user.role !== "DIRECTOR" && auth.user.role !== "PARENT") {
+  } else if (auth.user.role !== "DIRECTOR") {
     return err("Forbidden", 403);
   }
 

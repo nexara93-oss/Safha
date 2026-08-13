@@ -44,6 +44,13 @@ type RegisterPayload = {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const USER_KEY = "safha_user";
+const AUTH_COOKIE_NAME = "safha_token";
+
+function clearSessionCookie() {
+  if (typeof document === "undefined") return;
+  const secure = location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${AUTH_COOKIE_NAME}=; Max-Age=0; Path=/; SameSite=Lax${secure}`;
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -52,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const persistUser = useCallback((u: AuthUser | null) => {
     if (typeof window === "undefined") return;
     if (u) {
-      localStorage.setItem(USER_KEY, JSON.stringify(u));
+      localStorage.setItem(USER_KEY, JSON.stringify({ role: u.role }));
     } else {
       localStorage.removeItem(USER_KEY);
     }
@@ -69,6 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         setUser(null);
         localStorage.removeItem(USER_KEY);
+        if (res.status === 401) clearSessionCookie();
       }
     } catch {
       setUser(null);
@@ -81,6 +89,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     refresh();
   }, [refresh]);
+
+  useEffect(() => {
+    const onUnauthorized = () => {
+      setUser(null);
+      localStorage.removeItem(USER_KEY);
+      clearSessionCookie();
+    };
+    window.addEventListener("safha:unauthorized", onUnauthorized);
+    return () => window.removeEventListener("safha:unauthorized", onUnauthorized);
+  }, []);
 
   const login = useCallback(async (identifier: string, password: string) => {
     const res = await fetch("/api/auth/login", {
@@ -146,9 +164,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     localStorage.removeItem(USER_KEY);
     try {
-      await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
+      const res = await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
+      if (!res.ok) throw new Error(`Logout failed (${res.status})`);
     } catch {
-      window.location.href = "/api/auth/logout";
+      try {
+        const res = await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
+        if (!res.ok) throw new Error(`Logout failed (${res.status})`);
+      } catch {
+        clearSessionCookie();
+        window.location.href = "/auth/login";
+      }
     }
   }, []);
 

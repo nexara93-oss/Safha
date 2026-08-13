@@ -7,6 +7,7 @@ import { WaveDivider, WaveDividerMulti } from "@/components/ui/WaveDivider";
 import { Reveal } from "@/components/ui/Reveal";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { BrandLogo } from "@/components/ui/BrandLogo";
+
 import {
   CheckCircle2,
   Users,
@@ -19,7 +20,7 @@ import {
   BookOpen,
   Heart,
   Sparkles,
-  Instagram,
+  Camera,
   MessageCircle,
   Mail
 } from "lucide-react";
@@ -260,7 +261,7 @@ export function LandingPage() {
                         src={f.photo}
                         alt={f.alt}
                         loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        className="aspect-video h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                       <div
                         className={`absolute inset-0 bg-gradient-to-br ${f.color} mix-blend-multiply`}
@@ -365,7 +366,7 @@ export function LandingPage() {
             {/* Annual - the popular choice */}
             <Reveal delay={240}>
               <div className="relative h-full rounded-3xl bg-brand-navy p-8 text-white shadow-2xl ring-2 ring-brand-orange/40">
-                <div className="absolute -top-3 start-1/2 -translate-x-1/2 rounded-full bg-white px-3 py-1 text-xs font-bold uppercase tracking-wider text-brand-orange shadow-lg">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-white px-3 py-1 text-xs font-bold uppercase tracking-wider text-brand-orange shadow-lg">
                   {t("pricing.mostPopular")}
                 </div>
                 <h3 className="text-xl font-bold text-white">{t("pricing.annual")}</h3>
@@ -446,7 +447,7 @@ export function LandingPage() {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <div className="flex items-center gap-2.5">
-                <BrandLogo className="h-9 w-9" />
+                <BrandLogo className="h-11 w-11" />
                 <span className="font-display text-lg font-extrabold text-brand-ink dark:text-brand-paper">
                   Safha
                 </span>
@@ -473,7 +474,7 @@ export function LandingPage() {
                     rel="noopener"
                     className="inline-flex items-center gap-2 text-brand-ink/70 transition-colors hover:text-brand-orange dark:text-white/70"
                   >
-                    <Instagram className="h-4 w-4" /> Instagram
+                    <Camera className="h-4 w-4" /> Instagram
                   </a>
                 </li>
                 <li>

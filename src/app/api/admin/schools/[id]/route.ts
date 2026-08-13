@@ -8,8 +8,9 @@ const schema = z.object({
   status: z.enum(["ACTIVE", "SUSPENDED"])
 });
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const auth = await getAuthFromRequest(req);
     if (!auth || auth.user.role !== "ADMIN") return err("Forbidden", 403);
 
@@ -17,7 +18,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     const parsed = schema.safeParse(body);
     if (!parsed.success) return err("Invalid status", 422, { fieldErrors: parsed.error.flatten().fieldErrors });
 
-    const school = await prisma.school.findUnique({ where: { id: params.id } });
+    const school = await prisma.school.findUnique({ where: { id } });
     if (!school) return err("Not found", 404);
 
     await prisma.user.update({

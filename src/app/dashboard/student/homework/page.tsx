@@ -43,6 +43,7 @@ export default function StudentHomeworkPage() {
   const [homeworks, setHomeworks] = useState<Homework[]>([]);
   const [section, setSection] = useState<Section | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [submitOpen, setSubmitOpen] = useState<string | null>(null);
   const [submitContent, setSubmitContent] = useState("");
   const [submitFileUrl, setSubmitFileUrl] = useState("");
@@ -51,7 +52,7 @@ export default function StudentHomeworkPage() {
   useEffect(() => {
     api<{ section: Section }>("/api/dashboard/student")
       .then((d) => setSection(d.section))
-      .catch(() => {});
+      .catch((e: unknown) => setLoadError(e instanceof Error ? e.message : t("common.failed")));
   }, []);
 
   useEffect(() => {
@@ -127,11 +128,18 @@ export default function StudentHomeworkPage() {
     };
   };
 
-  if (loading) {
+  if (loading || loadError) {
     return (
       <DashboardShell allowedRoles={["STUDENT"]}>
         <div className="flex h-64 items-center justify-center">
-          <Spinner className="h-8 w-8 text-brand-orange" />
+          {loadError ? (
+            <div className="text-center">
+              <p className="mb-3 text-sm text-red-500">{loadError}</p>
+              <button onClick={() => window.location.reload()} className="btn-primary text-sm">{t("common.retry")}</button>
+            </div>
+          ) : (
+            <Spinner className="h-8 w-8 text-brand-orange" />
+          )}
         </div>
       </DashboardShell>
     );

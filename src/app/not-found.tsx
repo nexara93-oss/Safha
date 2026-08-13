@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Reveal } from "@/components/ui/Reveal";
 import { BrandLogo } from "@/components/ui/BrandLogo";
+
 import { ArrowLeft } from "lucide-react";
 
 export default function NotFound() {
@@ -12,12 +13,12 @@ export default function NotFound() {
     <div className="flex min-h-screen items-center justify-center bg-brand-cream px-4 dark:bg-[#0A0A0A]">
       <Reveal>
         <div className="text-center">
-          <BrandLogo className="mx-auto mb-4 h-16 w-16" alt="Safha" />
+          <BrandLogo className="mx-auto mb-4 h-20 w-20" alt="Safha" />
           <h1 className="font-display text-5xl font-extrabold text-brand-ink dark:text-brand-paper">404</h1>
           <p className="mt-2 text-brand-ink/60 dark:text-brand-paper/60">Page not found</p>
           <Link href="/" className="btn-primary mt-6 inline-flex">
             <ArrowLeft className="h-4 w-4" />
-            {t("common.signin")} ?
+            {t("common.home")}
           </Link>
         </div>
       </Reveal>

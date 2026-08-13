@@ -64,6 +64,26 @@ export default function PdfImportModal({ open, onClose, onImported }: PdfImportM
     }
   };
 
+  const copyText = async (text: string) => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    } catch {
+      error("Copy failed");
+    }
+  };
+
   const close = () => {
     onClose();
     setTimeout(() => { setParsed([]); setImportResult(null); setPdfFile(null); }, 300);
@@ -86,7 +106,7 @@ export default function PdfImportModal({ open, onClose, onImported }: PdfImportM
                 <button onClick={() => setShowPwd((m) => ({ ...m, [s.id]: !m[s.id] }))} className="rounded-md p-1 text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10" aria-label="Show">
                   <EyeIcon visible={!!showPwd[s.id]} className="h-3.5 w-3.5" />
                 </button>
-                <button onClick={() => { navigator.clipboard.writeText(s.defaultPassword); setCopied(s.id); setTimeout(() => setCopied(null), 1500); }} className="rounded-md p-1 text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10" aria-label="Copy">
+                <button onClick={() => { copyText(s.defaultPassword); setCopied(s.id); setTimeout(() => setCopied(null), 1500); }} className="rounded-md p-1 text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10" aria-label="Copy">
                   {copied === s.id ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
                 </button>
               </div>

@@ -28,15 +28,18 @@ export default function TeacherOverviewPage() {
   const [teacher, setTeacher] = useState<Teacher | null>(null);
   const [today, setToday] = useState<TodayAttendance>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [marking, setMarking] = useState<"PRESENT" | "ABSENT" | null>(null);
 
   const load = () => {
     setLoading(true);
+    setLoadError(null);
     api<{ teacher: Teacher; todayAttendance: TodayAttendance }>("/api/dashboard/teacher")
       .then((d) => {
         setTeacher(d.teacher);
         setToday(d.todayAttendance);
       })
+      .catch((e: unknown) => setLoadError(e instanceof Error ? e.message : t("common.failed")))
       .finally(() => setLoading(false));
   };
   useEffect(load, []);
@@ -54,11 +57,18 @@ export default function TeacherOverviewPage() {
     }
   };
 
-  if (loading || !teacher) {
+  if (loading || loadError || !teacher) {
     return (
       <DashboardShell allowedRoles={["TEACHER"]}>
         <div className="flex h-64 items-center justify-center">
-          <Spinner className="h-8 w-8 text-brand-orange" />
+          {loadError ? (
+            <div className="text-center">
+              <p className="mb-3 text-sm text-red-500">{loadError}</p>
+              <button onClick={load} className="btn-primary text-sm">{t("common.retry")}</button>
+            </div>
+          ) : (
+            <Spinner className="h-8 w-8 text-brand-orange" />
+          )}
         </div>
       </DashboardShell>
     );

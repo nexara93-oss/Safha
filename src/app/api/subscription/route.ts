@@ -18,12 +18,12 @@ const CACHE_TTL = 5_000;
 
 export async function GET(req: NextRequest) {
   const auth = await getAuthFromRequest(req);
-  if (!auth || !auth.user.schoolId) return err("Forbidden", 403);
+  if (!auth || auth.user.role !== "DIRECTOR" || !auth.user.schoolId) return err("Forbidden", 403);
 
   const cached = cache.get(auth.user.schoolId);
   if (cached && Date.now() < cached.expiry) {
     return Response.json(cached.data, {
-      headers: { "Cache-Control": "public, max-age=5, stale-while-revalidate=30" }
+      headers: { "Cache-Control": "private, no-store" }
     });
   }
 
@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
   });
   const data = { subscription: sub, payments };
   cache.set(auth.user.schoolId, { data, expiry: Date.now() + CACHE_TTL });
-  return ok(data, { headers: { "Cache-Control": "public, max-age=5, stale-while-revalidate=30" } });
+  return ok(data, { headers: { "Cache-Control": "private, no-store" } });
 }
 
 export async function POST(req: NextRequest) {

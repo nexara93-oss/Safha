@@ -29,6 +29,7 @@ export default function DirectorExamsPage() {
   const [exams, setExams] = useState<Exam[]>([]);
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [sectionFilter, setSectionFilter] = useState("");
   const [editing, setEditing] = useState<Exam | null>(null);
   const [editName, setEditName] = useState("");
@@ -42,6 +43,7 @@ export default function DirectorExamsPage() {
 
   const load = () => {
     setLoading(true);
+    setLoadError(null);
     Promise.all([
       api<{ exams: Exam[] }>("/api/exams"),
       api<{ sections: Section[] }>("/api/sections")
@@ -50,6 +52,7 @@ export default function DirectorExamsPage() {
         setExams(e.exams);
         setSections(s.sections);
       })
+      .catch((e: unknown) => setLoadError(e instanceof Error ? e.message : t("common.failed")))
       .finally(() => setLoading(false));
   };
 
@@ -137,9 +140,16 @@ export default function DirectorExamsPage() {
           )}
         </div>
 
-        {loading ? (
+        {loading || loadError ? (
           <div className="flex h-48 items-center justify-center">
-            <Spinner className="h-8 w-8 text-brand-orange" />
+            {loadError ? (
+              <div className="text-center">
+                <p className="mb-3 text-sm text-red-500">{loadError}</p>
+                <button onClick={load} className="btn-primary text-sm">{t("common.retry")}</button>
+              </div>
+            ) : (
+              <Spinner className="h-8 w-8 text-brand-orange" />
+            )}
           </div>
         ) : (
           <>

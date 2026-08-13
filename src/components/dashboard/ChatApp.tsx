@@ -199,7 +199,7 @@ export default function ChatApp() {
     <div className="card flex h-[calc(100dvh-240px)] min-h-[480px] overflow-hidden">
       {/* Sidebar */}
       <aside
-        className={`flex w-full flex-col border-b border-gray-100 dark:border-white/10 sm:flex sm:w-72 sm:border-b-0 sm:border-r md:w-80 ${
+        className={`flex w-full flex-col border-b border-gray-100 dark:border-white/10 sm:flex sm:w-72 sm:border-b-0 sm:border-s md:w-80 ${
           mobileView ? "hidden" : "flex"
         }`}
       >
@@ -354,8 +354,8 @@ export default function ChatApp() {
                       <div
                         className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm shadow-sm sm:max-w-[70%] ${
                           fromMe
-                            ? "rounded-br-md bg-brand-orange text-white"
-                            : "rounded-bl-md bg-white text-brand-ink dark:bg-white/10 dark:text-brand-paper"
+                            ? "rounded-ee-md bg-brand-orange text-white"
+                            : "rounded-es-md bg-white text-brand-ink dark:bg-white/10 dark:text-brand-paper"
                         }`}
                       >
                         {!fromMe && (

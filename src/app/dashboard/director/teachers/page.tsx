@@ -24,6 +24,7 @@ export default function DirectorTeachersPage() {
   const { success, error } = useToast();
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -55,8 +56,10 @@ export default function DirectorTeachersPage() {
 
   const load = () => {
     setLoading(true);
+    setLoadError(null);
     api<{ teachers: Teacher[] }>("/api/teachers")
       .then((d) => setTeachers(d.teachers))
+      .catch((e: unknown) => setLoadError(e instanceof Error ? e.message : t("common.failed")))
       .finally(() => setLoading(false));
   };
 
@@ -128,9 +131,16 @@ export default function DirectorTeachersPage() {
           />
         </div>
 
-        {loading ? (
+        {loading || loadError ? (
           <div className="flex h-48 items-center justify-center">
-            <Spinner className="h-8 w-8 text-brand-orange" />
+            {loadError ? (
+              <div className="text-center">
+                <p className="mb-3 text-sm text-red-500">{loadError}</p>
+                <button onClick={load} className="btn-primary text-sm">{t("common.retry")}</button>
+              </div>
+            ) : (
+              <Spinner className="h-8 w-8 text-brand-orange" />
+            )}
           </div>
         ) : filtered.length === 0 ? (
           <div className="card flex flex-col items-center gap-2 py-12 text-center">

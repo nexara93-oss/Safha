@@ -10,8 +10,9 @@ const gradeSchema = z.object({
   maxScore: z.number().min(0.1).optional()
 });
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const auth = await getAuthFromRequest(req);
     if (!auth || !auth.user.schoolId) return err("Forbidden", 403);
     if (auth.user.role !== "TEACHER") return err("Only teachers can grade submissions", 403);
@@ -20,7 +21,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (!teacher) return err("Teacher not found", 404);
 
     const submission = await prisma.homeworkSubmission.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { homework: true }
     });
     if (!submission) return err("Submission not found", 404);
@@ -32,7 +33,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (!parsed.success) return err("Validation failed", 422, { fieldErrors: parsed.error.flatten().fieldErrors });
 
     const updated = await prisma.homeworkSubmission.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         score: parsed.data.score,
         feedback: parsed.data.feedback ?? null,

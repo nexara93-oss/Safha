@@ -35,26 +35,24 @@ export const metadata: Metadata = {
   }
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
-  const h = headers();
+  const h = await headers();
   const nonce = h.get("x-nonce") || "";
   return (
     <html lang="fr" suppressHydrationWarning className={`${inter.variable} ${plusJakarta.variable}`}>
       <head>
-        <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#1e293b" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-title" content="Safha" />
         <script nonce={nonce}
           dangerouslySetInnerHTML={{
-            __html: `try{document.documentElement.classList.remove('dark')}catch(e){}`
+            __html: `(function(){try{var t=localStorage.getItem('safha-theme');if(t==='dark'){document.documentElement.classList.add('dark')}}catch(e){}try{var l=localStorage.getItem('locale');if(l){document.documentElement.setAttribute('dir',l==='ar'?'rtl':'ltr');document.documentElement.setAttribute('lang',l)}}catch(e){}})();`
           }}
         />
-        {/* Force light mode: v3 */}
       </head>
       <body>
         <AppProviders>{children}</AppProviders>

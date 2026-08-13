@@ -24,6 +24,7 @@ export default function DirectorStudentsPage() {
   const { t } = useLanguage();
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [view, setView] = useState<Student | null>(null);
   const [visiblePasswords, setVisiblePasswords] = useState<Set<string>>(new Set());
@@ -46,14 +47,20 @@ export default function DirectorStudentsPage() {
 
   const copyPassword = async (s: Student) => {
     const pwd = getDefaultPassword(s);
-    await navigator.clipboard.writeText(pwd);
-    setCopiedId(s.id);
-    setTimeout(() => setCopiedId(null), 2000);
+    if (!navigator.clipboard?.writeText) return;
+    try {
+      await navigator.clipboard.writeText(pwd);
+      setCopiedId(s.id);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch {
+      // clipboard unavailable
+    }
   };
 
   useEffect(() => {
     api<{ students: Student[] }>("/api/students")
       .then((d) => setStudents(d.students))
+      .catch((e: unknown) => setLoadError(e instanceof Error ? e.message : t("common.failed")))
       .finally(() => setLoading(false));
   }, []);
 
@@ -90,9 +97,16 @@ export default function DirectorStudentsPage() {
           />
         </div>
 
-        {loading ? (
+        {loading || loadError ? (
           <div className="flex h-48 items-center justify-center">
-            <Spinner className="h-8 w-8 text-brand-orange" />
+            {loadError ? (
+              <div className="text-center">
+                <p className="mb-3 text-sm text-red-500">{loadError}</p>
+                <button onClick={() => window.location.reload()} className="btn-primary text-sm">{t("common.retry")}</button>
+              </div>
+            ) : (
+              <Spinner className="h-8 w-8 text-brand-orange" />
+            )}
           </div>
         ) : filtered.length === 0 ? (
           <div className="card flex flex-col items-center gap-2 py-12 text-center">
