@@ -10,14 +10,23 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<"light" | "dark">(() => {
-    if (typeof window === "undefined") return "light";
+  // Start with "light" on both server and initial client render to avoid hydration mismatch.
+  // Sync from localStorage after mount (layout's inline script already sets class pre-hydration to avoid flicker).
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  useEffect(() => {
     try {
-      return localStorage.getItem("safha-theme") === "dark" ? "dark" : "light";
-    } catch {
-      return "light";
-    }
-  });
+      const stored = localStorage.getItem("safha-theme");
+      if (stored === "dark" || stored === "light") {
+        setTheme(stored);
+        if (stored === "dark") document.documentElement.classList.add("dark");
+        else document.documentElement.classList.remove("dark");
+        return;
+      }
+    } catch {}
+    // fallback sync with document class set by inline script
+    if (document.documentElement.classList.contains("dark")) setTheme("dark");
+  }, []);
 
   useEffect(() => {
     if (theme === "dark") {

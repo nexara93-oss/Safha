@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, FormEvent } from "react";
+import { Suspense, useState, useEffect, FormEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, RefreshCcw } from "lucide-react";
@@ -10,6 +10,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/components/ui/Toast";
 import { Spinner } from "@/components/ui/Spinner";
 import { AuthLayout } from "@/components/auth/AuthLayout";
+import { GoogleIcon } from "@/components/auth/GoogleIcon";
 
 function LoginForm() {
   const { t } = useLanguage();
@@ -27,6 +28,26 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
   const [resending, setResending] = useState(false);
+
+  // Show Google OAuth errors passed via ?error=...
+  useEffect(() => {
+    const code = params.get("error");
+    if (!code) return;
+    const map: Record<string, string> = {
+      google_denied: "Google sign-in was cancelled.",
+      google_state_mismatch: "Security check failed. Please try again.",
+      google_token_failed: "Google authentication failed. Please try again.",
+      google_userinfo_failed: "Could not fetch Google profile. Please try again.",
+      google_not_configured: "Google sign-in is not configured yet. Add GOOGLE_CLIENT_ID in .env.",
+      google_no_email: "Google account has no email. Use another account.",
+      google_email_not_verified: "Your Google email is not verified.",
+      account_inactive: "Your account is inactive. Contact support.",
+      google_callback_failed: "Google sign-in failed. Please try again.",
+      google_missing_code: "Missing code from Google. Please try again.",
+      google_no_token: "No token from Google. Please try again."
+    };
+    error(map[code] ? `${map[code]} (${code})` : `Google sign-in failed. (${code})`);
+  }, [params]);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -194,6 +215,26 @@ function LoginForm() {
             {loading ? <Spinner /> : t("common.signin")}
           </button>
         </form>
+
+        {/* Divider + Google Sign-In */}
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200 dark:border-white/10" />
+          </div>
+          <div className="relative flex justify-center">
+            <span className="bg-brand-cream px-3 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:bg-[#0A0A0A] dark:text-white/40">
+              {t("common.or")}
+            </span>
+          </div>
+        </div>
+
+        <a
+          href="/api/auth/google"
+          className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-brand-ink shadow-sm transition-all hover:bg-gray-50 hover:border-gray-300 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
+        >
+          <GoogleIcon className="h-5 w-5" />
+          {t("common.signinGoogle")}
+        </a>
 
         {unverifiedEmail && (
           <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-500/20 dark:bg-amber-500/10">

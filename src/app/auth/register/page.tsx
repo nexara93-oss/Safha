@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, FormEvent, useRef, ChangeEvent } from "react";
+import { Suspense, useState, useEffect, FormEvent, useRef, ChangeEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Upload, X, School, MailCheck, RefreshCcw } from "lucide-react";
@@ -10,6 +10,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/components/ui/Toast";
 import { Spinner } from "@/components/ui/Spinner";
 import { AuthLayout } from "@/components/auth/AuthLayout";
+import { GoogleIcon } from "@/components/auth/GoogleIcon";
 
 function RegisterForm() {
   const { t } = useLanguage();
@@ -31,6 +32,16 @@ function RegisterForm() {
   const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
   const [resending, setResending] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Prefill from Google OAuth redirect (?google=1&email=...&name=...)
+  useEffect(() => {
+    const isGoogle = params.get("google");
+    const email = params.get("email");
+    const name = params.get("name");
+    if (isGoogle && email && !identifier) setIdentifier(email);
+    if (isGoogle && name && !fullName) setFullName(name);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params]);
 
   const handleLogo = (e: ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
@@ -151,7 +162,32 @@ function RegisterForm() {
           </div>
         )}
 
-        <form onSubmit={onSubmit} className="mt-6 space-y-4" noValidate>
+        {params.get("google") && params.get("email") && (
+          <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-xs font-medium text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300">
+            Continue with Google — we&apos;ve prefilled your details. Just choose a password and school name.
+          </div>
+        )}
+
+        <a
+          href="/api/auth/google"
+          className="mt-6 flex w-full items-center justify-center gap-2.5 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-brand-ink shadow-sm transition-all hover:bg-gray-50 hover:border-gray-300 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
+        >
+          <GoogleIcon className="h-5 w-5" />
+          {t("common.signupGoogle")}
+        </a>
+
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200 dark:border-white/10" />
+          </div>
+          <div className="relative flex justify-center">
+            <span className="bg-brand-cream px-3 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:bg-[#0A0A0A] dark:text-white/40">
+              {t("common.or")}
+            </span>
+          </div>
+        </div>
+
+        <form onSubmit={onSubmit} className="space-y-4" noValidate>
           <div>
             <label htmlFor="fullName" className="mb-1.5 block text-sm font-semibold text-brand-ink dark:text-brand-paper">
               {t("common.fullName")}

@@ -1,30 +1,36 @@
+import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
+import { err } from "@/lib/api";
+
 /**
  * Google OAuth entry point.
  *
- * In production, configure NextAuth or use `google-auth-library` with these env vars:
+ * Required env vars (see .env / .env.example):
  *   GOOGLE_CLIENT_ID
  *   GOOGLE_CLIENT_SECRET
- *   GOOGLE_REDIRECT_URI (= NEXT_PUBLIC_APP_URL + /api/auth/google/callback)
+ *   NEXT_PUBLIC_APP_URL  (e.g. http://localhost:3001)
  *
- * The flow is intentionally left as a clean redirect target so the frontend's
- * "Sign in with Google" button can be wired up by adding the OAuth library of
- * your choice (NextAuth, Lucia, or `google-auth-library` directly).
- *
- * For demo/dev this route just returns a JSON message — wire it up before
- * deploying to production.
+ * Setup:
+ *   1) https://console.cloud.google.com/apis/credentials
+ *   2) Create OAuth 2.0 Client ID (Web application)
+ *   3) Authorized redirect URI = <NEXT_PUBLIC_APP_URL>/api/auth/google/callback
  */
-import { NextRequest } from "next/server";
-import { err } from "@/lib/api";
 
-export async function GET(_req: NextRequest) {
+export async function GET(req: NextRequest) {
   const clientId = process.env.GOOGLE_CLIENT_ID;
-  if (!clientId) {
+  if (!clientId || !clientId.trim()) {
     return err(
-      "Google OAuth is not configured. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in your .env to enable.",
+      "Google OAuth is not configured. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in your .env to enable. See .env.example for instructions.",
       501
     );
   }
-  const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/google/callback`;
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.trim() || req.nextUrl.origin;
+  const redirectUri = `${baseUrl.replace(/\/$/, "")}/api/auth/google/callback`;
+
+  // CSRF protection — random state stored in httpOnly cookie
+  const state = crypto.randomBytes(16).toString("hex");
+
   const url = new URL("https://accounts.google.com/o/oauth2/v2/auth");
   url.searchParams.set("client_id", clientId);
   url.searchParams.set("redirect_uri", redirectUri);
@@ -32,5 +38,16 @@ export async function GET(_req: NextRequest) {
   url.searchParams.set("scope", "openid email profile");
   url.searchParams.set("access_type", "offline");
   url.searchParams.set("prompt", "consent");
-  return Response.redirect(url.toString(), 302);
+  url.searchParams.set("state", state);
+
+  console.log("[google] redirect_uri:", redirectUri, "| full URL:", url.toString());
+  const res = NextResponse.redirect(url.toString(), 302);
+  res.cookies.set("g_state", state, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 600 // 10 min
+  });
+  return res;
 }
