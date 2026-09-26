@@ -1,7 +1,5 @@
 # Safha — School Management Platform
 
-# URL : https://opulent-funicular-r74x74qp5pwrfpvgw-3000.app.github.dev
-
 A complete SaaS School Management application (formerly "EduWave") for Moroccan private schools, replacing paper-based systems with digital attendance, grades, behavior tracking, and communication.
 
 ## Features
